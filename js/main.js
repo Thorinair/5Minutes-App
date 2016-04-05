@@ -21,6 +21,8 @@ var platesList = [true, true, true, false, false, true];
 
 /*
  * Converts degrees to radians.
+ * @param deg Degrees input.
+ * @return Returns radians.
  */
 function rad(deg) {
     'use strict';
@@ -29,6 +31,12 @@ function rad(deg) {
 
 /*
  * Draws a single hexagon plate or add symbol.
+ * @param ctx Context to draw in.
+ * @param use Whether to draw a plate or add symbol.
+ * @param x X position of a plate.
+ * @param y Y position of a plate.
+ * @param colorA Primary color.
+ * @param colorB Secondary Color.
  */
 function drawPlate(ctx, use, x, y, colorA, colorB) {
     'use strict';
@@ -81,6 +89,10 @@ function drawPlate(ctx, use, x, y, colorA, colorB) {
 
 /*
  * Draws all hexagon plates and add symbols.
+ * @param ctx Context to draw in.
+ * @param plates Array of plates and their status.
+ * @param colorA Primary color.
+ * @param colorB Secondary Color.
  */
 function drawPlates(ctx, plates, colorA, colorB) {
     'use strict';
@@ -99,6 +111,11 @@ function drawPlates(ctx, plates, colorA, colorB) {
 
 /*
  * Draws the countdown in middle.
+ * @param ctx Context to draw in.
+ * @param minutesTotal Total number of minutes of a countdown.
+ * @param minutesLeft Minutes left of a countdown.
+ * @param colorA Primary color.
+ * @param colorB Secondary Color.
  */
 function drawCountdown(ctx, minutesTotal, minutesLeft, colorA, colorB) {
     'use strict';
@@ -143,6 +160,7 @@ function drawCountdown(ctx, minutesTotal, minutesLeft, colorA, colorB) {
 
 /*
  * Draws the whole UI.
+ * @param ctx Context to draw in.
  */
 function drawUI(ctx) {
     'use strict';
