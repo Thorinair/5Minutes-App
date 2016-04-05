@@ -16,8 +16,21 @@
 
 /*global window, document, tizen, console, setTimeout */
 
-var canvas, context, clockRadius, isAmbientMode;
-var platesList = [true, true, true, false, false, true]; 
+var canvas, context;
+var platesList = [true, true, true, false, false, true];
+
+var animStartup = [0, 0, 0, 0, 0, 0];
+var animStartupFlag = false;
+
+window.requestAnimationFrame = window.requestAnimationFrame ||
+	window.webkitRequestAnimationFrame ||
+	window.mozRequestAnimationFrame ||
+	window.oRequestAnimationFrame ||
+	window.msRequestAnimationFrame ||
+	function(callback) {
+	    'use strict';
+	    window.setTimeout(callback, 1000 / 60);
+};
 
 /*
  * Converts degrees to radians.
@@ -35,10 +48,11 @@ function rad(deg) {
  * @param use Whether to draw a plate or add symbol.
  * @param x X position of a plate.
  * @param y Y position of a plate.
- * @param colorA Primary color.
- * @param colorB Secondary Color.
+ * @param colorA Primary color, used for plates.
+ * @param colorB Secondary color, used for add symbols.
+ * @param opacity Opacity of a plate or add symbol.
  */
-function drawPlate(ctx, use, x, y, colorA, colorB) {
+function drawPlate(ctx, use, x, y, colorA, colorB, opacity) {
     'use strict';
     
     // UI Parameters
@@ -49,6 +63,7 @@ function drawPlate(ctx, use, x, y, colorA, colorB) {
 	ctx.save();
 	
 	ctx.translate(x,y);
+	ctx.globalAlpha = opacity;
 	
 	if (use) {
 		ctx.rotate(rad(-90));
@@ -66,7 +81,7 @@ function drawPlate(ctx, use, x, y, colorA, colorB) {
 		ctx.fillStyle = colorA;
 		ctx.fill();
 	}
-	else {
+	else {		
 		ctx.beginPath();
 		ctx.moveTo(-addRadius, 0);
 		ctx.lineTo(addRadius, 0);
@@ -105,7 +120,7 @@ function drawPlates(ctx, plates, colorA, colorB) {
 		xOffset = -radiusCenter * Math.cos(rad(60 * -i));
 		yOffset = radiusCenter * Math.sin(rad(60 * -i));
 		
-		drawPlate(ctx, plates[i], xOffset, yOffset, colorA, colorB);
+		drawPlate(ctx, plates[i], xOffset, yOffset, colorA, colorB, animStartup[i].toFixed(1));
 	}
 }
 
@@ -169,8 +184,89 @@ function drawUI(ctx) {
     var colorBright = "#007de4";
     var colorDark = "#343434";
 
+	ctx.save();
+	
+    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+    context.translate(180, 180);
+    
 	drawPlates(ctx, platesList, colorBright, colorDark);
-	drawCountdown(ctx, 5, 3, colorBright, colorDark);
+	drawCountdown(ctx, 0, 3, colorBright, colorDark);
+	
+	ctx.restore();
+}
+
+/*
+ * Animates the fade-in when application starts.
+ * @param ctx Context to draw in.
+ */
+function animateStartup(ctx) {
+    'use strict';
+
+    // Animation Parameters
+    var speedFadePerPlate = 0.1;
+    
+    animStartupFlag = true;
+	
+	if (animStartup[0].toFixed(1) < 0.5) {
+		animStartup[0] += speedFadePerPlate;
+	}
+	else if (animStartup[1].toFixed(1) < 0.5) {
+		animStartup[0] += speedFadePerPlate;
+		animStartup[1] += speedFadePerPlate;
+	}
+	else if (animStartup[2].toFixed(1) < 0.5) {
+		animStartup[1] += speedFadePerPlate;
+		animStartup[2] += speedFadePerPlate;
+	}
+	else if (animStartup[3].toFixed(1) < 0.5) {
+		animStartup[2] += speedFadePerPlate;
+		animStartup[3] += speedFadePerPlate;
+	}
+	else if (animStartup[4].toFixed(1) < 0.5) {
+		animStartup[3] += speedFadePerPlate;
+		animStartup[4] += speedFadePerPlate;
+	}
+	else if (animStartup[5].toFixed(1) < 0.5) {
+		animStartup[4] += speedFadePerPlate;
+		animStartup[5] += speedFadePerPlate;
+	}
+	else if (animStartup[5].toFixed(1) < 1) {
+		animStartup[5] += speedFadePerPlate;
+	}
+	
+	var stop = true;
+	
+	var i;
+	for (i = 0; i < 6; i += 1) {
+		stop = stop && (animStartup[i].toFixed(1) >= 1);
+	}
+		
+	if (!stop) {
+		window.requestAnimationFrame(function() {
+			animateStartup(ctx);
+		});
+	}
+	else {
+		animStartupFlag = false;
+	}
+}
+
+/*
+ * Animation loop.
+ * @param ctx Context to draw in.
+ */
+function animation(ctx) {
+    'use strict';
+    
+	var run = animStartupFlag;
+	
+    if (run) {
+    	drawUI(ctx);
+    }
+		
+	window.requestAnimationFrame(function() {
+		animation(ctx);
+	});
 }
 
 /*
@@ -181,7 +277,7 @@ window.onload = function onLoad() {
 
     canvas = document.querySelector('canvas');
     context = canvas.getContext('2d');
-    context.translate(180, 180);
     
-    drawUI(context);
+    animation(context);
+    animateStartup(context);
 };
