@@ -17,9 +17,9 @@
 /*global window, document, tizen, console, setTimeout */
 
 var canvas, context;
-var platesList = [true, true, true, false, false, true];
+var platesList = [true, true, true, true, true, true];
 
-var fps = 1000 / 60;
+var fps = 60;
 
 var animStartup;
 var animStartupFlag = false;
@@ -30,9 +30,9 @@ window.requestAnimationFrame = window.requestAnimationFrame ||
 	window.oRequestAnimationFrame ||
 	window.msRequestAnimationFrame ||
 	function(callback) {
-	    'use strict';
-	    window.setTimeout(callback, fps);
-};
+    	'use strict';
+    	window.setTimeout(callback, 1000 / fps);
+	};
 
 /*
  * Converts degrees to radians.
@@ -70,30 +70,47 @@ function trans(value, type, start, end, duration) {
     	value = end;
     }
     else {
-    	var frame = (duration / 1000) * fps; 
+    	var steps = (duration / 1000) * fps; 
+    	var x, y;
     	
     	if (value.toFixed(3) < start) {
     		value = start;
     	}
     	
-    	// linear - Regular linear transition.
-    	if (type === "linear") {
-    		var step = (end - start) /  frame;
-    		value += step;
-    		
-    		//console.log("Trans linear: " + value.toFixed(3));
-    	}
+    	switch (type) {
     	
-    	// quad - Transition using quadratic equation.
-    	if (type === "quad") {
-    		var lastFrame = sign(end - start) 
-    			* Math.pow((value.toFixed(3) - start) / (end - start), 1/2);
-    		var newFrame = lastFrame + frame;
-    		
-    		value += sign(end - start) 
-				* Math.pow(newFrame * (newFrame / duration), 2) + start;
-    		
-    		console.log("Trans quad: " + value.toFixed(3));
+    		// linear - Regular linear transition.
+    		case "linear":
+        		value += (end - start) / steps;
+        		break;
+        		
+            // quad-down - Transition using quadratic equation. Slow-down.
+    		case "quad-down":
+        		y = (value.toFixed(3) - start) / (end - start) - 1;
+        		x = -Math.pow(-sign(end - start) * y, 1/2) + 1 / steps; 
+        		value = -sign(end - start) * Math.pow(x, 2) + 1 + start;
+        		break;
+        		
+            // quad-up - Transition using quadratic equation. Speed-up.
+    		case "quad-up":
+        		y = (value.toFixed(4) - start) / (end - start);
+        		x = Math.pow(sign(end - start) * y, 1/2) + 1 / steps;  
+        		value = sign(end - start) * Math.pow(x, 2) + start;
+        		break;
+
+            // cube-down - Transition using cubic equation. Slow-down.
+    		case "cube-down":
+        		y = (value.toFixed(3) - start) / (end - start) - 1;
+        		x = -Math.pow(-sign(end - start) * y, 1/3) + 1 / steps; 
+        		value = sign(end - start) * Math.pow(x, 3) + 1 + start;
+        		break;
+        		
+        	// cube-up - Transition using cubic equation. Speed-up.
+    		case "cube-up":
+        		y = (value.toFixed(6) - start) / (end - start);
+        		x = Math.pow(sign(end - start) * y, 1/3) + 1 / steps;  
+        		value = sign(end - start) * Math.pow(x, 3) + start;
+        		break;        		
     	}
     }
     
@@ -178,7 +195,7 @@ function drawPlates(ctx, plates, colorA, colorB) {
 		xOffset = -radiusCenter * Math.cos(rad(60 * -i));
 		yOffset = radiusCenter * Math.sin(rad(60 * -i));
 		
-		drawPlate(ctx, plates[i], xOffset, yOffset, colorA, colorB, animStartup[i].toFixed(1));
+		drawPlate(ctx, plates[i], xOffset, yOffset, colorA, colorB, animStartup[i].toFixed(3));
 	}
 }
 
@@ -268,38 +285,19 @@ function animateStartup(ctx) {
     }
     animStartupFlag = true;
 	
-	if (animStartup[0].toFixed(1) < 0.5) {
-		animStartup[0] = trans(animStartup[0], "quad", 0, 1, speedFadePlate);
+	if (animStartup[0].toFixed(3) < 1) {
+		animStartup[0] = trans(animStartup[0], "quad-down", 0, 1, speedFadePlate);
 	}
-	else if (animStartup[1].toFixed(1) < 0.5) {
-		animStartup[0] = trans(animStartup[0], "quad", 0, 1, speedFadePlate);
-		animStartup[1] = trans(animStartup[1], "linear", 0, 1, speedFadePlate);
-	}
-	else if (animStartup[2].toFixed(1) < 0.5) {
-		animStartup[1] = trans(animStartup[1], "linear", 0, 1, speedFadePlate);
-		animStartup[2] = trans(animStartup[2], "linear", 0, 1, speedFadePlate);
-	}
-	else if (animStartup[3].toFixed(1) < 0.5) {
-		animStartup[2] = trans(animStartup[2], "linear", 0, 1, speedFadePlate);
-		animStartup[3] = trans(animStartup[3], "linear", 0, 1, speedFadePlate);
-	}
-	else if (animStartup[4].toFixed(1) < 0.5) {
-		animStartup[3] = trans(animStartup[3], "linear", 0, 1, speedFadePlate);
-		animStartup[4] = trans(animStartup[4], "linear", 0, 1, speedFadePlate);
-	}
-	else if (animStartup[5].toFixed(1) < 0.5) {
-		animStartup[4] = trans(animStartup[4], "linear", 0, 1, speedFadePlate);
-		animStartup[5] = trans(animStartup[5], "linear", 0, 1, speedFadePlate);
-	}
-	else if (animStartup[5].toFixed(1) < 1) {
-		animStartup[5] = trans(animStartup[5], "linear", 0, 1, speedFadePlate);
+	var i;
+	for (i = 0; i < 5; i += 1) {
+		if (animStartup[i].toFixed(3) >= 0.5 && animStartup[i + 1].toFixed(3) < 1) {
+			animStartup[i + 1] = trans(animStartup[i + 1], "quad-down", 0, 1, speedFadePlate);
+		}
 	}
 	
 	var stop = true;
-	
-	var i;
 	for (i = 0; i < 6; i += 1) {
-		stop = stop && (animStartup[i].toFixed(1) >= 1);
+		stop = stop && (animStartup[i].toFixed(3) >= 1);
 	}
 		
 	if (!stop) {
@@ -324,7 +322,7 @@ function animation(ctx) {
     if (run) {
     	drawUI(ctx);
     }
-		
+    
 	window.requestAnimationFrame(function() {
 		animation(ctx);
 	});
