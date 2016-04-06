@@ -19,7 +19,9 @@
 var canvas, context;
 var platesList = [true, true, true, false, false, true];
 
-var animStartup = [0, 0, 0, 0, 0, 0];
+var fps = 1000 / 60;
+
+var animStartup;
 var animStartupFlag = false;
 
 window.requestAnimationFrame = window.requestAnimationFrame ||
@@ -29,7 +31,7 @@ window.requestAnimationFrame = window.requestAnimationFrame ||
 	window.msRequestAnimationFrame ||
 	function(callback) {
 	    'use strict';
-	    window.setTimeout(callback, 1000 / 60);
+	    window.setTimeout(callback, fps);
 };
 
 /*
@@ -40,6 +42,62 @@ window.requestAnimationFrame = window.requestAnimationFrame ||
 function rad(deg) {
     'use strict';
     return deg * Math.PI / 180;
+}
+
+/*
+ * Calculates sign prefix of a number.
+ * @param x Number to use.
+ * @return Returns -1 or 1.
+ */
+function sign(x) {
+    'use strict';
+    return x < 0 ? -1 : 1;
+}
+
+/*
+ * Performs a frame step for transition of a variable.
+ * @param value Variable to transition.
+ * @param type Type of transition. Check function body for list.
+ * @param start Starting value to fade from.
+ * @param end Value to fade to.
+ * @param duration Duration of the transition in ms.
+ * @return Returns new value of the variable after one frame.
+ */
+function trans(value, type, start, end, duration) {
+    'use strict';
+    
+    if (value.toFixed(3) >= end) {
+    	value = end;
+    }
+    else {
+    	var frame = (duration / 1000) * fps; 
+    	
+    	if (value.toFixed(3) < start) {
+    		value = start;
+    	}
+    	
+    	// linear - Regular linear transition.
+    	if (type === "linear") {
+    		var step = (end - start) /  frame;
+    		value += step;
+    		
+    		//console.log("Trans linear: " + value.toFixed(3));
+    	}
+    	
+    	// quad - Transition using quadratic equation.
+    	if (type === "quad") {
+    		var lastFrame = sign(end - start) 
+    			* Math.pow((value.toFixed(3) - start) / (end - start), 1/2);
+    		var newFrame = lastFrame + frame;
+    		
+    		value += sign(end - start) 
+				* Math.pow(newFrame * (newFrame / duration), 2) + start;
+    		
+    		console.log("Trans quad: " + value.toFixed(3));
+    	}
+    }
+    
+    return value;
 }
 
 /*
@@ -203,35 +261,38 @@ function animateStartup(ctx) {
     'use strict';
 
     // Animation Parameters
-    var speedFadePerPlate = 0.1;
+    var speedFadePlate = 500;
     
+    if (!animStartupFlag) {
+    	animStartup = [0, 0, 0, 0, 0, 0];
+    }
     animStartupFlag = true;
 	
 	if (animStartup[0].toFixed(1) < 0.5) {
-		animStartup[0] += speedFadePerPlate;
+		animStartup[0] = trans(animStartup[0], "quad", 0, 1, speedFadePlate);
 	}
 	else if (animStartup[1].toFixed(1) < 0.5) {
-		animStartup[0] += speedFadePerPlate;
-		animStartup[1] += speedFadePerPlate;
+		animStartup[0] = trans(animStartup[0], "quad", 0, 1, speedFadePlate);
+		animStartup[1] = trans(animStartup[1], "linear", 0, 1, speedFadePlate);
 	}
 	else if (animStartup[2].toFixed(1) < 0.5) {
-		animStartup[1] += speedFadePerPlate;
-		animStartup[2] += speedFadePerPlate;
+		animStartup[1] = trans(animStartup[1], "linear", 0, 1, speedFadePlate);
+		animStartup[2] = trans(animStartup[2], "linear", 0, 1, speedFadePlate);
 	}
 	else if (animStartup[3].toFixed(1) < 0.5) {
-		animStartup[2] += speedFadePerPlate;
-		animStartup[3] += speedFadePerPlate;
+		animStartup[2] = trans(animStartup[2], "linear", 0, 1, speedFadePlate);
+		animStartup[3] = trans(animStartup[3], "linear", 0, 1, speedFadePlate);
 	}
 	else if (animStartup[4].toFixed(1) < 0.5) {
-		animStartup[3] += speedFadePerPlate;
-		animStartup[4] += speedFadePerPlate;
+		animStartup[3] = trans(animStartup[3], "linear", 0, 1, speedFadePlate);
+		animStartup[4] = trans(animStartup[4], "linear", 0, 1, speedFadePlate);
 	}
 	else if (animStartup[5].toFixed(1) < 0.5) {
-		animStartup[4] += speedFadePerPlate;
-		animStartup[5] += speedFadePerPlate;
+		animStartup[4] = trans(animStartup[4], "linear", 0, 1, speedFadePlate);
+		animStartup[5] = trans(animStartup[5], "linear", 0, 1, speedFadePlate);
 	}
 	else if (animStartup[5].toFixed(1) < 1) {
-		animStartup[5] += speedFadePerPlate;
+		animStartup[5] = trans(animStartup[5], "linear", 0, 1, speedFadePlate);
 	}
 	
 	var stop = true;
