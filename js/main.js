@@ -21,6 +21,8 @@ var platesList = [true, true, true, true, true, true];
 
 var screenX = 180;
 var screenY = 180;
+var screenXold = 0;
+var screenYold = 0;
 var dragLastX = 0;
 var dragLastY = 0;
 
@@ -28,6 +30,8 @@ var fps = 60;
 
 var animStartup;
 var animStartupFlag = false;
+
+var animCenterResetFlag = false;
 
 window.requestAnimationFrame = window.requestAnimationFrame ||
 	window.webkitRequestAnimationFrame ||
@@ -70,15 +74,12 @@ function sign(x) {
  */
 function trans(value, type, start, end, duration) {
     'use strict';
-    
-    if (value.toFixed(3) >= end) {
-    	value = end;
-    }
-    else {
+
+    if (!(((end - start) >= 0 && value.toFixed(3) >= end) || ((end - start) <= 0 && value.toFixed(3) <= end))) {
     	var steps = (duration / 1000) * fps; 
     	var x, y;
-    	
-    	if (value.toFixed(3) < start) {
+
+        if (((end - start) >= 0 && value.toFixed(3) < start) || ((end - start) <= 0 && value.toFixed(3) > start)) {
     		value = start;
     	}
     	
@@ -87,36 +88,53 @@ function trans(value, type, start, end, duration) {
     		// linear - Regular linear transition.
     		case "linear":
         		value += (end - start) / steps;
+        		//console.log("trans linear value: " + value);
         		break;
         		
             // quad-down - Transition using quadratic equation. Slow-down.
     		case "quad-down":
-        		y = (value.toFixed(3) - start) / (end - start) - 1;
-        		x = -Math.pow(-sign(end - start) * y, 1/2) + 1 / steps; 
-        		value = -sign(end - start) * Math.pow(x, 2) + 1 + start;
+        		y = 1 - (value.toFixed(3) - start) / (end - start);
+        		x = 1 / steps - Math.pow(y, 1/2); 
+        		value = (-Math.pow(x, 2) + 1) * (end - start) + start;
+        		//console.log("trans quad-down y: " + y);
+        		//console.log("trans quad-down x: " + x);
+        		//console.log("trans quad-down value: " + value);
         		break;
         		
             // quad-up - Transition using quadratic equation. Speed-up.
     		case "quad-up":
         		y = (value.toFixed(4) - start) / (end - start);
-        		x = Math.pow(sign(end - start) * y, 1/2) + 1 / steps;  
-        		value = sign(end - start) * Math.pow(x, 2) + start;
+        		x = 1 / steps + Math.pow(y, 1/2);  
+        		value = Math.pow(x, 2) * (end - start) + start;
+        		//console.log("trans quad-up y: " + y);
+        		//console.log("trans quad-up x: " + x);
+        		//console.log("trans quad-up value: " + value);
         		break;
 
             // cube-down - Transition using cubic equation. Slow-down.
     		case "cube-down":
-        		y = (value.toFixed(3) - start) / (end - start) - 1;
-        		x = -Math.pow(-sign(end - start) * y, 1/3) + 1 / steps; 
-        		value = sign(end - start) * Math.pow(x, 3) + 1 + start;
+        		y = 1 - (value.toFixed(3) - start) / (end - start);
+        		x = 1 / steps - Math.pow(y, 1/3); 
+        		value = (Math.pow(x, 3) + 1) * (end - start) + start;
+        		//console.log("trans cube-down y: " + y);
+        		//console.log("trans cube-down x: " + x);
+        		//console.log("trans cube-down value: " + value);
         		break;
         		
         	// cube-up - Transition using cubic equation. Speed-up.
     		case "cube-up":
         		y = (value.toFixed(6) - start) / (end - start);
-        		x = Math.pow(sign(end - start) * y, 1/3) + 1 / steps;  
-        		value = sign(end - start) * Math.pow(x, 3) + start;
+        		x = 1 / steps + Math.pow(y, 1/3);  
+        		value = Math.pow(x, 3) * (end - start) + start;
+        		//console.log("trans cube-up y: " + y);
+        		//console.log("trans cube-up x: " + x);
+        		//console.log("trans cube-up value: " + value);
         		break;        		
     	}
+    }
+	
+	if (((end - start) >= 0 && value.toFixed(3) >= end) || ((end - start) <= 0 && value.toFixed(3) <= end)) {
+    	value = end;
     }
     
     return value;
@@ -316,13 +334,37 @@ function animateStartup(ctx) {
 }
 
 /*
+ * Animates the reset back to center of canvas.
+ * @param ctx Context to draw in.
+ */
+function animateResetCenter(ctx) {
+    'use strict';
+
+    // Animation Parameters
+    var speedCenter = 500;
+
+	screenX = trans(screenX, "cube-down", screenXold, 180, speedCenter);
+	screenY = trans(screenY, "cube-down", screenYold, 180, speedCenter);
+	
+	if (screenX.toFixed(3) === 180 && screenY.toFixed(3) === 180) {
+		animCenterResetFlag = false;
+	}
+		
+	if (animCenterResetFlag) {
+		window.requestAnimationFrame(function() {
+			animateResetCenter(ctx);
+		});
+	}
+}
+
+/*
  * Animation loop.
  * @param ctx Context to draw in.
  */
 function animation(ctx) {
     'use strict';
     
-	var run = animStartupFlag;
+	var run = animStartupFlag || animCenterResetFlag;
 	
     if (run) {
     	drawUI(ctx);
@@ -352,7 +394,8 @@ window.onload = function onLoad() {
     	tau.event.enableGesture(document, new tau.event.gesture.Drag({
     	}));
 
-    	document.addEventListener("dragstart", function(e) {
+    	document.addEventListener("touchstart", function() {
+    	    animCenterResetFlag = false;
     		dragLastX = 0;
     		dragLastY = 0;
     	});
@@ -367,7 +410,11 @@ window.onload = function onLoad() {
     		dragLastY = dragY;
     	});
 
-    	document.addEventListener("dragend", function(e) {
+    	document.addEventListener("touchend", function() {
+    		screenXold = screenX;
+    		screenYold = screenY;
+    	    animCenterResetFlag = true;
+    		animateResetCenter(context);
     	});
     });
 }(tau));
