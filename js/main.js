@@ -14,10 +14,15 @@
  * limitations under the License.
  */
 
-/*global window, document, tizen, console, setTimeout */
+/*global window, document, tizen, console, setTimeout, tau */
 
 var canvas, context;
 var platesList = [true, true, true, true, true, true];
+
+var screenX = 180;
+var screenY = 180;
+var dragLastX = 0;
+var dragLastY = 0;
 
 var fps = 60;
 
@@ -262,7 +267,7 @@ function drawUI(ctx) {
 	ctx.save();
 	
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-    context.translate(180, 180);
+    context.translate(screenX, screenY);
     
 	drawPlates(ctx, platesList, colorBright, colorDark);
 	drawCountdown(ctx, 0, 3, colorBright, colorDark);
@@ -340,3 +345,29 @@ window.onload = function onLoad() {
     animation(context);
     animateStartup(context);
 };
+
+(function(tau) {
+    'use strict';
+    document.addEventListener("pagebeforeshow", function() {
+    	tau.event.enableGesture(document, new tau.event.gesture.Drag({
+    	}));
+
+    	document.addEventListener("dragstart", function(e) {
+    		dragLastX = 0;
+    		dragLastY = 0;
+    	});
+
+    	document.addEventListener("drag", function(e) {
+    		var dragX = e.detail.deltaX;
+    		var dragY = e.detail.deltaY;
+    		screenX += dragX - dragLastX;
+    		screenY += dragY - dragLastY;
+    		drawUI(context);
+    		dragLastX = dragX;
+    		dragLastY = dragY;
+    	});
+
+    	document.addEventListener("dragend", function(e) {
+    	});
+    });
+}(tau));
