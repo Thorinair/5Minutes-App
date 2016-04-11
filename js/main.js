@@ -346,7 +346,7 @@ function animateResetCenter(ctx) {
 	screenX = trans(screenX, "cube-down", screenXold, 180, speedCenter);
 	screenY = trans(screenY, "cube-down", screenYold, 180, speedCenter);
 	
-	if (screenX.toFixed(3) === 180 && screenY.toFixed(3) === 180) {
+	if (screenX.toFixed(3) == 180 && screenY.toFixed(3) == 180) {
 		animCenterResetFlag = false;
 	}
 		
