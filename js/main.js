@@ -327,6 +327,21 @@ function drawUI(ctx) {
     	drawFlower(ctx, platesList.flower0, colorBright, colorDark, 0);
     	drawFlower(ctx, platesList.flower1, colorBright, colorDark, 360);
     }
+    else if (currentFlower == 1) {
+    	drawFlower(ctx, platesList.flower0, colorBright, colorDark, -360);
+    	drawFlower(ctx, platesList.flower1, colorBright, colorDark, 0);
+    	drawFlower(ctx, platesList.flower2, colorBright, colorDark, 360);
+    }
+    else if (currentFlower == 2) {
+    	drawFlower(ctx, platesList.flower1, colorBright, colorDark, -360);
+    	drawFlower(ctx, platesList.flower2, colorBright, colorDark, 0);
+    	drawFlower(ctx, platesList.flower3, colorBright, colorDark, 360);
+    }
+    else if (currentFlower == 3) {
+    	drawFlower(ctx, platesList.flower2, colorBright, colorDark, -360);
+    	drawFlower(ctx, platesList.flower3, colorBright, colorDark, 0);
+    	drawFlower(ctx, platesList.flower0, colorBright, colorDark, 360);
+    }
 	drawCountdown(ctx, 0, 3, colorBright, colorDark);
 	
 	ctx.restore();
@@ -375,23 +390,39 @@ function animateStartup(ctx) {
 /*
  * Animates the reset back to center of canvas.
  * @param ctx Context to draw in.
+ * @param direction Direction to move to (-1, 0 or 1).
  */
-function animateResetCenter(ctx) {
+function animateResetCenter(ctx, direction) {
     'use strict';
 
     // Animation Parameters
-    var speedCenter = 500;
+    var speedCenter = 200;
+    var newCenterX = 180 - direction * 360;
 
-	screenX = trans(screenX, "cube-down", screenXold, 180, speedCenter);
+	screenX = trans(screenX, "cube-down", screenXold, newCenterX, speedCenter);
 	screenY = trans(screenY, "cube-down", screenYold, 180, speedCenter);
 	
-	if (screenX.toFixed(3) == 180 && screenY.toFixed(3) == 180) {
+	if (screenX.toFixed(3) == newCenterX && screenY.toFixed(3) == 180) {
 		animCenterResetFlag = false;
+		if (direction == -1) {
+			currentFlower -= 1;
+			if (currentFlower <= -1)
+				currentFlower = 3;
+		}
+		else if (direction == 1) {
+			currentFlower += 1;
+			if (currentFlower >= 4)
+				currentFlower = 0;
+		}
+		screenX = 180;
+		screenY = 180;
+		drawUI(ctx);
+		console.log("Flower: " + currentFlower);
 	}
 		
 	if (animCenterResetFlag) {
 		window.requestAnimationFrame(function() {
-			animateResetCenter(ctx);
+			animateResetCenter(ctx, direction);
 		});
 	}
 }
@@ -453,7 +484,15 @@ window.onload = function onLoad() {
     		screenXold = screenX;
     		screenYold = screenY;
     	    animCenterResetFlag = true;
-    		animateResetCenter(context);
+    	    if (screenX <= 0) {
+    	    	animateResetCenter(context, 1);
+    	    }
+    	    else if (screenX >= 360) {
+    	    	animateResetCenter(context, -1);
+    	    }
+    	    else {
+    	    	animateResetCenter(context, 0);
+    	    }
     	});
     });
 }(tau));
