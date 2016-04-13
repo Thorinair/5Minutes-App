@@ -1,19 +1,3 @@
-/*
- * Copyright (c) 2015 Samsung Electronics Co., Ltd. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 /*global window, document, tizen, console, setTimeout, tau */
 
 var canvas, context;
@@ -28,44 +12,56 @@ var platesList = {
 		           {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]}
 		           ],  
    		"flower1": [
-		           {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
-		           {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
-		           {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
+		           {"type": "coffee", "color": "#e4007d", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
+		           {"type": "coffee", "color": "#e4007d", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
 		           null,
-		           null,
-		           {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]}
+		           {"type": "coffee", "color": "#e4007d", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
+		           {"type": "coffee", "color": "#e4007d", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
+		           null
  		           ], 
  		"flower2": [
-		           {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
-		           {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
-		           {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
 		           null,
+		           {"type": "coffee", "color": "#7d00e4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
 		           null,
-		           {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]}
+		           {"type": "coffee", "color": "#7d00e4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
+		           null,
+		           {"type": "coffee", "color": "#7d00e4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]}
 		           ],
 		"flower3": [
-		           {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
-		           {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
-		           {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
+		           {"type": "coffee", "color": "#e47d00", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
 		           null,
 		           null,
-		           {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]}
+		           {"type": "coffee", "color": "#e47d00", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
+		           {"type": "coffee", "color": "#e47d00", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
+		           null
 		           ]
 };
 
-var screenX = 180;
-var screenY = 180;
-var screenXold = 0;
-var screenYold = 0;
+var flowerCenterX = 180;
+var flowerCenterY = 180;
+var flowerCenterXold = 0;
+var flowerCenterYold = 0;
 var dragLastX = 0;
 var dragLastY = 0;
 
-var fps = 60;
+var flowerDotOpacity = [1.0, 0.25, 0.25, 0.25];
+var flowerDotOpacityOld = [0.25, 0.25, 0.25, 0.25];
+var flowerDotOpacityMulti = 0;
+var flowerDotOpacityFadeOut;
 
 var animStartup;
 var animStartupFlag = false;
-
 var animCenterResetFlag = false;
+var animFlowerDotsTransition = false;
+var animFlowerDotsFadeOut = false;
+var animFlowerDotsFadeIn = false;
+
+var screenCenterX = 180;
+var screenCenterY = 180;
+
+var fps = 60;
+
+var isScreenTouched = false;
 
 window.requestAnimationFrame = window.requestAnimationFrame ||
 	window.webkitRequestAnimationFrame ||
@@ -177,14 +173,14 @@ function trans(value, type, start, end, duration) {
 /*
  * Draws a single hexagon plate or add symbol.
  * @param ctx Context to draw in.
- * @param use Whether to draw a plate or add symbol.
+ * @param plate Plate to draw.
  * @param x X position of a plate.
  * @param y Y position of a plate.
  * @param colorA Primary color, used for plates.
  * @param colorB Secondary color, used for add symbols.
  * @param opacity Opacity of a plate or add symbol.
  */
-function drawPlate(ctx, use, x, y, colorA, colorB, opacity) {
+function drawPlate(ctx, plate, x, y, colorB, opacity) {
     'use strict';
     
     // UI Parameters
@@ -197,7 +193,7 @@ function drawPlate(ctx, use, x, y, colorA, colorB, opacity) {
 	ctx.translate(x,y);
 	ctx.globalAlpha = opacity;
 	
-	if (use) {
+	if (plate) {
 		ctx.rotate(rad(-90));
 		
 		ctx.beginPath();
@@ -210,7 +206,7 @@ function drawPlate(ctx, use, x, y, colorA, colorB, opacity) {
 			ctx.lineTo(xOffset, yOffset);
 		}
 		ctx.closePath();
-		ctx.fillStyle = colorA;
+		ctx.fillStyle = plate.color;
 		ctx.fill();
 	}
 	else {		
@@ -242,7 +238,7 @@ function drawPlate(ctx, use, x, y, colorA, colorB, opacity) {
  * @param colorB Secondary Color.
  * @param offset Offset of the flower.
  */
-function drawFlower(ctx, flower, colorA, colorB, offset) {
+function drawFlower(ctx, flower, colorB, offset) {
     'use strict';
     
     // UI Parameters
@@ -253,7 +249,7 @@ function drawFlower(ctx, flower, colorA, colorB, offset) {
 		xOffset = -radiusCenter * Math.cos(rad(60 * -i)) + offset;
 		yOffset = radiusCenter * Math.sin(rad(60 * -i));
 		
-		drawPlate(ctx, flower[i], xOffset, yOffset, colorA, colorB, animStartup[i].toFixed(3));
+		drawPlate(ctx, flower[i], xOffset, yOffset, colorB, animStartup[i].toFixed(3));
 	}
 }
 
@@ -307,6 +303,37 @@ function drawCountdown(ctx, minutesTotal, minutesLeft, colorA, colorB) {
 }
 
 /*
+ * Draws the flower overlay.
+ * @param ctx Context to draw in.
+ * @param colorDot Color of flower dots.
+ */
+function drawFlowerDots(ctx, colorDot) {
+    'use strict';
+    
+	    // UI Parameters
+	    var dotRadius = 4;
+	    var dotOffset = 160;
+	    
+		ctx.save();
+
+		ctx.rotate(rad(-90));
+		
+		var i;
+		for (i = 0; i < 4; i += 1) {
+			ctx.save();
+			ctx.beginPath();
+		  	ctx.arc(dotOffset, 0, dotRadius, 0, rad(360));
+		  	ctx.globalAlpha = flowerDotOpacity[i] * flowerDotOpacityMulti;
+			ctx.fillStyle = colorDot;
+			ctx.fill();
+			ctx.restore();
+			ctx.rotate(rad(90));
+		}
+		
+		ctx.restore();
+}
+
+/*
  * Draws the whole UI.
  * @param ctx Context to draw in.
  */
@@ -314,35 +341,43 @@ function drawUI(ctx) {
     'use strict';
 
     // UI Parameters
-    var colorBright = "#007de4";
     var colorDark = "#343434";
+    var colorBright = "#007de4";
+    var colorFlowerDots = "#ffffff";
 
 	ctx.save();
 	
-    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-    context.translate(screenX, screenY);
+    ctx.clearRect(0, 0, context.canvas.width, context.canvas.height);
+    ctx.translate(flowerCenterX, flowerCenterY);
     
     if (currentFlower == 0) {
-    	drawFlower(ctx, platesList.flower3, colorBright, colorDark, -360);
-    	drawFlower(ctx, platesList.flower0, colorBright, colorDark, 0);
-    	drawFlower(ctx, platesList.flower1, colorBright, colorDark, 360);
+    	drawFlower(ctx, platesList.flower3, colorDark, -360);
+    	drawFlower(ctx, platesList.flower0, colorDark, 0);
+    	drawFlower(ctx, platesList.flower1, colorDark, 360);
     }
     else if (currentFlower == 1) {
-    	drawFlower(ctx, platesList.flower0, colorBright, colorDark, -360);
-    	drawFlower(ctx, platesList.flower1, colorBright, colorDark, 0);
-    	drawFlower(ctx, platesList.flower2, colorBright, colorDark, 360);
+    	drawFlower(ctx, platesList.flower0, colorDark, -360);
+    	drawFlower(ctx, platesList.flower1, colorDark, 0);
+    	drawFlower(ctx, platesList.flower2, colorDark, 360);
     }
     else if (currentFlower == 2) {
-    	drawFlower(ctx, platesList.flower1, colorBright, colorDark, -360);
-    	drawFlower(ctx, platesList.flower2, colorBright, colorDark, 0);
-    	drawFlower(ctx, platesList.flower3, colorBright, colorDark, 360);
+    	drawFlower(ctx, platesList.flower1, colorDark, -360);
+    	drawFlower(ctx, platesList.flower2, colorDark, 0);
+    	drawFlower(ctx, platesList.flower3, colorDark, 360);
     }
     else if (currentFlower == 3) {
-    	drawFlower(ctx, platesList.flower2, colorBright, colorDark, -360);
-    	drawFlower(ctx, platesList.flower3, colorBright, colorDark, 0);
-    	drawFlower(ctx, platesList.flower0, colorBright, colorDark, 360);
+    	drawFlower(ctx, platesList.flower2, colorDark, -360);
+    	drawFlower(ctx, platesList.flower3, colorDark, 0);
+    	drawFlower(ctx, platesList.flower0, colorDark, 360);
     }
 	drawCountdown(ctx, 0, 3, colorBright, colorDark);
+	
+	ctx.restore();
+
+	ctx.save();
+	
+	ctx.translate(screenCenterX, screenCenterY);
+	drawFlowerDots(ctx, colorFlowerDots);
 	
 	ctx.restore();
 }
@@ -392,37 +427,109 @@ function animateStartup(ctx) {
  * @param ctx Context to draw in.
  * @param direction Direction to move to (-1, 0 or 1).
  */
-function animateResetCenter(ctx, direction) {
+function animateResetCenter(ctx) {
     'use strict';
 
     // Animation Parameters
     var speedCenter = 200;
-    var newCenterX = 180 - direction * 360;
 
-	screenX = trans(screenX, "cube-down", screenXold, newCenterX, speedCenter);
-	screenY = trans(screenY, "cube-down", screenYold, 180, speedCenter);
+	flowerCenterX = trans(flowerCenterX, "quad-down", flowerCenterXold, 180, speedCenter);
+	flowerCenterY = trans(flowerCenterY, "quad-down", flowerCenterYold, 180, speedCenter);
 	
-	if (screenX.toFixed(3) == newCenterX && screenY.toFixed(3) == 180) {
+	if (flowerCenterX.toFixed(3) == 180 && flowerCenterY.toFixed(3) == 180) {
 		animCenterResetFlag = false;
-		if (direction == -1) {
-			currentFlower -= 1;
-			if (currentFlower <= -1)
-				currentFlower = 3;
-		}
-		else if (direction == 1) {
-			currentFlower += 1;
-			if (currentFlower >= 4)
-				currentFlower = 0;
-		}
-		screenX = 180;
-		screenY = 180;
-		drawUI(ctx);
-		console.log("Flower: " + currentFlower);
 	}
 		
 	if (animCenterResetFlag) {
 		window.requestAnimationFrame(function() {
-			animateResetCenter(ctx, direction);
+			animateResetCenter(ctx);
+		});
+	}
+}
+
+/*
+ * Animates the flower dot fade when changing active flower.
+ * @param ctx Context to draw in.
+ * @param direction Direction to move to (-1, 0 or 1).
+ * @param curr Current flower at the time of animation start.
+ */
+function animateTransitionFlowerDots(ctx, direction, curr) {
+    'use strict';
+    
+	animFlowerDotsTransition = true;
+
+    // Animation Parameters
+    var speedFade = 200;
+    
+    var newFlowerOpacity = [0.25, 0.25, 0.25, 0.25];
+    newFlowerOpacity[curr] = 1;
+
+    var i;
+    for (i = 0; i < 4; i += 1) {
+    	flowerDotOpacity[i] = trans(flowerDotOpacity[i], "quad-down", flowerDotOpacityOld[i], newFlowerOpacity[i], speedFade);
+    }
+	
+	if (flowerDotOpacity[curr].toFixed(3) == 1 || curr != currentFlower) {
+		animFlowerDotsTransition = false;
+	}
+		
+	if (animFlowerDotsTransition) {
+		window.requestAnimationFrame(function() {
+			animateTransitionFlowerDots(ctx, direction, curr);
+		});
+	}
+}
+
+/*
+ * Animates the flower dot fade out.
+ * @param ctx Context to draw in.
+ * @param opacityOld The old opacity.
+ */
+function animateFadeOutFlowerDots(ctx, opacityOld) {
+    'use strict';
+
+    if (!isScreenTouched) {
+		animFlowerDotsFadeOut = true;
+		
+		// Animation Parameters
+		var speedFade = 200;
+		
+		flowerDotOpacityMulti = trans(flowerDotOpacityMulti, "quad-down", opacityOld, 0, speedFade);
+		
+		if (flowerDotOpacityMulti.toFixed(3) == 0) {
+			animFlowerDotsFadeOut = false;
+		}
+			
+		if (animFlowerDotsFadeOut) {
+			window.requestAnimationFrame(function() {
+				animateFadeOutFlowerDots(ctx, opacityOld);
+			});
+		}
+    }
+}
+
+/*
+ * Animates the flower dot fade in.
+ * @param ctx Context to draw in.
+ * @param opacityOld The old opacity.
+ */
+function animateFadeInFlowerDots(ctx, opacityOld) {
+    'use strict';
+    
+	animFlowerDotsFadeIn = true;
+
+    // Animation Parameters
+    var speedFade = 200;
+    
+	flowerDotOpacityMulti = trans(flowerDotOpacityMulti, "quad-down", opacityOld, 1, speedFade);
+	
+	if (flowerDotOpacityMulti.toFixed(3) == 1) {
+		animFlowerDotsFadeIn = false;
+	}
+		
+	if (animFlowerDotsFadeIn) {
+		window.requestAnimationFrame(function() {
+			animateFadeInFlowerDots(ctx, opacityOld);
 		});
 	}
 }
@@ -430,18 +537,23 @@ function animateResetCenter(ctx, direction) {
 /*
  * Animation loop.
  * @param ctx Context to draw in.
+ * @param run Whether the loop should be updating the UI.
  */
-function animation(ctx) {
+function animation(ctx, run) {
     'use strict';
-    
-	var run = animStartupFlag || animCenterResetFlag;
 	
     if (run) {
     	drawUI(ctx);
     }
     
+	run = animStartupFlag 
+	|| animCenterResetFlag 
+	|| animFlowerDotsTransition
+	|| animFlowerDotsFadeOut
+	|| animFlowerDotsFadeIn;
+    
 	window.requestAnimationFrame(function() {
-		animation(ctx);
+		animation(ctx, run);
 	});
 }
 
@@ -454,7 +566,7 @@ window.onload = function onLoad() {
     canvas = document.querySelector('canvas');
     context = canvas.getContext('2d');
     
-    animation(context);
+    animation(context, false);
     animateStartup(context);
 };
 
@@ -465,34 +577,60 @@ window.onload = function onLoad() {
     	}));
 
     	document.addEventListener("touchstart", function() {
+    		isScreenTouched = true;
+    		
     	    animCenterResetFlag = false;
     		dragLastX = 0;
     		dragLastY = 0;
     	});
 
     	document.addEventListener("drag", function(e) {
+    		window.clearTimeout(flowerDotOpacityFadeOut);
+	    	animateFadeInFlowerDots(context, flowerDotOpacityMulti);
+	    	
     		var dragX = e.detail.deltaX;
     		var dragY = e.detail.deltaY;
-    		screenX += dragX - dragLastX;
-    		screenY += dragY - dragLastY;
+    		flowerCenterX += dragX - dragLastX;
+    		flowerCenterY += dragY - dragLastY;
     		drawUI(context);
     		dragLastX = dragX;
     		dragLastY = dragY;
     	});
 
     	document.addEventListener("touchend", function() {
-    		screenXold = screenX;
-    		screenYold = screenY;
+    		isScreenTouched = false;
+    		
+    		flowerCenterXold = flowerCenterX;
+    		flowerCenterYold = flowerCenterY;
     	    animCenterResetFlag = true;
-    	    if (screenX <= 0) {
-    	    	animateResetCenter(context, 1);
+    	    if (flowerCenterX <= 0) {
+    			currentFlower += 1;
+    			if (currentFlower >= 4) {
+    				currentFlower = 0;
+    			}
+    			flowerCenterXold += 360;
+    			flowerCenterX += 360;
+    	    	animateResetCenter(context);
+        		animateTransitionFlowerDots(context, 0, currentFlower);
     	    }
-    	    else if (screenX >= 360) {
-    	    	animateResetCenter(context, -1);
+    	    else if (flowerCenterX >= 360) {
+    			currentFlower -= 1;
+    			if (currentFlower <= -1) {
+    				currentFlower = 3;
+    			}
+    			flowerCenterXold -= 360;
+    			flowerCenterX -= 360;
+    	    	animateResetCenter(context);
+        		animateTransitionFlowerDots(context, 0, currentFlower);
     	    }
     	    else {
-    	    	animateResetCenter(context, 0);
+    	    	animateResetCenter(context);
+        		animateTransitionFlowerDots(context, 0, currentFlower);
     	    }
+    		
+    	    flowerDotOpacityFadeOut = window.setTimeout(function() {
+    			animateFadeOutFlowerDots(context, flowerDotOpacityMulti);
+			}, 2000);
     	});
     });
 }(tau));
