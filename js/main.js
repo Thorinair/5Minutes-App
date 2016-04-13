@@ -17,7 +17,41 @@
 /*global window, document, tizen, console, setTimeout, tau */
 
 var canvas, context;
-var platesList = [true, true, true, true, true, true];
+var currentFlower = 0;
+var platesList = {
+		"flower0": [
+		           {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
+		           {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
+		           {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
+		           null,
+		           null,
+		           {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]}
+		           ],  
+   		"flower1": [
+		           {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
+		           {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
+		           {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
+		           null,
+		           null,
+		           {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]}
+ 		           ], 
+ 		"flower2": [
+		           {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
+		           {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
+		           {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
+		           null,
+		           null,
+		           {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]}
+		           ],
+		"flower3": [
+		           {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
+		           {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
+		           {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
+		           null,
+		           null,
+		           {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]}
+		           ]
+};
 
 var screenX = 180;
 var screenY = 180;
@@ -203,11 +237,12 @@ function drawPlate(ctx, use, x, y, colorA, colorB, opacity) {
 /*
  * Draws all hexagon plates and add symbols.
  * @param ctx Context to draw in.
- * @param plates Array of plates and their status.
+ * @param flower Array of plates and their status.
  * @param colorA Primary color.
  * @param colorB Secondary Color.
+ * @param offset Offset of the flower.
  */
-function drawPlates(ctx, plates, colorA, colorB) {
+function drawFlower(ctx, flower, colorA, colorB, offset) {
     'use strict';
     
     // UI Parameters
@@ -215,10 +250,10 @@ function drawPlates(ctx, plates, colorA, colorB) {
     
 	var i, xOffset, yOffset;
 	for (i = 0; i < 6; i += 1) {
-		xOffset = -radiusCenter * Math.cos(rad(60 * -i));
+		xOffset = -radiusCenter * Math.cos(rad(60 * -i)) + offset;
 		yOffset = radiusCenter * Math.sin(rad(60 * -i));
 		
-		drawPlate(ctx, plates[i], xOffset, yOffset, colorA, colorB, animStartup[i].toFixed(3));
+		drawPlate(ctx, flower[i], xOffset, yOffset, colorA, colorB, animStartup[i].toFixed(3));
 	}
 }
 
@@ -287,7 +322,11 @@ function drawUI(ctx) {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
     context.translate(screenX, screenY);
     
-	drawPlates(ctx, platesList, colorBright, colorDark);
+    if (currentFlower == 0) {
+    	drawFlower(ctx, platesList.flower3, colorBright, colorDark, -360);
+    	drawFlower(ctx, platesList.flower0, colorBright, colorDark, 0);
+    	drawFlower(ctx, platesList.flower1, colorBright, colorDark, 360);
+    }
 	drawCountdown(ctx, 0, 3, colorBright, colorDark);
 	
 	ctx.restore();
