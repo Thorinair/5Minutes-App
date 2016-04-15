@@ -38,10 +38,16 @@ var flowers = [
 	]
 ];
 
-var flowerCenterX = 180;
-var flowerCenterY = 180;
-var flowerCenterXold = 0;
-var flowerCenterYold = 0;
+var animations = {
+	"flowers": {
+		"active": false,
+		"centerX": 180,
+		"centerY": 180,
+		"centerXold": 0,
+		"centerYold": 0
+	}
+};
+
 var dragLastX = 0;
 var dragLastY = 0;
 
@@ -52,7 +58,6 @@ var flowerDotOpacityFadeOut;
 
 var animStartup;
 var animStartupFlag = false;
-var animCenterResetFlag = false;
 var animFlowerDotsTransition = false;
 var animFlowerDotsFadeOut = false;
 var animFlowerDotsFadeIn = false;
@@ -375,7 +380,7 @@ function drawUI(ctx) {
 	ctx.save();
 	
     ctx.clearRect(0, 0, context.canvas.width, context.canvas.height);
-    ctx.translate(flowerCenterX, flowerCenterY);
+    ctx.translate(animations.flowers.centerX, animations.flowers.centerY);
     
 	drawFlower(ctx, flowers[flowerPrev(currentFlower)], colorDark, -360);
 	drawFlower(ctx, flowers[currentFlower], colorDark, 0);
@@ -435,25 +440,25 @@ function animateStartup(ctx) {
 
 /*
  * Animates the reset back to center of canvas.
- * @param ctx Context to draw in.
- * @param direction Direction to move to (-1, 0 or 1).
+ * @param oldX The old, unchanged X coord.
+ * @param oldY The old, unchanged Y coord.
  */
-function animateResetCenter(ctx) {
+function animate_flowers(oldX, oldY) {
     'use strict';
 
     // Animation Parameters
     var speedCenter = 200;
 
-	flowerCenterX = trans(flowerCenterX, "quad-down", flowerCenterXold, 180, speedCenter);
-	flowerCenterY = trans(flowerCenterY, "quad-down", flowerCenterYold, 180, speedCenter);
+    animations.flowers.centerX = trans(animations.flowers.centerX, "quad-down", oldX, 180, speedCenter);
+    animations.flowers.centerY = trans(animations.flowers.centerY, "quad-down", oldY, 180, speedCenter);
 	
-	if (flowerCenterX.toFixed(3) == 180 && flowerCenterY.toFixed(3) == 180) {
-		animCenterResetFlag = false;
+	if (animations.flowers.centerX.toFixed(3) == 180 && animations.flowers.centerY.toFixed(3) == 180) {
+		animations.flowers.active = false;
 	}
 		
-	if (animCenterResetFlag) {
+	if (animations.flowers.active) {
 		window.requestAnimationFrame(function() {
-			animateResetCenter(ctx);
+			animate_flowers(oldX, oldY);
 		});
 	}
 }
@@ -558,7 +563,7 @@ function animation(ctx, run) {
     }
     
 	run = animStartupFlag 
-	|| animCenterResetFlag 
+	|| animations.flowers.active 
 	|| animFlowerDotsTransition
 	|| animFlowerDotsFadeOut
 	|| animFlowerDotsFadeIn;
@@ -590,7 +595,7 @@ window.onload = function onLoad() {
     	document.addEventListener("touchstart", function() {
     		isScreenTouched = true;
     		
-    	    animCenterResetFlag = false;
+    		animations.flowers.active = false;
     		dragLastX = 0;
     		dragLastY = 0;
     	});
@@ -601,8 +606,8 @@ window.onload = function onLoad() {
 	    	
     		var dragX = e.detail.deltaX;
     		var dragY = e.detail.deltaY;
-    		flowerCenterX += dragX - dragLastX;
-    		flowerCenterY += dragY - dragLastY;
+    		animations.flowers.centerX += dragX - dragLastX;
+    		animations.flowers.centerY += dragY - dragLastY;
     		drawUI(context);
     		dragLastX = dragX;
     		dragLastY = dragY;
@@ -611,25 +616,23 @@ window.onload = function onLoad() {
     	document.addEventListener("touchend", function() {
     		isScreenTouched = false;
     		
-    		flowerCenterXold = flowerCenterX;
-    		flowerCenterYold = flowerCenterY;
-    	    animCenterResetFlag = true;
-    	    if (flowerCenterX <= 0) {
+    		animations.flowers.active = true;
+    	    if (animations.flowers.centerX <= 0) {
     	    	currentFlower = flowerNext(currentFlower);
-    			flowerCenterXold += 360;
-    			flowerCenterX += 360;
-    	    	animateResetCenter(context);
+    	    	animations.flowers.centerXold += 360;
+    			animations.flowers.centerX += 360;
+    			animate_flowers(animations.flowers.centerX, animations.flowers.centerY);
         		animateTransitionFlowerDots(context, 0, currentFlower);
     	    }
-    	    else if (flowerCenterX >= 360) {
+    	    else if (animations.flowers.centerX >= 360) {
     	    	currentFlower = flowerPrev(currentFlower);
-    			flowerCenterXold -= 360;
-    			flowerCenterX -= 360;
-    	    	animateResetCenter(context);
+    	    	animations.flowers.centerXold -= 360;
+    			animations.flowers.centerX -= 360;
+    			animate_flowers(animations.flowers.centerX, animations.flowers.centerY);
         		animateTransitionFlowerDots(context, 0, currentFlower);
     	    }
     	    else {
-    	    	animateResetCenter(context);
+    	    	animate_flowers(animations.flowers.centerX, animations.flowers.centerY);
         		animateTransitionFlowerDots(context, 0, currentFlower);
     	    }
     		
