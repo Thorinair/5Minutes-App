@@ -39,6 +39,10 @@ var flowers = [
 ];
 
 var animations = {
+	"startup": {
+		"active": false,
+		"opacity": [0, 0, 0, 0, 0, 0]
+	},
 	"flowers": {
 		"active": false,
 		"centerX": 180,
@@ -56,8 +60,6 @@ var flowerDotOpacityOld = [0.25, 0.25, 0.25, 0.25];
 var flowerDotOpacityMulti = 0;
 var flowerDotOpacityFadeOut;
 
-var animStartup;
-var animStartupFlag = false;
 var animFlowerDotsTransition = false;
 var animFlowerDotsFadeOut = false;
 var animFlowerDotsFadeIn = false;
@@ -281,7 +283,7 @@ function drawFlower(ctx, flower, colorB, offset) {
 		xOffset = -radiusCenter * Math.cos(rad(60 * -i)) + offset;
 		yOffset = radiusCenter * Math.sin(rad(60 * -i));
 		
-		drawPlate(ctx, flower[i], xOffset, yOffset, colorB, animStartup[i].toFixed(3));
+		drawPlate(ctx, flower[i], xOffset, yOffset, colorB, animations.startup.opacity[i].toFixed(3));
 	}
 }
 
@@ -400,41 +402,37 @@ function drawUI(ctx) {
 
 /*
  * Animates the fade-in when application starts.
- * @param ctx Context to draw in.
  */
-function animateStartup(ctx) {
+function animate_startup() {
     'use strict';
 
     // Animation Parameters
     var speedFadePlate = 500;
     
-    if (!animStartupFlag) {
-    	animStartup = [0, 0, 0, 0, 0, 0];
-    }
-    animStartupFlag = true;
+    animations.startup.active = true;
 	
-	if (animStartup[0].toFixed(3) < 1) {
-		animStartup[0] = trans(animStartup[0], "quad-down", 0, 1, speedFadePlate);
+	if (animations.startup.opacity[0].toFixed(3) < 1) {
+		animations.startup.opacity[0] = trans(animations.startup.opacity[0], "quad-down", 0, 1, speedFadePlate);
 	}
 	var i;
 	for (i = 0; i < 5; i += 1) {
-		if (animStartup[i].toFixed(3) >= 0.5 && animStartup[i + 1].toFixed(3) < 1) {
-			animStartup[i + 1] = trans(animStartup[i + 1], "quad-down", 0, 1, speedFadePlate);
+		if (animations.startup.opacity[i].toFixed(3) >= 0.5 && animations.startup.opacity[i + 1].toFixed(3) < 1) {
+			animations.startup.opacity[i + 1] = trans(animations.startup.opacity[i + 1], "quad-down", 0, 1, speedFadePlate);
 		}
 	}
 	
 	var stop = true;
 	for (i = 0; i < 6; i += 1) {
-		stop = stop && (animStartup[i].toFixed(3) >= 1);
+		stop = stop && (animations.startup.opacity[i].toFixed(3) >= 1);
 	}
 		
 	if (!stop) {
 		window.requestAnimationFrame(function() {
-			animateStartup(ctx);
+			animate_startup();
 		});
 	}
 	else {
-		animStartupFlag = false;
+		animations.startup.active = false;
 	}
 }
 
@@ -562,7 +560,7 @@ function animation(ctx, run) {
     	drawUI(ctx);
     }
     
-	run = animStartupFlag 
+	run = animations.startup.active
 	|| animations.flowers.active 
 	|| animFlowerDotsTransition
 	|| animFlowerDotsFadeOut
@@ -583,7 +581,7 @@ window.onload = function onLoad() {
     context = canvas.getContext('2d');
     
     animation(context, false);
-    animateStartup(context);
+    animate_startup();
 };
 
 (function(tau) {
