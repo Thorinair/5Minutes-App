@@ -1,41 +1,42 @@
 /*global window, document, tizen, console, setTimeout, tau */
 
 var canvas, context;
+
 var currentFlower = 0;
-var platesList = {
-		"flower0": [
-		           {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
-		           {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
-		           {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
-		           null,
-		           null,
-		           {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]}
-		           ],  
-   		"flower1": [
-		           {"type": "coffee", "color": "#e4007d", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
-		           {"type": "coffee", "color": "#e4007d", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
-		           null,
-		           {"type": "coffee", "color": "#e4007d", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
-		           {"type": "coffee", "color": "#e4007d", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
-		           null
- 		           ], 
- 		"flower2": [
-		           null,
-		           {"type": "coffee", "color": "#7d00e4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
-		           null,
-		           {"type": "coffee", "color": "#7d00e4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
-		           null,
-		           {"type": "coffee", "color": "#7d00e4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]}
-		           ],
-		"flower3": [
-		           {"type": "coffee", "color": "#e47d00", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
-		           null,
-		           null,
-		           {"type": "coffee", "color": "#e47d00", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
-		           {"type": "coffee", "color": "#e47d00", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345]},
-		           null
-		           ]
-};
+var flowers = [
+	[
+       {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
+       {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
+       {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
+       null,
+       null,
+       {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null}
+	],  
+	[
+	   {"type": "coffee", "color": "#e4007d", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
+	   {"type": "coffee", "color": "#e4007d", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
+	   null,
+	   {"type": "coffee", "color": "#e4007d", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
+	   {"type": "coffee", "color": "#e4007d", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
+	   null
+	], 
+    [
+	   null,
+	   {"type": "coffee", "color": "#7d00e4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
+	   null,
+	   {"type": "coffee", "color": "#7d00e4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
+	   null,
+	   {"type": "coffee", "color": "#7d00e4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null}
+	],
+	[
+       {"type": "coffee", "color": "#e47d00", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
+       null,
+       null,
+       {"type": "coffee", "color": "#e47d00", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
+       {"type": "coffee", "color": "#e47d00", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
+       null
+	]
+];
 
 var flowerCenterX = 180;
 var flowerCenterY = 180;
@@ -91,6 +92,32 @@ function rad(deg) {
 function sign(x) {
     'use strict';
     return x < 0 ? -1 : 1;
+}
+
+/*
+ * Based on current flower, returns the previous one.
+ * @param flower The flower from which to return the previous one.
+ * @return The previous flower.
+ */
+function flowerPrev(flower) {
+	flower -= 1;
+	if (flower <= -1) {
+		flower = 3;
+	}
+	return flower;
+}
+
+/*
+ * Based on current flower, returns the next one.
+ * @param flower The flower from which to return the next one.
+ * @return The next flower.
+ */
+function flowerNext(flower) {
+	flower += 1;
+	if (flower >= 4) {
+		flower = 0;
+	}
+	return flower;
 }
 
 /*
@@ -350,26 +377,10 @@ function drawUI(ctx) {
     ctx.clearRect(0, 0, context.canvas.width, context.canvas.height);
     ctx.translate(flowerCenterX, flowerCenterY);
     
-    if (currentFlower == 0) {
-    	drawFlower(ctx, platesList.flower3, colorDark, -360);
-    	drawFlower(ctx, platesList.flower0, colorDark, 0);
-    	drawFlower(ctx, platesList.flower1, colorDark, 360);
-    }
-    else if (currentFlower == 1) {
-    	drawFlower(ctx, platesList.flower0, colorDark, -360);
-    	drawFlower(ctx, platesList.flower1, colorDark, 0);
-    	drawFlower(ctx, platesList.flower2, colorDark, 360);
-    }
-    else if (currentFlower == 2) {
-    	drawFlower(ctx, platesList.flower1, colorDark, -360);
-    	drawFlower(ctx, platesList.flower2, colorDark, 0);
-    	drawFlower(ctx, platesList.flower3, colorDark, 360);
-    }
-    else if (currentFlower == 3) {
-    	drawFlower(ctx, platesList.flower2, colorDark, -360);
-    	drawFlower(ctx, platesList.flower3, colorDark, 0);
-    	drawFlower(ctx, platesList.flower0, colorDark, 360);
-    }
+	drawFlower(ctx, flowers[flowerPrev(currentFlower)], colorDark, -360);
+	drawFlower(ctx, flowers[currentFlower], colorDark, 0);
+	drawFlower(ctx, flowers[flowerNext(currentFlower)], colorDark, 360);
+    	
 	drawCountdown(ctx, 0, 3, colorBright, colorDark);
 	
 	ctx.restore();
@@ -604,20 +615,14 @@ window.onload = function onLoad() {
     		flowerCenterYold = flowerCenterY;
     	    animCenterResetFlag = true;
     	    if (flowerCenterX <= 0) {
-    			currentFlower += 1;
-    			if (currentFlower >= 4) {
-    				currentFlower = 0;
-    			}
+    	    	currentFlower = flowerNext(currentFlower);
     			flowerCenterXold += 360;
     			flowerCenterX += 360;
     	    	animateResetCenter(context);
         		animateTransitionFlowerDots(context, 0, currentFlower);
     	    }
     	    else if (flowerCenterX >= 360) {
-    			currentFlower -= 1;
-    			if (currentFlower <= -1) {
-    				currentFlower = 3;
-    			}
+    	    	currentFlower = flowerPrev(currentFlower);
     			flowerCenterXold -= 360;
     			flowerCenterX -= 360;
     	    	animateResetCenter(context);
