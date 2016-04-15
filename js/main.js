@@ -49,20 +49,23 @@ var animations = {
 		"centerY": 180,
 		"centerXold": 0,
 		"centerYold": 0
+	},
+	"dotTransition": {
+		"active": false,
+		"opacity": [1.0, 0.25, 0.25, 0.25]
+	},
+	"dotFade": {
+		"activeIn": false,
+		"activeOut": false,
+		"multiplier": 0,
+		"reference": null
 	}
 };
 
 var dragLastX = 0;
 var dragLastY = 0;
 
-var flowerDotOpacity = [1.0, 0.25, 0.25, 0.25];
-var flowerDotOpacityOld = [0.25, 0.25, 0.25, 0.25];
-var flowerDotOpacityMulti = 0;
 var flowerDotOpacityFadeOut;
-
-var animFlowerDotsTransition = false;
-var animFlowerDotsFadeOut = false;
-var animFlowerDotsFadeIn = false;
 
 var screenCenterX = 180;
 var screenCenterY = 180;
@@ -107,6 +110,7 @@ function sign(x) {
  * @return The previous flower.
  */
 function flowerPrev(flower) {
+    'use strict';
 	flower -= 1;
 	if (flower <= -1) {
 		flower = 3;
@@ -120,6 +124,7 @@ function flowerPrev(flower) {
  * @return The next flower.
  */
 function flowerNext(flower) {
+    'use strict';
 	flower += 1;
 	if (flower >= 4) {
 		flower = 0;
@@ -357,7 +362,7 @@ function drawFlowerDots(ctx, colorDot) {
 			ctx.save();
 			ctx.beginPath();
 		  	ctx.arc(dotOffset, 0, dotRadius, 0, rad(360));
-		  	ctx.globalAlpha = flowerDotOpacity[i] * flowerDotOpacityMulti;
+		  	ctx.globalAlpha = animations.dotTransition.opacity[i] * animations.dotFade.multiplier;
 			ctx.fillStyle = colorDot;
 			ctx.fill();
 			ctx.restore();
@@ -463,33 +468,57 @@ function animate_flowers(oldX, oldY) {
 
 /*
  * Animates the flower dot fade when changing active flower.
- * @param ctx Context to draw in.
- * @param direction Direction to move to (-1, 0 or 1).
  * @param curr Current flower at the time of animation start.
  */
-function animateTransitionFlowerDots(ctx, direction, curr) {
+function animate_dotTransition(curr) {
     'use strict';
     
-	animFlowerDotsTransition = true;
+	animations.dotTransition.active = true;
 
     // Animation Parameters
     var speedFade = 200;
     
-    var newFlowerOpacity = [0.25, 0.25, 0.25, 0.25];
-    newFlowerOpacity[curr] = 1;
+    var newOpacity = [0.25, 0.25, 0.25, 0.25];
+    newOpacity[curr] = 1;
 
     var i;
     for (i = 0; i < 4; i += 1) {
-    	flowerDotOpacity[i] = trans(flowerDotOpacity[i], "quad-down", flowerDotOpacityOld[i], newFlowerOpacity[i], speedFade);
+    	animations.dotTransition.opacity[i] = trans(animations.dotTransition.opacity[i], "quad-down", 0.25, newOpacity[i], speedFade);
     }
 	
-	if (flowerDotOpacity[curr].toFixed(3) == 1 || curr != currentFlower) {
-		animFlowerDotsTransition = false;
+	if (animations.dotTransition.opacity[curr].toFixed(3) == 1 || curr != currentFlower) {
+		animations.dotTransition.active = false;
 	}
 		
-	if (animFlowerDotsTransition) {
+	if (animations.dotTransition.active) {
 		window.requestAnimationFrame(function() {
-			animateTransitionFlowerDots(ctx, direction, curr);
+			animate_dotTransition(curr);
+		});
+	}
+}
+
+/*
+ * Animates the flower dot fade in.
+ * @param ctx Context to draw in.
+ * @param multiOld The old opacity.
+ */
+function animate_dotFadeIn(ctx, multiOld) {
+    'use strict';
+    
+	animations.dotFade.activeIn = true;
+
+    // Animation Parameters
+    var speedFade = 200;
+    
+    animations.dotFade.multiplier = trans(animations.dotFade.multiplier, "quad-down", multiOld, 1, speedFade);
+	
+	if (animations.dotFade.multiplier.toFixed(3) == 1) {
+		animations.dotFade.activeIn = false;
+	}
+		
+	if (animations.dotFade.activeIn) {
+		window.requestAnimationFrame(function() {
+			animate_dotFadeIn(ctx, multiOld);
 		});
 	}
 }
@@ -497,55 +526,29 @@ function animateTransitionFlowerDots(ctx, direction, curr) {
 /*
  * Animates the flower dot fade out.
  * @param ctx Context to draw in.
- * @param opacityOld The old opacity.
+ * @param multiOld The old opacity.
  */
-function animateFadeOutFlowerDots(ctx, opacityOld) {
+function animate_dotFadeOut(ctx, multiOld) {
     'use strict';
 
     if (!isScreenTouched) {
-		animFlowerDotsFadeOut = true;
+    	animations.dotFade.activeOut = true;
 		
 		// Animation Parameters
 		var speedFade = 200;
 		
-		flowerDotOpacityMulti = trans(flowerDotOpacityMulti, "quad-down", opacityOld, 0, speedFade);
+		animations.dotFade.multiplier = trans(animations.dotFade.multiplier, "quad-down", multiOld, 0, speedFade);
 		
-		if (flowerDotOpacityMulti.toFixed(3) == 0) {
-			animFlowerDotsFadeOut = false;
+		if (animations.dotFade.multiplier.toFixed(3) == 0) {
+			animations.dotFade.activeOut = false;
 		}
 			
-		if (animFlowerDotsFadeOut) {
+		if (animations.dotFade.activeOut) {
 			window.requestAnimationFrame(function() {
-				animateFadeOutFlowerDots(ctx, opacityOld);
+				animate_dotFadeOut(ctx, multiOld);
 			});
 		}
     }
-}
-
-/*
- * Animates the flower dot fade in.
- * @param ctx Context to draw in.
- * @param opacityOld The old opacity.
- */
-function animateFadeInFlowerDots(ctx, opacityOld) {
-    'use strict';
-    
-	animFlowerDotsFadeIn = true;
-
-    // Animation Parameters
-    var speedFade = 200;
-    
-	flowerDotOpacityMulti = trans(flowerDotOpacityMulti, "quad-down", opacityOld, 1, speedFade);
-	
-	if (flowerDotOpacityMulti.toFixed(3) == 1) {
-		animFlowerDotsFadeIn = false;
-	}
-		
-	if (animFlowerDotsFadeIn) {
-		window.requestAnimationFrame(function() {
-			animateFadeInFlowerDots(ctx, opacityOld);
-		});
-	}
 }
 
 /*
@@ -562,9 +565,9 @@ function animation(ctx, run) {
     
 	run = animations.startup.active
 	|| animations.flowers.active 
-	|| animFlowerDotsTransition
-	|| animFlowerDotsFadeOut
-	|| animFlowerDotsFadeIn;
+	|| animations.dotTransition.active
+	|| animations.dotFade.activeIn
+	|| animations.dotFade.activeOut;
     
 	window.requestAnimationFrame(function() {
 		animation(ctx, run);
@@ -599,8 +602,8 @@ window.onload = function onLoad() {
     	});
 
     	document.addEventListener("drag", function(e) {
-    		window.clearTimeout(flowerDotOpacityFadeOut);
-	    	animateFadeInFlowerDots(context, flowerDotOpacityMulti);
+    		window.clearTimeout(animations.dotFade.reference);
+    		animate_dotFadeIn(context, animations.dotFade.multiplier);
 	    	
     		var dragX = e.detail.deltaX;
     		var dragY = e.detail.deltaY;
@@ -620,22 +623,22 @@ window.onload = function onLoad() {
     	    	animations.flowers.centerXold += 360;
     			animations.flowers.centerX += 360;
     			animate_flowers(animations.flowers.centerX, animations.flowers.centerY);
-        		animateTransitionFlowerDots(context, 0, currentFlower);
+        		animate_dotTransition(currentFlower);
     	    }
     	    else if (animations.flowers.centerX >= 360) {
     	    	currentFlower = flowerPrev(currentFlower);
     	    	animations.flowers.centerXold -= 360;
     			animations.flowers.centerX -= 360;
     			animate_flowers(animations.flowers.centerX, animations.flowers.centerY);
-        		animateTransitionFlowerDots(context, 0, currentFlower);
+        		animate_dotTransition(currentFlower);
     	    }
     	    else {
     	    	animate_flowers(animations.flowers.centerX, animations.flowers.centerY);
-        		animateTransitionFlowerDots(context, 0, currentFlower);
+        		animate_dotTransition(currentFlower);
     	    }
     		
-    	    flowerDotOpacityFadeOut = window.setTimeout(function() {
-    			animateFadeOutFlowerDots(context, flowerDotOpacityMulti);
+    	    animations.dotFade.reference = window.setTimeout(function() {
+    	    	animate_dotFadeOut(context, animations.dotFade.multiplier);
 			}, 2000);
     	});
     });
