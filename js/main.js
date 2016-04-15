@@ -1,4 +1,4 @@
-/*global window, document, tizen, console, setTimeout, tau */
+/*global window, document, tizen, console, setTimeout, tau, util */
 
 var canvas, context;
 
@@ -40,10 +40,12 @@ var flowers = [
 
 var animations = {
 	"startup": {
+		"duration": 500,
 		"active": false,
 		"opacity": [0, 0, 0, 0, 0, 0]
 	},
 	"flowers": {
+		"duration": 200,
 		"active": false,
 		"centerX": 180,
 		"centerY": 180,
@@ -51,10 +53,12 @@ var animations = {
 		"centerYold": 0
 	},
 	"dotTransition": {
+		"duration": 200,
 		"active": false,
 		"opacity": [1.0, 0.25, 0.25, 0.25]
 	},
 	"dotFade": {
+		"duration": 200,
 		"activeIn": false,
 		"activeOut": false,
 		"multiplier": 0,
@@ -64,14 +68,6 @@ var animations = {
 
 var dragLastX = 0;
 var dragLastY = 0;
-
-var flowerDotOpacityFadeOut;
-
-var screenCenterX = 180;
-var screenCenterY = 180;
-
-var fps = 60;
-
 var isScreenTouched = false;
 
 window.requestAnimationFrame = window.requestAnimationFrame ||
@@ -81,133 +77,8 @@ window.requestAnimationFrame = window.requestAnimationFrame ||
 	window.msRequestAnimationFrame ||
 	function(callback) {
     	'use strict';
-    	window.setTimeout(callback, 1000 / fps);
+    	window.setTimeout(callback, 1000 / util.fps);
 	};
-
-/*
- * Converts degrees to radians.
- * @param deg Degrees input.
- * @return Returns radians.
- */
-function rad(deg) {
-    'use strict';
-    return deg * Math.PI / 180;
-}
-
-/*
- * Calculates sign prefix of a number.
- * @param x Number to use.
- * @return Returns -1 or 1.
- */
-function sign(x) {
-    'use strict';
-    return x < 0 ? -1 : 1;
-}
-
-/*
- * Based on current flower, returns the previous one.
- * @param flower The flower from which to return the previous one.
- * @return The previous flower.
- */
-function flowerPrev(flower) {
-    'use strict';
-	flower -= 1;
-	if (flower <= -1) {
-		flower = 3;
-	}
-	return flower;
-}
-
-/*
- * Based on current flower, returns the next one.
- * @param flower The flower from which to return the next one.
- * @return The next flower.
- */
-function flowerNext(flower) {
-    'use strict';
-	flower += 1;
-	if (flower >= 4) {
-		flower = 0;
-	}
-	return flower;
-}
-
-/*
- * Performs a frame step for transition of a variable.
- * @param value Variable to transition.
- * @param type Type of transition. Check function body for list.
- * @param start Starting value to fade from.
- * @param end Value to fade to.
- * @param duration Duration of the transition in ms.
- * @return Returns new value of the variable after one frame.
- */
-function trans(value, type, start, end, duration) {
-    'use strict';
-
-    if (!(((end - start) >= 0 && value.toFixed(3) >= end) || ((end - start) <= 0 && value.toFixed(3) <= end))) {
-    	var steps = (duration / 1000) * fps; 
-    	var x, y;
-
-        if (((end - start) >= 0 && value.toFixed(3) < start) || ((end - start) <= 0 && value.toFixed(3) > start)) {
-    		value = start;
-    	}
-    	
-    	switch (type) {
-    	
-    		// linear - Regular linear transition.
-    		case "linear":
-        		value += (end - start) / steps;
-        		//console.log("trans linear value: " + value);
-        		break;
-        		
-            // quad-down - Transition using quadratic equation. Slow-down.
-    		case "quad-down":
-        		y = 1 - (value.toFixed(3) - start) / (end - start);
-        		x = 1 / steps - Math.pow(y, 1/2); 
-        		value = (-Math.pow(x, 2) + 1) * (end - start) + start;
-        		//console.log("trans quad-down y: " + y);
-        		//console.log("trans quad-down x: " + x);
-        		//console.log("trans quad-down value: " + value);
-        		break;
-        		
-            // quad-up - Transition using quadratic equation. Speed-up.
-    		case "quad-up":
-        		y = (value.toFixed(4) - start) / (end - start);
-        		x = 1 / steps + Math.pow(y, 1/2);  
-        		value = Math.pow(x, 2) * (end - start) + start;
-        		//console.log("trans quad-up y: " + y);
-        		//console.log("trans quad-up x: " + x);
-        		//console.log("trans quad-up value: " + value);
-        		break;
-
-            // cube-down - Transition using cubic equation. Slow-down.
-    		case "cube-down":
-        		y = 1 - (value.toFixed(3) - start) / (end - start);
-        		x = 1 / steps - Math.pow(y, 1/3); 
-        		value = (Math.pow(x, 3) + 1) * (end - start) + start;
-        		//console.log("trans cube-down y: " + y);
-        		//console.log("trans cube-down x: " + x);
-        		//console.log("trans cube-down value: " + value);
-        		break;
-        		
-        	// cube-up - Transition using cubic equation. Speed-up.
-    		case "cube-up":
-        		y = (value.toFixed(6) - start) / (end - start);
-        		x = 1 / steps + Math.pow(y, 1/3);  
-        		value = Math.pow(x, 3) * (end - start) + start;
-        		//console.log("trans cube-up y: " + y);
-        		//console.log("trans cube-up x: " + x);
-        		//console.log("trans cube-up value: " + value);
-        		break;        		
-    	}
-    }
-	
-	if (((end - start) >= 0 && value.toFixed(3) >= end) || ((end - start) <= 0 && value.toFixed(3) <= end)) {
-    	value = end;
-    }
-    
-    return value;
-}
 
 /*
  * Draws a single hexagon plate or add symbol.
@@ -233,14 +104,14 @@ function drawPlate(ctx, plate, x, y, colorB, opacity) {
 	ctx.globalAlpha = opacity;
 	
 	if (plate) {
-		ctx.rotate(rad(-90));
+		ctx.rotate(util.rad(-90));
 		
 		ctx.beginPath();
 		ctx.moveTo(plateRadius, 0);
 		var i, xOffset, yOffset;
 		for (i = 1; i < 6; i += 1) {
-			xOffset = plateRadius * Math.cos(rad(60 * i));
-			yOffset = plateRadius * Math.sin(rad(60 * i));
+			xOffset = plateRadius * Math.cos(util.rad(60 * i));
+			yOffset = plateRadius * Math.sin(util.rad(60 * i));
 		
 			ctx.lineTo(xOffset, yOffset);
 		}
@@ -285,8 +156,8 @@ function drawFlower(ctx, flower, colorB, offset) {
     
 	var i, xOffset, yOffset;
 	for (i = 0; i < 6; i += 1) {
-		xOffset = -radiusCenter * Math.cos(rad(60 * -i)) + offset;
-		yOffset = radiusCenter * Math.sin(rad(60 * -i));
+		xOffset = -radiusCenter * Math.cos(util.rad(60 * -i)) + offset;
+		yOffset = radiusCenter * Math.sin(util.rad(60 * -i));
 		
 		drawPlate(ctx, flower[i], xOffset, yOffset, colorB, animations.startup.opacity[i].toFixed(3));
 	}
@@ -323,16 +194,16 @@ function drawCountdown(ctx, minutesTotal, minutesLeft, colorA, colorB) {
 			ctx.fillText(minutesLeft + "m", 0, textOffset);
 		}
 
-		ctx.rotate(rad(-90));
+		ctx.rotate(util.rad(-90));
 		
 		ctx.beginPath();
-	  	ctx.arc(0, 0, circleRadius, 0, rad(360));
+	  	ctx.arc(0, 0, circleRadius, 0, util.rad(360));
 		ctx.lineWidth = circleWidth;
 		ctx.strokeStyle = colorB;
 		ctx.stroke();
 		
 		ctx.beginPath();
-		ctx.arc(0, 0, circleRadius, 0, rad(360 * (minutesLeft / minutesTotal)));
+		ctx.arc(0, 0, circleRadius, 0, util.rad(360 * (minutesLeft / minutesTotal)));
 		ctx.lineWidth = circleWidth;
 		ctx.strokeStyle = colorA;
 		ctx.stroke();
@@ -344,9 +215,8 @@ function drawCountdown(ctx, minutesTotal, minutesLeft, colorA, colorB) {
 /*
  * Draws the flower overlay.
  * @param ctx Context to draw in.
- * @param colorDot Color of flower dots.
  */
-function drawFlowerDots(ctx, colorDot) {
+function drawFlowerDots(ctx) {
     'use strict';
     
 	    // UI Parameters
@@ -355,18 +225,18 @@ function drawFlowerDots(ctx, colorDot) {
 	    
 		ctx.save();
 
-		ctx.rotate(rad(-90));
+		ctx.rotate(util.rad(-90));
 		
 		var i;
 		for (i = 0; i < 4; i += 1) {
 			ctx.save();
 			ctx.beginPath();
-		  	ctx.arc(dotOffset, 0, dotRadius, 0, rad(360));
+		  	ctx.arc(dotOffset, 0, dotRadius, 0, util.rad(360));
 		  	ctx.globalAlpha = animations.dotTransition.opacity[i] * animations.dotFade.multiplier;
-			ctx.fillStyle = colorDot;
+			ctx.fillStyle = "#ffffff";
 			ctx.fill();
 			ctx.restore();
-			ctx.rotate(rad(90));
+			ctx.rotate(util.rad(90));
 		}
 		
 		ctx.restore();
@@ -382,16 +252,15 @@ function drawUI(ctx) {
     // UI Parameters
     var colorDark = "#343434";
     var colorBright = "#007de4";
-    var colorFlowerDots = "#ffffff";
 
 	ctx.save();
 	
     ctx.clearRect(0, 0, context.canvas.width, context.canvas.height);
     ctx.translate(animations.flowers.centerX, animations.flowers.centerY);
     
-	drawFlower(ctx, flowers[flowerPrev(currentFlower)], colorDark, -360);
+	drawFlower(ctx, flowers[util.flowerPrev(currentFlower)], colorDark, -360);
 	drawFlower(ctx, flowers[currentFlower], colorDark, 0);
-	drawFlower(ctx, flowers[flowerNext(currentFlower)], colorDark, 360);
+	drawFlower(ctx, flowers[util.flowerNext(currentFlower)], colorDark, 360);
     	
 	drawCountdown(ctx, 0, 3, colorBright, colorDark);
 	
@@ -399,8 +268,8 @@ function drawUI(ctx) {
 
 	ctx.save();
 	
-	ctx.translate(screenCenterX, screenCenterY);
-	drawFlowerDots(ctx, colorFlowerDots);
+	ctx.translate(canvas.width / 2, canvas.height / 2);
+	drawFlowerDots(ctx);
 	
 	ctx.restore();
 }
@@ -409,20 +278,16 @@ function drawUI(ctx) {
  * Animates the fade-in when application starts.
  */
 function animate_startup() {
-    'use strict';
-
-    // Animation Parameters
-    var speedFadePlate = 500;
-    
+    'use strict';    
     animations.startup.active = true;
 	
 	if (animations.startup.opacity[0].toFixed(3) < 1) {
-		animations.startup.opacity[0] = trans(animations.startup.opacity[0], "quad-down", 0, 1, speedFadePlate);
+		animations.startup.opacity[0] = util.trans(animations.startup.opacity[0], "quad-down", 0, 1, animations.startup.duration);
 	}
 	var i;
 	for (i = 0; i < 5; i += 1) {
 		if (animations.startup.opacity[i].toFixed(3) >= 0.5 && animations.startup.opacity[i + 1].toFixed(3) < 1) {
-			animations.startup.opacity[i + 1] = trans(animations.startup.opacity[i + 1], "quad-down", 0, 1, speedFadePlate);
+			animations.startup.opacity[i + 1] = util.trans(animations.startup.opacity[i + 1], "quad-down", 0, 1, animations.startup.duration);
 		}
 	}
 	
@@ -449,11 +314,8 @@ function animate_startup() {
 function animate_flowers(oldX, oldY) {
     'use strict';
 
-    // Animation Parameters
-    var speedCenter = 200;
-
-    animations.flowers.centerX = trans(animations.flowers.centerX, "quad-down", oldX, 180, speedCenter);
-    animations.flowers.centerY = trans(animations.flowers.centerY, "quad-down", oldY, 180, speedCenter);
+    animations.flowers.centerX = util.trans(animations.flowers.centerX, "quad-down", oldX, 180, animations.flowers.duration);
+    animations.flowers.centerY = util.trans(animations.flowers.centerY, "quad-down", oldY, 180, animations.flowers.duration);
 	
 	if (animations.flowers.centerX.toFixed(3) == 180 && animations.flowers.centerY.toFixed(3) == 180) {
 		animations.flowers.active = false;
@@ -472,18 +334,14 @@ function animate_flowers(oldX, oldY) {
  */
 function animate_dotTransition(curr) {
     'use strict';
-    
 	animations.dotTransition.active = true;
-
-    // Animation Parameters
-    var speedFade = 200;
     
     var newOpacity = [0.25, 0.25, 0.25, 0.25];
     newOpacity[curr] = 1;
 
     var i;
     for (i = 0; i < 4; i += 1) {
-    	animations.dotTransition.opacity[i] = trans(animations.dotTransition.opacity[i], "quad-down", 0.25, newOpacity[i], speedFade);
+    	animations.dotTransition.opacity[i] = util.trans(animations.dotTransition.opacity[i], "quad-down", 0.25, newOpacity[i], animations.dotTransition.duration);
     }
 	
 	if (animations.dotTransition.opacity[curr].toFixed(3) == 1 || curr != currentFlower) {
@@ -499,18 +357,13 @@ function animate_dotTransition(curr) {
 
 /*
  * Animates the flower dot fade in.
- * @param ctx Context to draw in.
  * @param multiOld The old opacity.
  */
-function animate_dotFadeIn(ctx, multiOld) {
+function animate_dotFadeIn(multiOld) {
     'use strict';
-    
 	animations.dotFade.activeIn = true;
-
-    // Animation Parameters
-    var speedFade = 200;
     
-    animations.dotFade.multiplier = trans(animations.dotFade.multiplier, "quad-down", multiOld, 1, speedFade);
+    animations.dotFade.multiplier = util.trans(animations.dotFade.multiplier, "quad-down", multiOld, 1, animations.dotFade.duration);
 	
 	if (animations.dotFade.multiplier.toFixed(3) == 1) {
 		animations.dotFade.activeIn = false;
@@ -518,26 +371,21 @@ function animate_dotFadeIn(ctx, multiOld) {
 		
 	if (animations.dotFade.activeIn) {
 		window.requestAnimationFrame(function() {
-			animate_dotFadeIn(ctx, multiOld);
+			animate_dotFadeIn(multiOld);
 		});
 	}
 }
 
 /*
  * Animates the flower dot fade out.
- * @param ctx Context to draw in.
  * @param multiOld The old opacity.
  */
-function animate_dotFadeOut(ctx, multiOld) {
+function animate_dotFadeOut(multiOld) {
     'use strict';
-
     if (!isScreenTouched) {
     	animations.dotFade.activeOut = true;
 		
-		// Animation Parameters
-		var speedFade = 200;
-		
-		animations.dotFade.multiplier = trans(animations.dotFade.multiplier, "quad-down", multiOld, 0, speedFade);
+		animations.dotFade.multiplier = util.trans(animations.dotFade.multiplier, "quad-down", multiOld, 0, animations.dotFade.duration);
 		
 		if (animations.dotFade.multiplier.toFixed(3) == 0) {
 			animations.dotFade.activeOut = false;
@@ -545,7 +393,7 @@ function animate_dotFadeOut(ctx, multiOld) {
 			
 		if (animations.dotFade.activeOut) {
 			window.requestAnimationFrame(function() {
-				animate_dotFadeOut(ctx, multiOld);
+				animate_dotFadeOut(multiOld);
 			});
 		}
     }
@@ -603,7 +451,7 @@ window.onload = function onLoad() {
 
     	document.addEventListener("drag", function(e) {
     		window.clearTimeout(animations.dotFade.reference);
-    		animate_dotFadeIn(context, animations.dotFade.multiplier);
+    		animate_dotFadeIn(animations.dotFade.multiplier);
 	    	
     		var dragX = e.detail.deltaX;
     		var dragY = e.detail.deltaY;
@@ -619,14 +467,14 @@ window.onload = function onLoad() {
     		
     		animations.flowers.active = true;
     	    if (animations.flowers.centerX <= 0) {
-    	    	currentFlower = flowerNext(currentFlower);
+    	    	currentFlower = util.flowerNext(currentFlower);
     	    	animations.flowers.centerXold += 360;
     			animations.flowers.centerX += 360;
     			animate_flowers(animations.flowers.centerX, animations.flowers.centerY);
         		animate_dotTransition(currentFlower);
     	    }
     	    else if (animations.flowers.centerX >= 360) {
-    	    	currentFlower = flowerPrev(currentFlower);
+    	    	currentFlower = util.flowerPrev(currentFlower);
     	    	animations.flowers.centerXold -= 360;
     			animations.flowers.centerX -= 360;
     			animate_flowers(animations.flowers.centerX, animations.flowers.centerY);
@@ -638,7 +486,7 @@ window.onload = function onLoad() {
     	    }
     		
     	    animations.dotFade.reference = window.setTimeout(function() {
-    	    	animate_dotFadeOut(context, animations.dotFade.multiplier);
+    	    	animate_dotFadeOut(animations.dotFade.multiplier);
 			}, 2000);
     	});
     });
