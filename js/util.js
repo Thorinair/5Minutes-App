@@ -55,6 +55,41 @@ util.flowerNext = function(flower) {
 };
 
 /*
+ * Calculates which plate was tapped on the flower, based on coordinates.
+ * @param x X coordinate of the tap.
+ * @param y Y coordinate of the tap.
+ * @return Plate ID. Returns -1 if outside of plate.
+ */
+util.plateFromCoords = function(x, y) {
+    'use strict';
+    var plate;
+    
+	if (x >= 48 && x < 132 && y >= 141 && y < 219) {
+		plate = 0;
+	}
+	else if (x >= 93 && x < 177 && y >= 63 && y < 141) {
+		plate = 1;
+	}
+	else if (x >= 183 && x < 267 && y >= 63 && y < 141) {
+		plate = 2;
+	}
+	else if (x >= 228 && x < 312 && y >= 141 && y < 219) {
+		plate = 3;
+	}
+	else if (x >= 183 && x < 267 && y >= 219 && y < 297) {
+		plate = 4;
+	}
+	else if (x >= 93 && x < 177 && y >= 219 && y < 297) {
+		plate = 5;
+	}
+	else {
+		plate = -1;
+	}
+	
+	return plate;
+};
+
+/*
  * Performs a frame step for transition of a variable.
  * @param value Variable to transition.
  * @param type Type of transition. Check function body for list.

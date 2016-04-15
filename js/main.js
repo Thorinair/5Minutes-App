@@ -85,6 +85,9 @@ var screens = {
 var dragLastX = 0;
 var dragLastY = 0;
 var isScreenTouched = false;
+var wasDragged = false;
+var tapHold;
+var wasHeld = false;;
 
 window.requestAnimationFrame = window.requestAnimationFrame ||
 	window.webkitRequestAnimationFrame ||
@@ -319,14 +322,28 @@ window.onload = function onLoad() {
     animate_startup();
 };
 
+function processTapHold(x, y) {
+    'use strict';
+	wasHeld = true;
+	var plate = util.plateFromCoords(x, y);
+	console.log("Hold! flower: " + currentFlower + ", plate: " + plate);
+	console.log(JSON.stringify(flowers[currentFlower][plate]));
+}
+
 (function(tau) {
     'use strict';
     document.addEventListener("pagebeforeshow", function() {
     	tau.event.enableGesture(document, new tau.event.gesture.Drag({
     	}));
 
-    	document.addEventListener("touchstart", function() {
+    	document.addEventListener("touchstart", function(e) {
     		isScreenTouched = true;
+    		
+    		if (!animations.flowers.active) {
+	    		tapHold = window.setTimeout(function() {
+	    			processTapHold(e.changedTouches.item(0).screenX, e.changedTouches.item(0).screenY);
+				}, 1000);
+    		}
     		
     		animations.flowers.active = false;
     		dragLastX = 0;
@@ -334,53 +351,71 @@ window.onload = function onLoad() {
     	});
 
     	document.addEventListener("drag", function(e) {
+    		wasDragged = true;
+    		window.clearTimeout(tapHold);
     		window.clearTimeout(animations.dotFade.reference);
-    		animate_dotFadeIn(animations.dotFade.multiplier);
-	    	
-    		var dragX = e.detail.deltaX;
-    		var dragY = e.detail.deltaY;
-    		animations.flowers.centerX += dragX - dragLastX;
-    		animations.flowers.centerY += dragY - dragLastY;
-    		drawUI(context);
-    		dragLastX = dragX;
-    		dragLastY = dragY;
+    		
+    		if (!wasHeld) {
+	    		animate_dotFadeIn(animations.dotFade.multiplier);
+		    	
+	    		var dragX = e.detail.deltaX;
+	    		var dragY = e.detail.deltaY;
+	    		animations.flowers.centerX += dragX - dragLastX;
+	    		animations.flowers.centerY += dragY - dragLastY;
+	    		drawUI(context);
+	    		dragLastX = dragX;
+	    		dragLastY = dragY;
+    		}
     	});
 
-    	document.addEventListener("touchend", function() {
+    	document.addEventListener("touchend", function(e) {
     		isScreenTouched = false;
+    		window.clearTimeout(tapHold);
     		
-    		animations.flowers.active = true;
-    	    if (animations.flowers.centerX <= 0) {
-    	    	currentFlower = util.flowerNext(currentFlower);
-    	    	animations.flowers.centerXold += 360;
-    			animations.flowers.centerX += 360;
-    			animate_flowers(animations.flowers.centerX, animations.flowers.centerY);
-        		animate_dotTransition(currentFlower, JSON.parse(JSON.stringify(animations.dotTransition.opacity)));
-    	    }
-    	    else if (animations.flowers.centerX >= 360) {
-    	    	currentFlower = util.flowerPrev(currentFlower);
-    	    	animations.flowers.centerXold -= 360;
-    			animations.flowers.centerX -= 360;
-    			animate_flowers(animations.flowers.centerX, animations.flowers.centerY);
-        		animate_dotTransition(currentFlower, JSON.parse(JSON.stringify(animations.dotTransition.opacity)));
-    	    }
-    	    else {
-    	    	animate_flowers(animations.flowers.centerX, animations.flowers.centerY);
-        		animate_dotTransition(currentFlower, JSON.parse(JSON.stringify(animations.dotTransition.opacity)));
-    	    }
+    		if (!wasHeld) {
+    			if (animations.flowers.centerX.toFixed(3) != 180 && animations.flowers.centerY.toFixed(3) != 180) {
+    				animations.flowers.active = true;
+    				
+    	    	    if (animations.flowers.centerX <= 0) {
+    	    	    	currentFlower = util.flowerNext(currentFlower);
+    	    	    	animations.flowers.centerXold += 360;
+    	    			animations.flowers.centerX += 360;
+    	    			animate_flowers(animations.flowers.centerX, animations.flowers.centerY);
+    	        		animate_dotTransition(currentFlower, JSON.parse(JSON.stringify(animations.dotTransition.opacity)));
+    	    	    }
+    	    	    else if (animations.flowers.centerX >= 360) {
+    	    	    	currentFlower = util.flowerPrev(currentFlower);
+    	    	    	animations.flowers.centerXold -= 360;
+    	    			animations.flowers.centerX -= 360;
+    	    			animate_flowers(animations.flowers.centerX, animations.flowers.centerY);
+    	        		animate_dotTransition(currentFlower, JSON.parse(JSON.stringify(animations.dotTransition.opacity)));
+    	    	    }
+    	    	    else {
+    	    	    	animate_flowers(animations.flowers.centerX, animations.flowers.centerY);
+    	        		animate_dotTransition(currentFlower, JSON.parse(JSON.stringify(animations.dotTransition.opacity)));
+    	    	    }
+    	    		
+    	    	    animations.dotFade.reference = window.setTimeout(function() {
+    	    	    	animate_dotFadeOut(animations.dotFade.multiplier);
+    				}, 2000);
+    			}
+    			else {
+    				var plate = util.plateFromCoords(e.changedTouches.item(0).screenX, e.changedTouches.item(0).screenY);
+    				console.log("Tap! flower: " + currentFlower + ", plate: " + plate);
+    				console.log(JSON.stringify(flowers[currentFlower][plate]));
+    				/*
+            		if (animations.screens.multiplier[screens.flowers].toFixed(3) > 0) {
+            			animate_screens(screens.username, JSON.parse(JSON.stringify(animations.screens.multiplier)));
+            		}
+            		else if (animations.screens.multiplier[screens.username].toFixed(3) > 0) {
+            			animate_screens(screens.flowers, JSON.parse(JSON.stringify(animations.screens.multiplier)));
+            		}
+            		*/
+    			}
+    		}
     		
-    	    animations.dotFade.reference = window.setTimeout(function() {
-    	    	animate_dotFadeOut(animations.dotFade.multiplier);
-			}, 2000);
-    	    
-    	    /* Change screens like this!
-    		if (animations.screens.multiplier[screens.flowers].toFixed(3) > 0) {
-    			animate_screens(screens.username, JSON.parse(JSON.stringify(animations.screens.multiplier)));
-    		}
-    		else if (animations.screens.multiplier[screens.username].toFixed(3) > 0) {
-    			animate_screens(screens.flowers, JSON.parse(JSON.stringify(animations.screens.multiplier)));
-    		}
-    		*/
+    		wasDragged = false;
+    		wasHeld = false;
     	});
     });
 }(tau));
