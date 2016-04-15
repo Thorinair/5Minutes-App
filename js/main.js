@@ -1,4 +1,4 @@
-/*global window, document, tizen, console, setTimeout, tau, util */
+/*global window, document, tizen, console, setTimeout, tau, util, draw */
 
 var canvas, context;
 
@@ -39,6 +39,11 @@ var flowers = [
 ];
 
 var animations = {
+	"screens": {
+		"duration": 200,
+		"active": false,
+		"multiplier": [0, 0, 1, 0, 0, 0, 0, 0]
+	},
 	"startup": {
 		"duration": 500,
 		"active": false,
@@ -66,6 +71,17 @@ var animations = {
 	}
 };
 
+var screens = {
+	"username": 0,
+	"password": 1,
+	"flowers": 2,
+	"contacts": 3,
+	"addColor": 4,
+	"addType": 5,
+	"addDuration": 6,
+	"addContacts": 7
+};
+
 var dragLastX = 0;
 var dragLastY = 0;
 var isScreenTouched = false;
@@ -79,6 +95,34 @@ window.requestAnimationFrame = window.requestAnimationFrame ||
     	'use strict';
     	window.setTimeout(callback, 1000 / util.fps);
 	};
+
+/*
+ * Animates the fade when switching active screen.
+ * @param screen Screen to transition to.
+ * @param oldMultiplier Multipliers of previous screens.
+ */
+function animate_screens(screen, oldMultiplier) {
+    'use strict';
+    animations.screens.active = true;
+    
+    var newMultiplier = [0, 0, 0, 0, 0, 0, 0, 0];
+    newMultiplier[screen] = 1;
+
+    var i;
+    for (i = 0; i < 8; i += 1) {
+    	animations.screens.multiplier[i] = util.trans(animations.screens.multiplier[i], "quad-down", oldMultiplier[i], newMultiplier[i], animations.screens.duration);
+    }
+    
+	if (animations.screens.multiplier[screen].toFixed(3) == 1) {
+		animations.screens.active = false;
+	}
+		
+	if (animations.screens.active) {
+		window.requestAnimationFrame(function() {
+			animate_screens(screen, oldMultiplier);
+		});
+	}
+}
 
 /*
  * Animates the fade-in when application starts.
@@ -137,8 +181,9 @@ function animate_flowers(oldX, oldY) {
 /*
  * Animates the flower dot fade when changing active flower.
  * @param curr Current flower at the time of animation start.
+ * @param oldOpacity Opacity of dots before the transition.
  */
-function animate_dotTransition(curr) {
+function animate_dotTransition(curr, oldOpacity) {
     'use strict';
 	animations.dotTransition.active = true;
     
@@ -147,7 +192,7 @@ function animate_dotTransition(curr) {
 
     var i;
     for (i = 0; i < 4; i += 1) {
-    	animations.dotTransition.opacity[i] = util.trans(animations.dotTransition.opacity[i], "quad-down", 0.25, newOpacity[i], animations.dotTransition.duration);
+    	animations.dotTransition.opacity[i] = util.trans(animations.dotTransition.opacity[i], "quad-down", oldOpacity[i], newOpacity[i], animations.dotTransition.duration);
     }
 	
 	if (animations.dotTransition.opacity[curr].toFixed(3) == 1 || curr != currentFlower) {
@@ -156,7 +201,7 @@ function animate_dotTransition(curr) {
 		
 	if (animations.dotTransition.active) {
 		window.requestAnimationFrame(function() {
-			animate_dotTransition(curr);
+			animate_dotTransition(curr, oldOpacity);
 		});
 	}
 }
@@ -206,6 +251,38 @@ function animate_dotFadeOut(multiOld) {
 }
 
 /*
+ * Draws the whole UI.
+ * @param ctx Context to draw in.
+ */
+function drawUI(ctx) {
+    'use strict';
+
+    // UI Parameters
+    var colorDark = "#343434";
+    var colorBright = "#007de4";
+
+	if (animations.screens.multiplier[screens.flowers].toFixed(3) > 0) {	
+		ctx.save();
+		
+	    ctx.clearRect(0, 0, context.canvas.width, context.canvas.height);
+	    ctx.translate(animations.flowers.centerX, animations.flowers.centerY);
+	    draw.flower(ctx, flowers[util.flowerPrev(currentFlower)], colorDark, -360, animations.startup.opacity);
+		draw.flower(ctx, flowers[currentFlower], colorDark, 0, animations.startup.opacity);
+		draw.flower(ctx, flowers[util.flowerNext(currentFlower)], colorDark, 360, animations.startup.opacity);
+		draw.countdown(ctx, 0, 3, colorBright, colorDark);
+
+		ctx.restore();
+	
+		ctx.save();
+		
+		ctx.translate(canvas.width / 2, canvas.height / 2);
+		draw.dots(ctx);
+		
+		ctx.restore();
+	}
+}
+
+/*
  * Animation loop.
  * @param ctx Context to draw in.
  * @param run Whether the loop should be updating the UI.
@@ -217,7 +294,8 @@ function animation(ctx, run) {
     	drawUI(ctx);
     }
     
-	run = animations.startup.active
+	run = animations.screens.active
+	|| animations.startup.active
 	|| animations.flowers.active 
 	|| animations.dotTransition.active
 	|| animations.dotFade.activeIn
@@ -226,38 +304,6 @@ function animation(ctx, run) {
 	window.requestAnimationFrame(function() {
 		animation(ctx, run);
 	});
-}
-
-/*
- * Draws the whole UI.
- * @param ctx Context to draw in.
- */
-function drawUI(ctx) {
-    'use strict';
-
-    // UI Parameters
-    var colorDark = "#343434";
-    var colorBright = "#007de4";
-
-	ctx.save();
-	
-    ctx.clearRect(0, 0, context.canvas.width, context.canvas.height);
-    ctx.translate(animations.flowers.centerX, animations.flowers.centerY);
-    
-    draw.flower(ctx, flowers[util.flowerPrev(currentFlower)], colorDark, -360, animations.startup.opacity);
-	draw.flower(ctx, flowers[currentFlower], colorDark, 0, animations.startup.opacity);
-	draw.flower(ctx, flowers[util.flowerNext(currentFlower)], colorDark, 360, animations.startup.opacity);
-    	
-	draw.countdown(ctx, 0, 3, colorBright, colorDark);
-	
-	ctx.restore();
-
-	ctx.save();
-	
-	ctx.translate(canvas.width / 2, canvas.height / 2);
-	draw.dots(ctx);
-	
-	ctx.restore();
 }
 
 /*
@@ -309,23 +355,32 @@ window.onload = function onLoad() {
     	    	animations.flowers.centerXold += 360;
     			animations.flowers.centerX += 360;
     			animate_flowers(animations.flowers.centerX, animations.flowers.centerY);
-        		animate_dotTransition(currentFlower);
+        		animate_dotTransition(currentFlower, JSON.parse(JSON.stringify(animations.dotTransition.opacity)));
     	    }
     	    else if (animations.flowers.centerX >= 360) {
     	    	currentFlower = util.flowerPrev(currentFlower);
     	    	animations.flowers.centerXold -= 360;
     			animations.flowers.centerX -= 360;
     			animate_flowers(animations.flowers.centerX, animations.flowers.centerY);
-        		animate_dotTransition(currentFlower);
+        		animate_dotTransition(currentFlower, JSON.parse(JSON.stringify(animations.dotTransition.opacity)));
     	    }
     	    else {
     	    	animate_flowers(animations.flowers.centerX, animations.flowers.centerY);
-        		animate_dotTransition(currentFlower);
+        		animate_dotTransition(currentFlower, JSON.parse(JSON.stringify(animations.dotTransition.opacity)));
     	    }
     		
     	    animations.dotFade.reference = window.setTimeout(function() {
     	    	animate_dotFadeOut(animations.dotFade.multiplier);
 			}, 2000);
+    	    
+    	    /* Change screens like this!
+    		if (animations.screens.multiplier[screens.flowers].toFixed(3) > 0) {
+    			animate_screens(screens.username, JSON.parse(JSON.stringify(animations.screens.multiplier)));
+    		}
+    		else if (animations.screens.multiplier[screens.username].toFixed(3) > 0) {
+    			animate_screens(screens.flowers, JSON.parse(JSON.stringify(animations.screens.multiplier)));
+    		}
+    		*/
     	});
     });
 }(tau));

@@ -1,4 +1,4 @@
-/*global window, document, tizen, console, setTimeout, tau */
+/*global window, document, tizen, console, setTimeout, tau, animations, screens, util */
 
 var draw = function(){
     'use strict';
@@ -25,7 +25,7 @@ draw.plate = function(ctx, plate, x, y, colorB, opacity) {
 	ctx.save();
 	
 	ctx.translate(x,y);
-	ctx.globalAlpha = opacity;
+	ctx.globalAlpha = opacity * animations.screens.multiplier[screens.flowers];
 	
 	if (plate) {
 		ctx.rotate(util.rad(-90));
@@ -62,7 +62,7 @@ draw.plate = function(ctx, plate, x, y, colorB, opacity) {
 	}
 	
 	ctx.restore();
-}
+};
 
 /*
  * Draws all hexagon plates and add symbols.
@@ -86,7 +86,7 @@ draw.flower = function(ctx, flower, colorB, offset, opacity) {
 		
 		draw.plate(ctx, flower[i], xOffset, yOffset, colorB, opacity[i].toFixed(3));
 	}
-}
+};
 
 /*
  * Draws the countdown in middle.
@@ -135,7 +135,7 @@ draw.countdown = function(ctx, minutesTotal, minutesLeft, colorA, colorB) {
 		
 		ctx.restore();
     }
-}
+};
 
 /*
  * Draws the flower overlay.
@@ -157,7 +157,7 @@ draw.dots = function(ctx) {
 		ctx.save();
 		ctx.beginPath();
 	  	ctx.arc(dotOffset, 0, dotRadius, 0, util.rad(360));
-	  	ctx.globalAlpha = animations.dotTransition.opacity[i] * animations.dotFade.multiplier;
+	  	ctx.globalAlpha = animations.dotTransition.opacity[i] * animations.dotFade.multiplier * animations.screens.multiplier[screens.flowers];
 		ctx.fillStyle = "#ffffff";
 		ctx.fill();
 		ctx.restore();
@@ -165,4 +165,4 @@ draw.dots = function(ctx) {
 	}
 	
 	ctx.restore();
-}
+};

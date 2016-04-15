@@ -65,6 +65,7 @@ util.flowerNext = function(flower) {
  */
 util.trans = function(value, type, start, end, duration) {
     'use strict';
+	//console.log("trans type: " + type + ", start: " + start + ", end: " + end + ", current: " + value);
 
     if (!(((end - start) >= 0 && value.toFixed(3) >= end) || ((end - start) <= 0 && value.toFixed(3) <= end))) {
     	var steps = (duration / 1000) * util.fps; 
