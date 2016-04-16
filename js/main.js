@@ -91,36 +91,36 @@ var screens = {
 		"addContacts": 7
 	};
 
-var colors = {
-		"red": 		"#ff0000",
-		"orange": 	"#ff8000",
-		"yellow": 	"#ffff00",
-		"lime": 	"#80ff00",
-		"green": 	"#00ff00",
-		"turquoise":"#00ff80",
-		"cyan":		"#00ffff",
-		"skyblue":	"#0080ff",
-		"blue": 	"#0000ff",
-		"purple":	"#8000ff",
-		"magenta":	"#ff00ff",
-		"pink": 	"#ff0080",
-		"white": 	"#ffffff"
-	};
+var colors = [
+	   {"val": "#ff0000", "name": "Red"},
+	   {"val": "#ff8000", "name": "Orange"},
+	   {"val": "#ffff00", "name": "Yellow"},
+	   {"val": "#80ff00", "name": "Lime"},
+	   {"val": "#00ff00", "name": "Green"},
+	   {"val": "#00ff80", "name": "Turquoise"},
+	   {"val": "#00ffff", "name": "Cyan"},
+	   {"val": "#0080ff", "name": "Sky Blue"},
+	   {"val": "#0000ff", "name": "Blue"},
+	   {"val": "#8000ff", "name": "Purple"},
+	   {"val": "#ff00ff", "name": "Magenta"},
+	   {"val": "#ff0080", "name": "Pink"},
+	   {"val": "#ffffff", "name": "White"}
+   ];
 
-var colorID = [
-	   {"color": colors.red},
-	   {"color": colors.orange},
-	   {"color": colors.yellow},
-	   {"color": colors.lime},
-	   {"color": colors.green},
-	   {"color": colors.turquoise},
-	   {"color": colors.cyan},
-	   {"color": colors.skyblue},
-	   {"color": colors.blue},
-	   {"color": colors.purple},
-	   {"color": colors.magenta},
-	   {"color": colors.pink},
-	   {"color": colors.white}
+var types = [
+  	   {"val": "meeting", 	"name": "Meeting"},
+	   {"val": "office", 	"name": "Office"},
+	   {"val": "dinner", 	"name": "Dinner"},
+	   {"val": "coffee", 	"name": "Coffee"},
+	   {"val": "break", 	"name": "Break"},
+	   {"val": "call", 		"name": "Call"},
+	   {"val": "conference","name": "Conference"},
+	   {"val": "gaming", 	"name": "Gaming"},
+	   {"val": "pizza", 	"name": "Pizza"},
+	   {"val": "meetup", 	"name": "Meetup"},
+	   {"val": "party", 	"name": "Party"},
+	   {"val": "party", 	"name": "Party"},
+	   {"val": "party", 	"name": "Party"}
    ];
 
 var dragLastX = 0;
@@ -337,6 +337,17 @@ function drawUI(ctx) {
 		
 		ctx.restore();
 	}
+
+    // Screen: addType
+	if (animations.screens.multiplier[screens.addType].toFixed(3) > 0) {	
+		ctx.save();
+
+	    ctx.translate(canvas.width / 2, canvas.height / 2);
+	    draw.typeText(ctx, animations.screens.multiplier[screens.addType]);
+		draw.typeGrid(ctx, animations.screens.multiplier[screens.addType]);
+		
+		ctx.restore();
+	}
 }
 
 /*
@@ -488,10 +499,25 @@ function processTapHold(x, y) {
     	    // Screen: addColor
     		if (animations.screens.multiplier[screens.addColor].toFixed(3) == 1) {	
     			if (touchX >= 130 && touchX < 230 && touchY >= 300 && touchY < 340) {
-            		animate_screens(screens.addType, util.copy(animations.screens.multiplier));
+    				if (addPlate.color != null) {
+    					animate_screens(screens.addType, util.copy(animations.screens.multiplier));
+    				}
     			}
     			else {
     				addPlate.color = util.addPlateFromCoords(touchX, touchY);
+        			drawUI(context);
+    			}
+    		}
+
+    	    // Screen: addType
+    		if (animations.screens.multiplier[screens.addType].toFixed(3) == 1) {	
+    			if (touchX >= 130 && touchX < 230 && touchY >= 300 && touchY < 340) {
+    				if (addPlate.type != null) {
+    					animate_screens(screens.addDuration, util.copy(animations.screens.multiplier));
+    				}
+    			}
+    			else {
+    				addPlate.type = util.addPlateFromCoords(touchX, touchY);
         			drawUI(context);
     			}
     		}
@@ -514,6 +540,16 @@ function processTapHold(x, y) {
     		// Screen: addColor
     		if (animations.screens.multiplier[screens.addColor].toFixed(3) == 1) {	
         		animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
+    		}
+    		
+    		// Screen: addType
+    		if (animations.screens.multiplier[screens.addType].toFixed(3) == 1) {	
+        		animate_screens(screens.addColor, util.copy(animations.screens.multiplier));
+    		}
+    		
+    		// Screen: addDuration
+    		if (animations.screens.multiplier[screens.addDuration].toFixed(3) == 1) {	
+        		animate_screens(screens.addType, util.copy(animations.screens.multiplier));
     		}
     		
 		}			

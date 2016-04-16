@@ -1,4 +1,4 @@
-/*global window, document, tizen, console, setTimeout, tau, addPlate */
+/*global window, document, tizen, console, setTimeout, tau, addPlate, colors, types */
 
 var util = function(){
     'use strict';
@@ -95,21 +95,21 @@ util.addPlateFromCoords = function(x, y) {
     'use strict';
     var plate;
     
-	if (x >= 60 && x < 120 && y >= 122 && y < 174) { 		plate = 0; }
-	else if (x >= 120 && x < 180 && y >= 122 && y < 174) { 	plate = 1; }
-	else if (x >= 180 && x < 240 && y >= 122 && y < 174) { 	plate = 2; }
-	else if (x >= 240 && x < 300 && y >= 122 && y < 174) { 	plate = 3; }
+	if (x >= 60 && x < 120 && y >= 123 && y < 175) { 		plate = 0; }
+	else if (x >= 120 && x < 180 && y >= 123 && y < 175) { 	plate = 1; }
+	else if (x >= 180 && x < 240 && y >= 123 && y < 175) { 	plate = 2; }
+	else if (x >= 240 && x < 300 && y >= 123 && y < 175) { 	plate = 3; }
 
-	else if (x >= 270 && x < 330 && y >= 174 && y < 226) { 	plate = 4; }
-	else if (x >= 210 && x < 270 && y >= 174 && y < 226) { 	plate = 5; }
-	else if (x >= 150 && x < 210 && y >= 174 && y < 226) { 	plate = 6; }
-	else if (x >= 90 && x < 150 && y >= 174 && y < 226) { 	plate = 7; }
-	else if (x >= 30 && x < 90 && y >= 174 && y < 226) { 	plate = 8; }
+	else if (x >= 270 && x < 330 && y >= 175 && y < 225) { 	plate = 4; }
+	else if (x >= 210 && x < 270 && y >= 175 && y < 225) { 	plate = 5; }
+	else if (x >= 150 && x < 210 && y >= 175 && y < 225) { 	plate = 6; }
+	else if (x >= 90 && x < 150 && y >= 175 && y < 225) { 	plate = 7; }
+	else if (x >= 30 && x < 90 && y >= 175 && y < 225) { 	plate = 8; }
 
-	else if (x >= 60 && x < 120 && y >= 226 && y < 278) { 	plate = 9; }
-	else if (x >= 120 && x < 180 && y >= 226 && y < 278) { 	plate = 10; }
-	else if (x >= 180 && x < 240 && y >= 226 && y < 278) { 	plate = 11; }
-	else if (x >= 240 && x < 300 && y >= 226 && y < 278) { 	plate = 12; }
+	else if (x >= 60 && x < 120 && y >= 225 && y < 277) { 	plate = 9; }
+	else if (x >= 120 && x < 180 && y >= 225 && y < 277) { 	plate = 10; }
+	else if (x >= 180 && x < 240 && y >= 225 && y < 277) { 	plate = 11; }
+	else if (x >= 240 && x < 300 && y >= 225 && y < 277) { 	plate = 12; }
 	
 	else { 													plate = null; }
 	
@@ -139,27 +139,33 @@ util.translateColor = function(id) {
     'use strict';
 	var color;
 	
-	switch (id) {
-		case null:	color = "None"; 	 break;
-		case 0:  	color = "Red"; 		 break;
-		case 1:  	color = "Orange"; 	 break;
-		case 2:  	color = "Yellow"; 	 break;
-		case 3:  	color = "Lime"; 	 break;
-		case 4:  	color = "Green"; 	 break;
-		case 5:  	color = "Turquoise"; break;
-		case 6:  	color = "Cyan"; 	 break;
-		case 7:  	color = "Sky Blue";  break;
-		case 8:  	color = "Blue"; 	 break;
-		case 9:  	color = "Purple"; 	 break;
-		case 10: 	color = "Magenta"; 	 break;
-		case 11: 	color = "Pink"; 	 break;
-		case 12: 	color = "White"; 	 break;
+	if (id != null) {
+		color = colors[id].name;
+	}
+	else {
+		color = "None";
 	}
 	
 	return color;
 };
 
-
+/*
+ * Translates an input number to type name.
+ * @param id ID of the type.
+ */
+util.translateType = function(id) {
+    'use strict';
+	var type;
+	
+	if (id != null) {
+		type = types[id].name;
+	}
+	else {
+		type = "None";
+	}
+	
+	return type;
+};
 
 /*
  * Performs a frame step for transition of a variable.
