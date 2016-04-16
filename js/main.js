@@ -5,13 +5,21 @@ var canvas, context;
 var currentFlower = 0;
 var flowers = [
 		[
-	       {"type": "coffee", "color": "#ff4800", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
-	       {"type": "coffee", "color": "#ff9600", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
-	       {"type": "coffee", "color": "#ffe400", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
+	       {"type": "coffee", "color": "#0080ff", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
+	       {"type": "meeting", "color": "#ff0000", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
+	       {"type": "office", "color": "#ffff00", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
 	       null,
 	       null,
-	       {"type": "coffee", "color": "#96ff00", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null}
+	       {"type": "dinner", "color": "#0080ff", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null}
 		],  
+	    [
+		   null,
+		   {"type": "gaming", "color": "#8000ff", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
+		   null,
+		   {"type": "movies", "color": "#8000ff", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
+		   null,
+		   {"type": "concert", "color": "#8000ff", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null}
+		],
 		[
 		   {"type": "coffee", "color": "#48ff00", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
 		   {"type": "coffee", "color": "#00ff96", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
@@ -20,14 +28,6 @@ var flowers = [
 		   {"type": "coffee", "color": "#0096ff", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
 		   null
 		], 
-	    [
-		   null,
-		   {"type": "coffee", "color": "#0048ff", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
-		   null,
-		   {"type": "coffee", "color": "#9600ff", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
-		   null,
-		   {"type": "coffee", "color": "#e400ff", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null}
-		],
 		[
 	       {"type": "coffee", "color": "#ff0096", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
 	       null,
@@ -110,16 +110,16 @@ var colors = [
 var types = [
   	   {"val": "meeting", 	"name": "Meeting"},
 	   {"val": "office", 	"name": "Office"},
+	   {"val": "conference","name": "Conference"},
+	   {"val": "break", 	"name": "Break"},
+	   {"val": "workout", 	"name": "Workout"},
+	   {"val": "call", 		"name": "Call"},
+	   {"val": "pizza", 	"name": "Pizza"},
 	   {"val": "dinner", 	"name": "Dinner"},
 	   {"val": "coffee", 	"name": "Coffee"},
-	   {"val": "break", 	"name": "Break"},
-	   {"val": "call", 		"name": "Call"},
-	   {"val": "conference","name": "Conference"},
 	   {"val": "gaming", 	"name": "Gaming"},
-	   {"val": "pizza", 	"name": "Pizza"},
-	   {"val": "meetup", 	"name": "Meetup"},
-	   {"val": "party", 	"name": "Party"},
-	   {"val": "party", 	"name": "Party"},
+	   {"val": "movies", 	"name": "Movies"},
+	   {"val": "concert", 	"name": "Concert"},
 	   {"val": "party", 	"name": "Party"}
    ];
 

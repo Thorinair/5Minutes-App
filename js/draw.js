@@ -23,6 +23,7 @@ draw.plate = function(ctx, use, color, type, x, y, radius, stroke, colorB, opaci
     // UI Parameters
     var addRadius = 24;
     var addWidth = 6;
+    var iconSize = 56;
     
 	ctx.save();
 	
@@ -55,9 +56,9 @@ draw.plate = function(ctx, use, color, type, x, y, radius, stroke, colorB, opaci
 			
 			ctx.translate(x,y);	
 			ctx.globalAlpha = opacity;	
-			var image = document.getElementById("icon_" + "meeting"); //TODO: Replace this with "type" variable.
+			var image = document.getElementById("icon_" + type);
 			var modifier = (radius / 48);
-			ctx.drawImage(image, -42 * modifier, -42 * modifier, 84 * modifier, 84 * modifier);
+			ctx.drawImage(image, -(iconSize/2) * modifier, -(iconSize/2) * modifier, iconSize * modifier, iconSize * modifier);
 		}
 	}
 	else {		
