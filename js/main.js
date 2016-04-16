@@ -4,90 +4,131 @@ var canvas, context;
 
 var currentFlower = 0;
 var flowers = [
-	[
-       {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
-       {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
-       {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
-       null,
-       null,
-       {"type": "coffee", "color": "#007de4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null}
-	],  
-	[
-	   {"type": "coffee", "color": "#e4007d", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
-	   {"type": "coffee", "color": "#e4007d", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
-	   null,
-	   {"type": "coffee", "color": "#e4007d", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
-	   {"type": "coffee", "color": "#e4007d", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
-	   null
-	], 
-    [
-	   null,
-	   {"type": "coffee", "color": "#7d00e4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
-	   null,
-	   {"type": "coffee", "color": "#7d00e4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
-	   null,
-	   {"type": "coffee", "color": "#7d00e4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null}
-	],
-	[
-       {"type": "coffee", "color": "#e47d00", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
-       null,
-       null,
-       {"type": "coffee", "color": "#e47d00", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
-       {"type": "coffee", "color": "#e47d00", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
-       null
-	]
-];
+		[
+	       {"type": "coffee", "color": "#ff4800", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
+	       {"type": "coffee", "color": "#ff9600", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
+	       {"type": "coffee", "color": "#ffe400", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
+	       null,
+	       null,
+	       {"type": "coffee", "color": "#96ff00", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null}
+		],  
+		[
+		   {"type": "coffee", "color": "#48ff00", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
+		   {"type": "coffee", "color": "#00ff96", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
+		   null,
+		   {"type": "coffee", "color": "#00ffe4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
+		   {"type": "coffee", "color": "#0096ff", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
+		   null
+		], 
+	    [
+		   null,
+		   {"type": "coffee", "color": "#0048ff", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
+		   null,
+		   {"type": "coffee", "color": "#9600ff", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
+		   null,
+		   {"type": "coffee", "color": "#e400ff", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null}
+		],
+		[
+	       {"type": "coffee", "color": "#ff0096", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
+	       null,
+	       null,
+	       {"type": "coffee", "color": "#ffffff", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
+	       {"type": "coffee", "color": "#ffa200", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
+	       null
+		]
+	];
+
+var addPlate = {
+		"type": null, 
+		"color": null, 
+		"duration": 5, 
+		"message": null, 
+		"invite": null, 
+		"fire": null
+	};
 
 var animations = {
-	"screens": {
-		"duration": 200,
-		"active": false,
-		"multiplier": [0, 0, 1, 0, 0, 0, 0, 0]
-	},
-	"startup": {
-		"duration": 500,
-		"active": false,
-		"opacity": [0, 0, 0, 0, 0, 0]
-	},
-	"flowers": {
-		"duration": 200,
-		"active": false,
-		"centerX": 180,
-		"centerY": 180,
-		"centerXold": 0,
-		"centerYold": 0
-	},
-	"dotTransition": {
-		"duration": 200,
-		"active": false,
-		"opacity": [1.0, 0.25, 0.25, 0.25]
-	},
-	"dotFade": {
-		"duration": 200,
-		"activeIn": false,
-		"activeOut": false,
-		"multiplier": 0,
-		"reference": null
-	}
-};
+		"screens": {
+			"duration": 200,
+			"active": false,
+			"multiplier": [0, 0, 1, 0, 0, 0, 0, 0]
+		},
+		"startup": {
+			"duration": 500,
+			"active": false,
+			"opacity": [0, 0, 0, 0, 0, 0]
+		},
+		"flowers": {
+			"duration": 200,
+			"active": false,
+			"centerX": 180,
+			"centerY": 180,
+			"centerXold": 0,
+			"centerYold": 0
+		},
+		"dotTransition": {
+			"duration": 200,
+			"active": false,
+			"opacity": [1.0, 0.25, 0.25, 0.25]
+		},
+		"dotFade": {
+			"duration": 200,
+			"activeIn": false,
+			"activeOut": false,
+			"multiplier": 0,
+			"reference": null
+		}
+	};
 
 var screens = {
-	"username": 0,
-	"password": 1,
-	"flowers": 2,
-	"contacts": 3,
-	"addColor": 4,
-	"addType": 5,
-	"addDuration": 6,
-	"addContacts": 7
-};
+		"username": 0,
+		"password": 1,
+		"flowers": 2,
+		"contacts": 3,
+		"addColor": 4,
+		"addType": 5,
+		"addDuration": 6,
+		"addContacts": 7
+	};
+
+var colors = {
+		"red": 		"#ff0000",
+		"orange": 	"#ff8000",
+		"yellow": 	"#ffff00",
+		"lime": 	"#80ff00",
+		"green": 	"#00ff00",
+		"turquoise":"#00ff80",
+		"cyan":		"#00ffff",
+		"skyblue":	"#0080ff",
+		"blue": 	"#0000ff",
+		"purple":	"#8000ff",
+		"magenta":	"#ff00ff",
+		"pink": 	"#ff0080",
+		"white": 	"#ffffff"
+	};
+
+var colorID = [
+	   {"color": colors.red},
+	   {"color": colors.orange},
+	   {"color": colors.yellow},
+	   {"color": colors.lime},
+	   {"color": colors.green},
+	   {"color": colors.turquoise},
+	   {"color": colors.cyan},
+	   {"color": colors.skyblue},
+	   {"color": colors.blue},
+	   {"color": colors.purple},
+	   {"color": colors.magenta},
+	   {"color": colors.pink},
+	   {"color": colors.white}
+   ];
 
 var dragLastX = 0;
 var dragLastY = 0;
 var isScreenTouched = false;
 var wasDragged = false;
 var tapHold;
-var wasHeld = false;;
+var wasHeld = false;
 
 window.requestAnimationFrame = window.requestAnimationFrame ||
 	window.webkitRequestAnimationFrame ||
@@ -264,10 +305,12 @@ function drawUI(ctx) {
     var colorDark = "#343434";
     var colorBright = "#007de4";
 
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Screen: flowers
 	if (animations.screens.multiplier[screens.flowers].toFixed(3) > 0) {	
 		ctx.save();
 		
-	    ctx.clearRect(0, 0, context.canvas.width, context.canvas.height);
 	    ctx.translate(animations.flowers.centerX, animations.flowers.centerY);
 	    draw.flower(ctx, flowers[util.flowerPrev(currentFlower)], colorDark, -360, animations.startup.opacity);
 		draw.flower(ctx, flowers[currentFlower], colorDark, 0, animations.startup.opacity);
@@ -280,6 +323,17 @@ function drawUI(ctx) {
 		
 		ctx.translate(canvas.width / 2, canvas.height / 2);
 		draw.dots(ctx);
+		
+		ctx.restore();
+	}
+
+    // Screen: addColor
+	if (animations.screens.multiplier[screens.addColor].toFixed(3) > 0) {	
+		ctx.save();
+
+	    ctx.translate(canvas.width / 2, canvas.height / 2);
+	    draw.colorText(ctx, animations.screens.multiplier[screens.addColor]);
+		draw.colorGrid(ctx, animations.screens.multiplier[screens.addColor]);
 		
 		ctx.restore();
 	}
@@ -337,85 +391,131 @@ function processTapHold(x, y) {
     	}));
 
     	document.addEventListener("touchstart", function(e) {
-    		isScreenTouched = true;
     		
-    		if (!animations.flowers.active) {
-	    		tapHold = window.setTimeout(function() {
-	    			processTapHold(e.changedTouches.item(0).screenX, e.changedTouches.item(0).screenY);
-				}, 1000);
+    	    // Screen: flowers
+    		if (animations.screens.multiplier[screens.flowers].toFixed(3) == 1) {	
+	    		isScreenTouched = true;
+	    		
+	    		if (!animations.flowers.active) {
+		    		tapHold = window.setTimeout(function() {
+		    			processTapHold(e.changedTouches.item(0).screenX, e.changedTouches.item(0).screenY);
+					}, 1000);
+	    		}
+	    		
+	    		animations.flowers.active = false;
+	    		dragLastX = 0;
+	    		dragLastY = 0;
     		}
-    		
-    		animations.flowers.active = false;
-    		dragLastX = 0;
-    		dragLastY = 0;
     	});
 
     	document.addEventListener("drag", function(e) {
-    		wasDragged = true;
-    		window.clearTimeout(tapHold);
-    		window.clearTimeout(animations.dotFade.reference);
     		
-    		if (!wasHeld) {
-	    		animate_dotFadeIn(animations.dotFade.multiplier);
-		    	
-	    		var dragX = e.detail.deltaX;
-	    		var dragY = e.detail.deltaY;
-	    		animations.flowers.centerX += dragX - dragLastX;
-	    		animations.flowers.centerY += dragY - dragLastY;
-	    		drawUI(context);
-	    		dragLastX = dragX;
-	    		dragLastY = dragY;
+    	    // Screen: flowers
+    		if (animations.screens.multiplier[screens.flowers].toFixed(3) == 1) {	
+	    		wasDragged = true;
+	    		window.clearTimeout(tapHold);
+	    		window.clearTimeout(animations.dotFade.reference);
+	    		
+	    		if (!wasHeld) {
+		    		animate_dotFadeIn(animations.dotFade.multiplier);
+			    	
+		    		var dragX = e.detail.deltaX;
+		    		var dragY = e.detail.deltaY;
+		    		animations.flowers.centerX += dragX - dragLastX;
+		    		animations.flowers.centerY += dragY - dragLastY;
+		    		drawUI(context);
+		    		dragLastX = dragX;
+		    		dragLastY = dragY;
+	    		}
     		}
     	});
 
     	document.addEventListener("touchend", function(e) {
-    		isScreenTouched = false;
-    		window.clearTimeout(tapHold);
+    		var touchX = e.changedTouches.item(0).screenX;
+    		var touchY = e.changedTouches.item(0).screenY;
     		
-    		if (!wasHeld) {
-    			if (animations.flowers.centerX.toFixed(3) != 180 && animations.flowers.centerY.toFixed(3) != 180) {
-    				animations.flowers.active = true;
-    				
-    	    	    if (animations.flowers.centerX <= 0) {
-    	    	    	currentFlower = util.flowerNext(currentFlower);
-    	    	    	animations.flowers.centerXold += 360;
-    	    			animations.flowers.centerX += 360;
-    	    			animate_flowers(animations.flowers.centerX, animations.flowers.centerY);
-    	        		animate_dotTransition(currentFlower, JSON.parse(JSON.stringify(animations.dotTransition.opacity)));
-    	    	    }
-    	    	    else if (animations.flowers.centerX >= 360) {
-    	    	    	currentFlower = util.flowerPrev(currentFlower);
-    	    	    	animations.flowers.centerXold -= 360;
-    	    			animations.flowers.centerX -= 360;
-    	    			animate_flowers(animations.flowers.centerX, animations.flowers.centerY);
-    	        		animate_dotTransition(currentFlower, JSON.parse(JSON.stringify(animations.dotTransition.opacity)));
-    	    	    }
-    	    	    else {
-    	    	    	animate_flowers(animations.flowers.centerX, animations.flowers.centerY);
-    	        		animate_dotTransition(currentFlower, JSON.parse(JSON.stringify(animations.dotTransition.opacity)));
-    	    	    }
-    	    		
-    	    	    animations.dotFade.reference = window.setTimeout(function() {
-    	    	    	animate_dotFadeOut(animations.dotFade.multiplier);
-    				}, 2000);
+    	    // Screen: flowers
+    		if (animations.screens.multiplier[screens.flowers].toFixed(3) == 1) {	
+	    		isScreenTouched = false;
+	    		window.clearTimeout(tapHold);
+	    		
+	    		if (!wasHeld) {
+	    			if (animations.flowers.centerX.toFixed(3) != 180 && animations.flowers.centerY.toFixed(3) != 180) {
+	    				animations.flowers.active = true;
+	    				
+	    	    	    if (animations.flowers.centerX <= 0) {
+	    	    	    	currentFlower = util.flowerNext(currentFlower);
+	    	    	    	animations.flowers.centerXold += 360;
+	    	    			animations.flowers.centerX += 360;
+	    	    			animate_flowers(animations.flowers.centerX, animations.flowers.centerY);
+	    	        		animate_dotTransition(currentFlower, util.copy(animations.dotTransition.opacity));
+	    	    	    }
+	    	    	    else if (animations.flowers.centerX >= 360) {
+	    	    	    	currentFlower = util.flowerPrev(currentFlower);
+	    	    	    	animations.flowers.centerXold -= 360;
+	    	    			animations.flowers.centerX -= 360;
+	    	    			animate_flowers(animations.flowers.centerX, animations.flowers.centerY);
+	    	        		animate_dotTransition(currentFlower, util.copy(animations.dotTransition.opacity));
+	    	    	    }
+	    	    	    else {
+	    	    	    	animate_flowers(animations.flowers.centerX, animations.flowers.centerY);
+	    	        		animate_dotTransition(currentFlower, util.copy(animations.dotTransition.opacity));
+	    	    	    }
+	    	    		
+	    	    	    animations.dotFade.reference = window.setTimeout(function() {
+	    	    	    	animate_dotFadeOut(animations.dotFade.multiplier);
+	    				}, 2000);
+	    			}
+	    			else {
+	    				var plate = util.plateFromCoords(touchX, touchY);
+	    				if (plate != null) {
+		    				if (flowers[currentFlower][plate]) {
+			    				console.log("Tap! flower: " + currentFlower + ", plate: " + plate);
+			    				console.log(JSON.stringify(flowers[currentFlower][plate]));
+		    				}
+		    				else {
+			    				util.resetAdd();
+			            		animate_screens(screens.addColor, util.copy(animations.screens.multiplier));
+		    				}
+	    				}
+	    			}
+	    		}
+	    		
+	    		wasDragged = false;
+	    		wasHeld = false;
+    		}
+
+    	    // Screen: addColor
+    		if (animations.screens.multiplier[screens.addColor].toFixed(3) == 1) {	
+    			if (touchX >= 130 && touchX < 230 && touchY >= 300 && touchY < 340) {
+            		animate_screens(screens.addType, util.copy(animations.screens.multiplier));
     			}
     			else {
-    				var plate = util.plateFromCoords(e.changedTouches.item(0).screenX, e.changedTouches.item(0).screenY);
-    				console.log("Tap! flower: " + currentFlower + ", plate: " + plate);
-    				console.log(JSON.stringify(flowers[currentFlower][plate]));
-    				/*
-            		if (animations.screens.multiplier[screens.flowers].toFixed(3) > 0) {
-            			animate_screens(screens.username, JSON.parse(JSON.stringify(animations.screens.multiplier)));
-            		}
-            		else if (animations.screens.multiplier[screens.username].toFixed(3) > 0) {
-            			animate_screens(screens.flowers, JSON.parse(JSON.stringify(animations.screens.multiplier)));
-            		}
-            		*/
+    				addPlate.color = util.addPlateFromCoords(touchX, touchY);
+        			drawUI(context);
     			}
     		}
     		
-    		wasDragged = false;
-    		wasHeld = false;
     	});
     });
+    
+    document.addEventListener( 'tizenhwkey', function(e) {
+		if (e.keyName == "back") {
+			
+    	    // Screen: flowers
+    		if (animations.screens.multiplier[screens.flowers].toFixed(3) == 1) {	
+    			try {
+    				tizen.application.getCurrentApplication().exit();
+				} 
+    			catch (ignore) {
+				}
+    		}
+    		
+    		// Screen: addColor
+    		if (animations.screens.multiplier[screens.addColor].toFixed(3) == 1) {	
+        		animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
+    		}
+    		
+		}			
+	});
 }(tau));

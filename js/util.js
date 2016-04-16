@@ -1,4 +1,4 @@
-/*global window, document, tizen, console, setTimeout, tau */
+/*global window, document, tizen, console, setTimeout, tau, addPlate */
 
 var util = function(){
     'use strict';
@@ -24,6 +24,16 @@ util.rad = function(deg) {
 util.sign = function(x) {
     'use strict';
     return x < 0 ? -1 : 1;
+};
+
+/*
+ * Copies an object instead of using a reference.
+ * @param source The original object.
+ * @return Returns new copied object.
+ */
+util.copy = function(source) {
+    'use strict';
+	return JSON.parse(JSON.stringify(source));
 };
 
 /*
@@ -62,32 +72,94 @@ util.flowerNext = function(flower) {
  */
 util.plateFromCoords = function(x, y) {
     'use strict';
-    var plate;
+var plate;
     
-	if (x >= 48 && x < 132 && y >= 141 && y < 219) {
-		plate = 0;
-	}
-	else if (x >= 93 && x < 177 && y >= 63 && y < 141) {
-		plate = 1;
-	}
-	else if (x >= 183 && x < 267 && y >= 63 && y < 141) {
-		plate = 2;
-	}
-	else if (x >= 228 && x < 312 && y >= 141 && y < 219) {
-		plate = 3;
-	}
-	else if (x >= 183 && x < 267 && y >= 219 && y < 297) {
-		plate = 4;
-	}
-	else if (x >= 93 && x < 177 && y >= 219 && y < 297) {
-		plate = 5;
-	}
-	else {
-		plate = -1;
-	}
+	if (x >= 48 && x < 132 && y >= 141 && y < 219) { 		plate = 0; }
+	else if (x >= 93 && x < 177 && y >= 63 && y < 141) { 	plate = 1; }
+	else if (x >= 183 && x < 267 && y >= 63 && y < 141) { 	plate = 2; }
+	else if (x >= 228 && x < 312 && y >= 141 && y < 219) { 	plate = 3; }
+	else if (x >= 183 && x < 267 && y >= 219 && y < 297) { 	plate = 4; }
+	else if (x >= 93 && x < 177 && y >= 219 && y < 297) { 	plate = 5; }
+	else { 													plate = null; }
 	
 	return plate;
 };
+
+/*
+ * Calculates which plate was tapped on the adding screen, based on coordinates.
+ * @param x X coordinate of the tap.
+ * @param y Y coordinate of the tap.
+ * @return Plate ID. Returns -1 if outside of plate.
+ */
+util.addPlateFromCoords = function(x, y) {
+    'use strict';
+    var plate;
+    
+	if (x >= 60 && x < 120 && y >= 122 && y < 174) { 		plate = 0; }
+	else if (x >= 120 && x < 180 && y >= 122 && y < 174) { 	plate = 1; }
+	else if (x >= 180 && x < 240 && y >= 122 && y < 174) { 	plate = 2; }
+	else if (x >= 240 && x < 300 && y >= 122 && y < 174) { 	plate = 3; }
+
+	else if (x >= 270 && x < 330 && y >= 174 && y < 226) { 	plate = 4; }
+	else if (x >= 210 && x < 270 && y >= 174 && y < 226) { 	plate = 5; }
+	else if (x >= 150 && x < 210 && y >= 174 && y < 226) { 	plate = 6; }
+	else if (x >= 90 && x < 150 && y >= 174 && y < 226) { 	plate = 7; }
+	else if (x >= 30 && x < 90 && y >= 174 && y < 226) { 	plate = 8; }
+
+	else if (x >= 60 && x < 120 && y >= 226 && y < 278) { 	plate = 9; }
+	else if (x >= 120 && x < 180 && y >= 226 && y < 278) { 	plate = 10; }
+	else if (x >= 180 && x < 240 && y >= 226 && y < 278) { 	plate = 11; }
+	else if (x >= 240 && x < 300 && y >= 226 && y < 278) { 	plate = 12; }
+	
+	else { 													plate = null; }
+	
+	return plate;
+};
+
+/*
+ * Resets the addPlate back to original state.
+ */
+util.resetAdd = function() {
+    'use strict';
+	addPlate = {
+			"type": null, 
+			"color": null, 
+			"duration": 5, 
+			"message": null, 
+			"invite": null, 
+			"fire": null
+		};
+};
+
+/*
+ * Translates an input number to color name.
+ * @param id ID of the color.
+ */
+util.translateColor = function(id) {
+    'use strict';
+	var color;
+	
+	switch (id) {
+		case null:	color = "None"; 	 break;
+		case 0:  	color = "Red"; 		 break;
+		case 1:  	color = "Orange"; 	 break;
+		case 2:  	color = "Yellow"; 	 break;
+		case 3:  	color = "Lime"; 	 break;
+		case 4:  	color = "Green"; 	 break;
+		case 5:  	color = "Turquoise"; break;
+		case 6:  	color = "Cyan"; 	 break;
+		case 7:  	color = "Sky Blue";  break;
+		case 8:  	color = "Blue"; 	 break;
+		case 9:  	color = "Purple"; 	 break;
+		case 10: 	color = "Magenta"; 	 break;
+		case 11: 	color = "Pink"; 	 break;
+		case 12: 	color = "White"; 	 break;
+	}
+	
+	return color;
+};
+
+
 
 /*
  * Performs a frame step for transition of a variable.
