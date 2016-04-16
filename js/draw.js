@@ -1,4 +1,4 @@
-/*global window, document, tizen, console, setTimeout, tau, animations, screens, colors, addPlate, colors, util */
+/*global window, document, tizen, console, setTimeout, tau, animations, screens, colors, addPlate, colors, types, util */
 
 var draw = function(){
     'use strict';
@@ -49,6 +49,16 @@ draw.plate = function(ctx, use, color, type, x, y, radius, stroke, colorB, opaci
 			ctx.lineWidth = 3;
 			ctx.stroke();
 		}
+		if (type != null) {
+			ctx.restore();
+			ctx.save();
+			
+			ctx.translate(x,y);	
+			ctx.globalAlpha = opacity;	
+			var image = document.getElementById("icon_" + "meeting"); //TODO: Replace this with "type" variable.
+			var modifier = (radius / 48);
+			ctx.drawImage(image, -42 * modifier, -42 * modifier, 84 * modifier, 84 * modifier);
+		}
 	}
 	else {		
 		ctx.beginPath();
@@ -66,7 +76,7 @@ draw.plate = function(ctx, use, color, type, x, y, radius, stroke, colorB, opaci
 		ctx.lineCap = "round";
 		ctx.strokeStyle = colorB;
 		ctx.stroke();
-	}
+	}	
 	
 	ctx.restore();
 };
@@ -214,7 +224,7 @@ draw.colorText = function(ctx, opacity) {
 	
 	ctx.font = "32px Arial";
 	ctx.fillStyle = "#ffffff";
-	ctx.fillText("Add Shortcut", 0, -120);
+	ctx.fillText("New Shortcut", 0, -120);
 
 	ctx.font = "32px Arial";
 	ctx.fillStyle = "#ffffff";
@@ -302,7 +312,7 @@ draw.typeText = function(ctx, opacity) {
 	
 	ctx.font = "32px Arial";
 	ctx.fillStyle = "#ffffff";
-	ctx.fillText("Add Shortcut", 0, -120);
+	ctx.fillText("New Shortcut", 0, -120);
 
 	ctx.font = "32px Arial";
 	ctx.fillStyle = "#ffffff";
