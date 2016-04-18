@@ -129,6 +129,7 @@ var isScreenTouched = false;
 var wasDragged = false;
 var tapHold;
 var wasHeld = false;
+var lastDuration = 0;
 
 window.requestAnimationFrame = window.requestAnimationFrame ||
 	window.webkitRequestAnimationFrame ||
@@ -348,6 +349,16 @@ function drawUI(ctx) {
 		
 		ctx.restore();
 	}
+
+    // Screen: addDuration
+	if (animations.screens.multiplier[screens.addDuration].toFixed(3) > 0) {	
+		ctx.save();
+
+	    ctx.translate(canvas.width / 2, canvas.height / 2);
+	    draw.durationText(ctx, animations.screens.multiplier[screens.addDuration]);
+		
+		ctx.restore();
+	}
 }
 
 /*
@@ -417,9 +428,17 @@ function processTapHold(x, y) {
 	    		dragLastX = 0;
 	    		dragLastY = 0;
     		}
+    		
+    	    // Screen: addDuration
+    		if (animations.screens.multiplier[screens.addDuration].toFixed(3) == 1) {	
+	    		lastDuration = addPlate.duration;
+    		}
     	});
 
     	document.addEventListener("drag", function(e) {
+    		
+    		var dragX;
+    		var dragY;
     		
     	    // Screen: flowers
     		if (animations.screens.multiplier[screens.flowers].toFixed(3) == 1) {	
@@ -430,14 +449,28 @@ function processTapHold(x, y) {
 	    		if (!wasHeld) {
 		    		animate_dotFadeIn(animations.dotFade.multiplier);
 			    	
-		    		var dragX = e.detail.deltaX;
-		    		var dragY = e.detail.deltaY;
+		    		dragX = e.detail.deltaX;
+		    		dragY = e.detail.deltaY;
 		    		animations.flowers.centerX += dragX - dragLastX;
 		    		animations.flowers.centerY += dragY - dragLastY;
 		    		drawUI(context);
 		    		dragLastX = dragX;
 		    		dragLastY = dragY;
 	    		}
+    		}
+
+    	    // Screen: addDuration
+    		if (animations.screens.multiplier[screens.addDuration].toFixed(3) == 1) {	
+	    		wasDragged = true;
+	    		dragY = e.detail.deltaY;
+	    		addPlate.duration = lastDuration + Math.floor(-dragY / 40) * 5
+	    		if (addPlate.duration < 5) {
+	    			addPlate.duration = 5;
+	    		}
+	    		else if (addPlate.duration > 60) {
+	    			addPlate.duration = 60;
+	    		}
+	    		drawUI(context);
     		}
     	});
 
@@ -521,6 +554,16 @@ function processTapHold(x, y) {
         			drawUI(context);
     			}
     		}
+
+    	    // Screen: addDuration
+    		if (animations.screens.multiplier[screens.addDuration].toFixed(3) == 1) {	
+    			if (touchX >= 130 && touchX < 230 && touchY >= 300 && touchY < 340 && !wasDragged) {
+    				if (addPlate.type != null) {
+    					animate_screens(screens.addContacts, util.copy(animations.screens.multiplier));
+    				}
+    			}
+	    		wasDragged = false;
+    		}
     		
     	});
     });
@@ -550,8 +593,34 @@ function processTapHold(x, y) {
     		// Screen: addDuration
     		if (animations.screens.multiplier[screens.addDuration].toFixed(3) == 1) {	
         		animate_screens(screens.addType, util.copy(animations.screens.multiplier));
-    		}
+    		}    
     		
+    		// Screen: addContacts
+    		if (animations.screens.multiplier[screens.addContacts].toFixed(3) == 1) {	
+        		animate_screens(screens.addDuration, util.copy(animations.screens.multiplier));
+    		}  		
 		}			
+	});
+    
+    document.addEventListener( 'rotarydetent', function(e) {
+    	/* Get the direction value from the event */
+	    var direction = e.detail.direction;
+
+	    // Screen: addDuration
+		if (animations.screens.multiplier[screens.addDuration].toFixed(3) == 1) {	
+		    if (direction == "CW") {
+		    	addPlate.duration += 5;
+	    		if (addPlate.duration > 60) {
+	    			addPlate.duration = 60;
+	    		}
+		    }
+		    else if (direction == "CCW") {
+		    	addPlate.duration -= 5;
+	    		if (addPlate.duration < 5) {
+	    			addPlate.duration = 5;
+	    		}
+		    }
+			drawUI(context);
+		}
 	});
 }(tau));

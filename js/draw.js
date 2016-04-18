@@ -366,3 +366,72 @@ draw.typeGrid = function(ctx, opacity) {
 	draw.plate(ctx, true, colors[addPlate.color].val, types[11].val, xOffset + radiusCenter * 1, yOffset, radiusPlate, stroke[11], null, opacity);
 	draw.plate(ctx, true, colors[addPlate.color].val, types[12].val, xOffset + radiusCenter * 2, yOffset, radiusPlate, stroke[12], null, opacity);
 };
+
+/*
+ * Draws text when adding duration.
+ * @param ctx Context to draw in.
+ * @param opacity Opacity to use when drawing.
+ */
+draw.durationText = function(ctx, opacity) {
+    'use strict';  
+	ctx.save();
+
+	ctx.globalAlpha = opacity;
+	
+	ctx.beginPath();
+	ctx.moveTo(-50, 120);
+	ctx.lineTo(50, 120);
+	ctx.lineTo(70, 140);
+	ctx.lineTo(50, 160);
+	ctx.lineTo(-50, 160);
+	ctx.fillStyle = "#ffffff";
+	ctx.closePath();
+	ctx.fill();
+	
+	ctx.beginPath();
+	ctx.moveTo(-15, 10);
+	ctx.lineTo(15, 10);
+	ctx.lineTo(0, 25);
+	ctx.fillStyle = "#ffffff";
+	ctx.closePath();
+	ctx.fill();
+	
+	ctx.beginPath();
+	ctx.moveTo(-15, -34);
+	ctx.lineTo(15, -34);
+	ctx.lineTo(0, -49);
+	ctx.fillStyle = "#ffffff";
+	ctx.closePath();
+	ctx.fill();
+	
+	ctx.restore();
+	
+	ctx.save();
+
+	ctx.globalAlpha = opacity;
+	ctx.textAlign = "center";
+	
+	ctx.font = "32px Arial";
+	ctx.fillStyle = "#ffffff";
+	ctx.fillText("New Shortcut", 0, -120);
+
+	ctx.font = "32px Arial";
+	ctx.fillStyle = "#ffffff";
+	ctx.fillText("Duration:", 0, -75);
+
+	ctx.font = "32px Arial";
+	ctx.fillStyle = "#ffffff";
+	ctx.fillText(util.translateType(addPlate.type) + " in " + addPlate.duration + " minutes.", 0, 0);
+	
+
+	ctx.font = "24px Arial";
+	ctx.fillStyle = "#ffffff";
+	ctx.fillText("Hint: Drag screen or turn", 0, 70);
+	ctx.fillText("bezel to adjust time.", 0, 98);
+	
+	ctx.font = "32px Arial";
+	ctx.fillStyle = "#000000";
+	ctx.fillText("Next", 0, 150);
+	
+	ctx.restore();
+};
