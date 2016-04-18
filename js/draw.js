@@ -525,6 +525,10 @@ draw.contactsList = function(ctx, offset, opacity) {
 		ctx.lineWidth = 4;
 		ctx.strokeStyle = "#ffffff";
 		ctx.stroke();
+		if (contacts[i].sel) {
+			ctx.fillStyle = "#ffffff";
+			ctx.fill();
+		}
 	}
 	
 	ctx.restore();

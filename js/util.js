@@ -1,4 +1,4 @@
-/*global window, document, tizen, console, setTimeout, tau, addPlate, colors, types */
+/*global window, document, tizen, console, setTimeout, tau, addPlate, colors, flowers, contacts, types */
 
 var util = function(){
     'use strict';
@@ -118,6 +118,8 @@ util.addPlateFromCoords = function(x, y) {
 
 /*
  * Resets the addPlate back to original state.
+ * @param flower Current flower.
+ * @param plate Plate ID to add.
  */
 util.resetAdd = function(flower, plate) {
     'use strict';
@@ -127,10 +129,38 @@ util.resetAdd = function(flower, plate) {
     		"color": null, 
     		"type": null, 
     		"duration": 5, 
-    		"contacts": null, 
     		"message": null, 
     		"fire": null
     	};
+    
+    var i;
+    for (i = 0; i < contacts.length; i += 1) {
+    	contacts[i].sel = false;
+    }
+};
+
+/*
+ * Adds a new plate to list.
+ */
+util.addPlate = function() {
+    'use strict';
+	var newPlate = {
+			"type": types[addPlate.type].val, 
+			"color": colors[addPlate.color].val, 
+			"duration": addPlate.duration, 
+			"message": util.translateType(addPlate.type) + " in " + addPlate.duration + " minutes.", 
+			"contacts": [], 
+			"fire": null}; 
+	
+    var i;
+    for (i = 0; i < contacts.length; i += 1) {
+    	if (contacts[i].sel)
+    		newPlate.contacts.push(contacts[i].id);
+    }
+    
+	flowers[addPlate.flower][addPlate.plate] = util.copy(newPlate);
+	
+	localStorage.setItem("flowers", JSON.stringify(flowers));
 };
 
 /*

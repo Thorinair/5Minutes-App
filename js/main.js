@@ -6,34 +6,34 @@ var currentFlower = 0;
 var flowers = [
 		[
 	       {"type": "coffee", "color": "#0080ff", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
-	       {"type": "meeting", "color": "#ff0000", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
-	       {"type": "office", "color": "#ffff00", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
+	       {"type": "meeting", "color": "#ff0000", "duration": 5, "message": "Meeting in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
+	       {"type": "office", "color": "#ffff00", "duration": 5, "message": "Office in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
 	       null,
 	       null,
-	       {"type": "dinner", "color": "#0080ff", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null}
+	       {"type": "dinner", "color": "#0080ff", "duration": 5, "message": "Dinner in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null}
 		],  
 	    [
 		   null,
-		   {"type": "gaming", "color": "#8000ff", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
+		   {"type": "gaming", "color": "#8000ff", "duration": 5, "message": "Gaming in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
 		   null,
-		   {"type": "movies", "color": "#8000ff", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
+		   {"type": "movies", "color": "#8000ff", "duration": 5, "message": "Movies in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
 		   null,
-		   {"type": "concert", "color": "#8000ff", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null}
+		   {"type": "concert", "color": "#8000ff", "duration": 5, "message": "Concert in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null}
 		],
 		[
-		   {"type": "coffee", "color": "#48ff00", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
-		   {"type": "coffee", "color": "#00ff96", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
+		   {"type": "coffee", "color": "#0000ff", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
+		   {"type": "coffee", "color": "#0000ff", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
 		   null,
-		   {"type": "coffee", "color": "#00ffe4", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
-		   {"type": "coffee", "color": "#0096ff", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
+		   {"type": "coffee", "color": "#8000ff", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
+		   {"type": "coffee", "color": "#ff00ff", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
 		   null
 		], 
 		[
-	       {"type": "coffee", "color": "#ff0096", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
+	       {"type": "coffee", "color": "#0080ff", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
 	       null,
 	       null,
-	       {"type": "coffee", "color": "#ffffff", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
-	       {"type": "coffee", "color": "#ffa200", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
+	       {"type": "coffee", "color": "#0080ff", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
+	       {"type": "coffee", "color": "#0080ff", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
 	       null
 		]
 	];
@@ -44,7 +44,6 @@ var addPlate = {
 		"color": null, 
 		"type": null, 
 		"duration": 5, 
-		"contacts": null, 
 		"message": null, 
 		"fire": null
 	};
@@ -126,14 +125,15 @@ var types = [
    ];
 
 var contacts = [
-       {"name": "Denis Vajak", 	"id": "87436543"},
-       {"name": "Josip Balen", 	"id": "47522432"},
-       {"name": "Ime Prezime1", "id": "24287541"},
-       {"name": "Ime Prezime2", "id": "32042352"},
-       {"name": "Ime Prezime3", "id": "34565346"},
-       {"name": "Ime Prezime4", "id": "54312244"},
-       {"name": "Ime Prezime5", "id": "24657888"},
-       {"name": "Ime Prezime6", "id": "00056765"}
+       {"name": "Denis Vajak", 	"id": "87436543", "sel": false},
+       {"name": "Josip Balen", 	"id": "47522432", "sel": false},
+       {"name": "Thorinair", "id": "85820345", "sel": false},
+       {"name": "Twilight Sparkle", "id": "24287541", "sel": false},
+       {"name": "Rainbow Dash", "id": "32042352", "sel": false},
+       {"name": "Pinkie Pie", "id": "34565346", "sel": false},
+       {"name": "Fluttershy", "id": "54312244", "sel": false},
+       {"name": "Rarity", "id": "24657888", "sel": false},
+       {"name": "Applejack", "id": "00056765", "sel": false}
    ];
 
 var dragLastX = 0;
@@ -143,7 +143,8 @@ var wasDragged = false;
 var tapHold;
 var wasHeld = false;
 var lastDuration = 0;
-var lastListOffset = 0;
+var listOffset = 0;
+var listOffsetLast = 0;
 
 window.requestAnimationFrame = window.requestAnimationFrame ||
 	window.webkitRequestAnimationFrame ||
@@ -380,7 +381,7 @@ function drawUI(ctx) {
 
 	    ctx.translate(canvas.width / 2, canvas.height / 2);
 	    draw.contactsText(ctx, animations.screens.multiplier[screens.addContacts]);
-	    draw.contactsList(ctx, lastListOffset, animations.screens.multiplier[screens.addContacts]);
+	    draw.contactsList(ctx, listOffset, animations.screens.multiplier[screens.addContacts]);
 		
 		ctx.restore();
 	}
@@ -418,6 +419,11 @@ window.onload = function onLoad() {
 
     canvas = document.querySelector('canvas');
     context = canvas.getContext('2d');
+    
+    var data = JSON.parse(localStorage.getItem("flowers"));
+    if (data != null) {
+    	flowers = data;
+    }   
     
     animation(context, false);
     animate_startup();
@@ -458,6 +464,11 @@ function processTapHold(x, y) {
     		if (animations.screens.multiplier[screens.addDuration].toFixed(3) == 1) {	
 	    		lastDuration = addPlate.duration;
     		}
+    		
+    	    // Screen: addContacts
+    		if (animations.screens.multiplier[screens.addContacts].toFixed(3) == 1) {	
+    			listOffsetLast = listOffset;
+    		}
     	});
 
     	document.addEventListener("drag", function(e) {
@@ -494,6 +505,20 @@ function processTapHold(x, y) {
 	    		}
 	    		else if (addPlate.duration > 60) {
 	    			addPlate.duration = 60;
+	    		}
+	    		drawUI(context);
+    		}
+
+    	    // Screen: addContacts
+    		if (animations.screens.multiplier[screens.addContacts].toFixed(3) == 1) {	
+	    		wasDragged = true;
+	    		dragY = e.detail.deltaY;
+	    		listOffset = listOffsetLast + dragY;
+	    		if (listOffset > 0) {
+	    			listOffset = 0;
+	    		}
+	    		else if (listOffset < -contacts.length * 48 + 200) {
+	    			listOffset = -contacts.length * 48 + 200;
 	    		}
 	    		drawUI(context);
     		}
@@ -583,10 +608,30 @@ function processTapHold(x, y) {
     	    // Screen: addDuration
     		if (animations.screens.multiplier[screens.addDuration].toFixed(3) == 1) {	
     			if (touchX >= 130 && touchX < 230 && touchY >= 300 && touchY < 340 && !wasDragged) {
-					lastListOffset = 0;
+    				listOffset = 0;
 					animate_screens(screens.addContacts, util.copy(animations.screens.multiplier));
     			}
 	    		wasDragged = false;
+    		}
+
+    	    // Screen: addContacts
+    		if (animations.screens.multiplier[screens.addContacts].toFixed(3) == 1) {	
+    			
+    			if (!wasDragged) {
+	    			if (touchX >= 130 && touchX < 230 && touchY >= 300 && touchY < 340) {
+	    				util.addPlate();
+						animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
+	    			}
+	    			
+	    			var i;
+	    			for (i = 0; i < contacts.length; i +=1) {
+	        			if (touchX >= 280 && touchX < 320 && touchY >= 86 + i*48 + listOffset && touchY < 126 + i*48 + listOffset) {
+	        				contacts[i].sel = !contacts[i].sel;
+	            			drawUI(context);
+	        			}
+	    			}
+    			}
+	    		wasDragged = false;	    		
     		}
     		
     	});
