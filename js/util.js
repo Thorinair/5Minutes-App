@@ -119,16 +119,18 @@ util.addPlateFromCoords = function(x, y) {
 /*
  * Resets the addPlate back to original state.
  */
-util.resetAdd = function() {
+util.resetAdd = function(flower, plate) {
     'use strict';
-	addPlate = {
-			"type": null, 
-			"color": null, 
-			"duration": 5, 
-			"message": null, 
-			"invite": null, 
-			"fire": null
-		};
+    addPlate = {
+    		"flower": flower, 
+    		"plate": plate, 
+    		"color": null, 
+    		"type": null, 
+    		"duration": 5, 
+    		"contacts": null, 
+    		"message": null, 
+    		"fire": null
+    	};
 };
 
 /*

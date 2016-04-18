@@ -1,4 +1,4 @@
-/*global window, document, tizen, console, setTimeout, tau, animations, screens, colors, addPlate, colors, types, util */
+/*global window, document, tizen, console, setTimeout, tau, animations, screens, colors, addPlate, colors, types, contacts, util */
 
 var draw = function(){
     'use strict';
@@ -432,6 +432,100 @@ draw.durationText = function(ctx, opacity) {
 	ctx.font = "32px Arial";
 	ctx.fillStyle = "#000000";
 	ctx.fillText("Next", 0, 150);
+	
+	ctx.restore();
+};
+
+/*
+ * Draws text when adding contacts.
+ * @param ctx Context to draw in.
+ * @param opacity Opacity to use when drawing.
+ */
+draw.contactsText = function(ctx, opacity) {
+    'use strict';  
+	ctx.save();
+
+	ctx.globalAlpha = opacity;
+	
+	ctx.beginPath();
+	ctx.moveTo(-50, 120);
+	ctx.lineTo(50, 120);
+	ctx.lineTo(50, 160);
+	ctx.lineTo(-50, 160);
+	ctx.fillStyle = "#ffffff";
+	ctx.closePath();
+	ctx.fill();
+	
+	ctx.restore();
+	
+	ctx.save();
+
+	ctx.globalAlpha = opacity;
+	ctx.textAlign = "center";
+	
+	ctx.font = "32px Arial";
+	ctx.fillStyle = "#ffffff";
+	ctx.fillText("New Shortcut", 0, -120);
+	
+	ctx.font = "32px Arial";
+	ctx.fillStyle = "#000000";
+	ctx.fillText("Save", 0, 150);
+	
+	ctx.restore();
+};
+
+/*
+ * Draws list when adding contacts.
+ * @param ctx Context to draw in.
+ * @param offset Offset of the list.
+ * @param opacity Opacity to use when drawing.
+ */
+draw.contactsList = function(ctx, offset, opacity) {
+    'use strict';  
+	ctx.save();
+
+	ctx.globalAlpha = opacity;
+
+	ctx.beginPath();
+	ctx.moveTo(-190, -105);
+	ctx.lineTo(190, -105);
+	ctx.lineWidth = 2;
+	ctx.strokeStyle = "#ffffff";
+	ctx.stroke();
+
+	ctx.beginPath();
+	ctx.moveTo(-190, 105);
+	ctx.lineTo(190, 105);
+	ctx.lineWidth = 2;
+	ctx.strokeStyle = "#ffffff";
+	ctx.stroke();
+	
+	ctx.restore();
+
+	ctx.save();
+	
+	ctx.beginPath();
+	ctx.moveTo(-180, -100);
+	ctx.lineTo(180, -100);
+	ctx.lineTo(180, 100);
+	ctx.lineTo(-180, 100);
+	ctx.clip();
+
+	ctx.globalAlpha = opacity;
+	ctx.textAlign = "left";
+	ctx.font = "32px Arial";
+	ctx.fillStyle = "#ffffff";
+	
+	var i;
+	for (i = 0; i < contacts.length; i += 1) {
+		ctx.fillText(contacts[i].name, -140, -64 + i*48 + offset);
+		
+		ctx.beginPath();
+	  	ctx.arc(120, -74 + i*48 + offset, 12, 0, util.rad(360));
+		ctx.lineWidth = 4;
+		ctx.strokeStyle = "#ffffff";
+		ctx.stroke();
+	}
 	
 	ctx.restore();
 };

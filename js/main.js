@@ -5,45 +5,47 @@ var canvas, context;
 var currentFlower = 0;
 var flowers = [
 		[
-	       {"type": "coffee", "color": "#0080ff", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
-	       {"type": "meeting", "color": "#ff0000", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
-	       {"type": "office", "color": "#ffff00", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
+	       {"type": "coffee", "color": "#0080ff", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
+	       {"type": "meeting", "color": "#ff0000", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
+	       {"type": "office", "color": "#ffff00", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
 	       null,
 	       null,
-	       {"type": "dinner", "color": "#0080ff", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null}
+	       {"type": "dinner", "color": "#0080ff", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null}
 		],  
 	    [
 		   null,
-		   {"type": "gaming", "color": "#8000ff", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
+		   {"type": "gaming", "color": "#8000ff", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
 		   null,
-		   {"type": "movies", "color": "#8000ff", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
+		   {"type": "movies", "color": "#8000ff", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
 		   null,
-		   {"type": "concert", "color": "#8000ff", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null}
+		   {"type": "concert", "color": "#8000ff", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null}
 		],
 		[
-		   {"type": "coffee", "color": "#48ff00", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
-		   {"type": "coffee", "color": "#00ff96", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
+		   {"type": "coffee", "color": "#48ff00", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
+		   {"type": "coffee", "color": "#00ff96", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
 		   null,
-		   {"type": "coffee", "color": "#00ffe4", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
-		   {"type": "coffee", "color": "#0096ff", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
+		   {"type": "coffee", "color": "#00ffe4", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
+		   {"type": "coffee", "color": "#0096ff", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
 		   null
 		], 
 		[
-	       {"type": "coffee", "color": "#ff0096", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
+	       {"type": "coffee", "color": "#ff0096", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
 	       null,
 	       null,
-	       {"type": "coffee", "color": "#ffffff", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
-	       {"type": "coffee", "color": "#ffa200", "duration": 5, "message": "Coffee in 5 minutes.", "invite": [345435, 356345, 346345], "fire": null},
+	       {"type": "coffee", "color": "#ffffff", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
+	       {"type": "coffee", "color": "#ffa200", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
 	       null
 		]
 	];
 
 var addPlate = {
-		"type": null, 
+		"flower": 0, 
+		"plate": 0, 
 		"color": null, 
+		"type": null, 
 		"duration": 5, 
+		"contacts": null, 
 		"message": null, 
-		"invite": null, 
 		"fire": null
 	};
 
@@ -123,6 +125,17 @@ var types = [
 	   {"val": "party", 	"name": "Party"}
    ];
 
+var contacts = [
+       {"name": "Denis Vajak", 	"id": "87436543"},
+       {"name": "Josip Balen", 	"id": "47522432"},
+       {"name": "Ime Prezime1", "id": "24287541"},
+       {"name": "Ime Prezime2", "id": "32042352"},
+       {"name": "Ime Prezime3", "id": "34565346"},
+       {"name": "Ime Prezime4", "id": "54312244"},
+       {"name": "Ime Prezime5", "id": "24657888"},
+       {"name": "Ime Prezime6", "id": "00056765"}
+   ];
+
 var dragLastX = 0;
 var dragLastY = 0;
 var isScreenTouched = false;
@@ -130,6 +143,7 @@ var wasDragged = false;
 var tapHold;
 var wasHeld = false;
 var lastDuration = 0;
+var lastListOffset = 0;
 
 window.requestAnimationFrame = window.requestAnimationFrame ||
 	window.webkitRequestAnimationFrame ||
@@ -359,6 +373,17 @@ function drawUI(ctx) {
 		
 		ctx.restore();
 	}
+
+    // Screen: addContacts
+	if (animations.screens.multiplier[screens.addContacts].toFixed(3) > 0) {	
+		ctx.save();
+
+	    ctx.translate(canvas.width / 2, canvas.height / 2);
+	    draw.contactsText(ctx, animations.screens.multiplier[screens.addContacts]);
+	    draw.contactsList(ctx, lastListOffset, animations.screens.multiplier[screens.addContacts]);
+		
+		ctx.restore();
+	}
 }
 
 /*
@@ -463,7 +488,7 @@ function processTapHold(x, y) {
     		if (animations.screens.multiplier[screens.addDuration].toFixed(3) == 1) {	
 	    		wasDragged = true;
 	    		dragY = e.detail.deltaY;
-	    		addPlate.duration = lastDuration + Math.floor(-dragY / 40) * 5
+	    		addPlate.duration = lastDuration + Math.floor(-dragY / 40) * 5;
 	    		if (addPlate.duration < 5) {
 	    			addPlate.duration = 5;
 	    		}
@@ -518,7 +543,7 @@ function processTapHold(x, y) {
 			    				console.log(JSON.stringify(flowers[currentFlower][plate]));
 		    				}
 		    				else {
-			    				util.resetAdd();
+			    				util.resetAdd(currentFlower, plate);
 			            		animate_screens(screens.addColor, util.copy(animations.screens.multiplier));
 		    				}
 	    				}
@@ -558,9 +583,8 @@ function processTapHold(x, y) {
     	    // Screen: addDuration
     		if (animations.screens.multiplier[screens.addDuration].toFixed(3) == 1) {	
     			if (touchX >= 130 && touchX < 230 && touchY >= 300 && touchY < 340 && !wasDragged) {
-    				if (addPlate.type != null) {
-    					animate_screens(screens.addContacts, util.copy(animations.screens.multiplier));
-    				}
+					lastListOffset = 0;
+					animate_screens(screens.addContacts, util.copy(animations.screens.multiplier));
     			}
 	    		wasDragged = false;
     		}
