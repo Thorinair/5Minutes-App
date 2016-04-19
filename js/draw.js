@@ -143,6 +143,39 @@ draw.dots = function(ctx) {
 };
 
 /*
+ * Draws the contacts label on top when dragging.
+ * @param ctx Context to draw in.
+ */
+draw.contactsLabel = function(ctx, offset) {
+    'use strict';	  
+	ctx.save();
+
+	if (offset - 220 < 0) {
+		ctx.globalAlpha = 0;
+	}
+	else if (offset - 220 > 100) {
+		ctx.globalAlpha = 1;
+	} 
+	else {
+		ctx.globalAlpha = (offset - 220) / 100;
+	}
+	ctx.textAlign = "center";
+	ctx.font = "32px Arial";
+	ctx.fillStyle = "#ffffff";
+	ctx.fillText("Contacts", 0, -100);
+	
+	ctx.beginPath();
+	ctx.moveTo(-15, -130);
+	ctx.lineTo(15, -130);
+	ctx.lineTo(0, -145);
+	ctx.fillStyle = "#ffffff";
+	ctx.closePath();
+	ctx.fill();
+	
+	ctx.restore();
+};
+
+/*
  * Draws text and buttons on login.
  * @param ctx Context to draw in.
  * @param opacity Opacity to use when drawing.

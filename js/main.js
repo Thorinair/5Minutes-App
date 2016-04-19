@@ -53,7 +53,7 @@ var animations = {
 		"screens": {
 			"duration": 200,
 			"active": false,
-			"multiplier": [1, 0, 0, 0, 0, 0, 0, 0, 0]
+			"multiplier": [0, 1, 0, 0, 0, 0, 0, 0, 0] //TODO: Restore start to login.
 		},
 		"login": {
 			"duration": 200,
@@ -386,6 +386,7 @@ function drawUI(ctx) {
 		
 		ctx.translate(canvas.width / 2, canvas.height / 2);
 		draw.dots(ctx);
+		draw.contactsLabel(ctx, animations.flowers.centerY);
 		
 		ctx.restore();
 	}
@@ -439,6 +440,15 @@ function drawUI(ctx) {
 		
 		ctx.restore();
 	}
+
+    // Screen: contacts
+	if (animations.screens.multiplier[screens.contacts].toFixed(3) > 0) {	
+		ctx.save();
+
+	    ctx.translate(canvas.width / 2, canvas.height / 2);
+		
+		ctx.restore();
+	}
 }
 
 /*
@@ -481,6 +491,7 @@ window.onload = function onLoad() {
     }   
     
     animation(context, false);
+	animate_startup(); //TODO: Remove this!
     drawUI(context);
 };
 
@@ -673,6 +684,10 @@ function processTapHold(x, y) {
 	    			if (animations.flowers.centerX.toFixed(3) != 180 && animations.flowers.centerY.toFixed(3) != 180) {
 	    				animations.flowers.active = true;
 	    				
+	    				if (animations.flowers.centerY >= 360) {
+		            		animate_screens(screens.contacts, util.copy(animations.screens.multiplier));
+	    				}	   
+	    				
 	    	    	    if (animations.flowers.centerX <= 0) {
 	    	    	    	currentFlower = util.flowerNext(currentFlower);
 	    	    	    	animations.flowers.centerXold += 360;
@@ -839,7 +854,12 @@ function processTapHold(x, y) {
     		// Screen: edit
     		if (animations.screens.multiplier[screens.edit].toFixed(3) == 1) {	
         		animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
-    		}  		
+    		}  			
+    		
+    		// Screen: contacts
+    		if (animations.screens.multiplier[screens.contacts].toFixed(3) == 1) {	
+        		animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
+    		} 	
 		}			
 	});
     
