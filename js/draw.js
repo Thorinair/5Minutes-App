@@ -280,7 +280,7 @@ draw.login = function(ctx, opacity) {
 		ctx.globalAlpha = opacity;
 	}
 	else {
-		ctx.globalAlpha = opacity * 0.25;
+		ctx.globalAlpha = opacity * 0.5;
 	}
 	ctx.beginPath();
 	ctx.moveTo(68, -64);
@@ -622,7 +622,7 @@ draw.addContacts = function(ctx, offset, opacity) {
 		ctx.globalAlpha = opacity;
 	}
 	else {
-		ctx.globalAlpha = opacity * 0.5;
+		ctx.globalAlpha = opacity * 0.25;
 	}
 	ctx.beginPath();
 	ctx.moveTo(-50, 120);
@@ -756,6 +756,144 @@ draw.contacts = function(ctx, offset, opacity) {
 	for (i = 0; i < contacts.length; i += 1) {
 		ctx.fillText(contacts[i].name, -140, -64 + i*48 + offset);
 	}
+	
+	ctx.restore();
+};
+
+/*
+ * Draws the contact adding screen.
+ * @param ctx Context to draw in.
+ * @param opacity Opacity to use when drawing.
+ */
+draw.contactsAdd = function(ctx, opacity) {
+    'use strict';  
+
+	ctx.save();
+	
+    var radiusCenter = 60;
+    var radiusPlate = radiusCenter * (8/15);
+    var xOffset;
+    var yOffset;
+    var newOpacity;
+	
+	ctx.rotate(util.rad(-90));
+	
+	if (contact.length < 8) {
+		newOpacity = opacity;
+	}
+	else {
+		newOpacity = opacity * 0.5;
+	}
+	
+	xOffset = -radiusCenter * Math.cos(util.rad(60 * 0)) - 20;
+	yOffset = radiusCenter * Math.sin(util.rad(60 * 0)) - 104;	
+	draw.plate(ctx, true, "#ffffff", null, xOffset + radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, xOffset, yOffset, radiusPlate, false, null, newOpacity);
+
+	xOffset = -radiusCenter * Math.cos(util.rad(60 * -1)) - 20;
+	yOffset = radiusCenter * Math.sin(util.rad(60 * -1));
+	draw.plate(ctx, true, "#ffffff", null, xOffset, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, xOffset - radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
+
+	xOffset = -radiusCenter * Math.cos(util.rad(60 * 0)) - 20;
+	yOffset = radiusCenter * Math.sin(util.rad(60 * 0));	
+	draw.plate(ctx, true, "#ffffff", null, xOffset + radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, xOffset, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, xOffset - radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
+
+	xOffset = -radiusCenter * Math.cos(util.rad(60 * 1)) - 20;
+	yOffset = radiusCenter * Math.sin(util.rad(60 * 1));
+	draw.plate(ctx, true, "#ffffff", null, xOffset, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, xOffset - radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
+
+	xOffset = -radiusCenter * Math.cos(util.rad(60 * 0)) - 20;
+	yOffset = radiusCenter * Math.sin(util.rad(60 * 0)) + 104;	
+	draw.plate(ctx, true, "#ffffff", null, xOffset + radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
+	
+	if (contact.length > 0) {
+		newOpacity = opacity;
+	}
+	else {
+		newOpacity = opacity * 0.5;
+	}
+	
+	draw.plate(ctx, true, "#ffffff", null, xOffset, yOffset, radiusPlate, false, null, newOpacity);
+	
+	ctx.restore();
+	
+
+	ctx.save();
+
+	ctx.globalAlpha = opacity;
+	ctx.beginPath();
+	ctx.moveTo(-60, -72);
+	ctx.lineTo(116, -72);
+	ctx.lineWidth = 2;
+	ctx.strokeStyle = "#ffffff";
+	ctx.stroke();
+
+	ctx.fillStyle = "#ffffff";
+	ctx.textAlign = "left";
+	ctx.font = "40px Arial";
+	ctx.fillText(contact, -60, -80);
+
+	ctx.restore();
+	
+
+	ctx.save();
+	
+	if (contact.length == 8) {
+		ctx.globalAlpha = opacity;
+	}
+	else {
+		ctx.globalAlpha = opacity * 0.5;
+	}
+	ctx.beginPath();
+	ctx.moveTo(-50, -61);
+	ctx.lineTo(50, -61);
+	ctx.lineTo(50, -17);
+	ctx.lineTo(-50, -17);
+	ctx.fillStyle = "#ffffff";
+	ctx.closePath();
+	ctx.fill();
+
+	ctx.restore();
+	
+	  
+	ctx.save();
+
+	ctx.globalAlpha = opacity;
+	ctx.textAlign = "center";
+	
+	ctx.font = "32px Arial";
+	ctx.fillStyle = "#ffffff";
+	ctx.fillText("Add Contact", 0, -120);
+
+	ctx.textAlign = "right";
+	ctx.font = "40px Arial";
+	ctx.fillText("ID:", -70, -80);
+
+	ctx.textAlign = "center";
+	ctx.font = "32px Arial";
+	ctx.fillStyle = "#000000";
+	ctx.fillText("Invite", 0, -28);	
+	
+	ctx.font = "48px Arial";	
+	ctx.fillText("7", -104, 36);
+	ctx.fillText("0", -104, 96);
+
+	ctx.fillText("4", -52, 66);
+	ctx.fillText("1", -52, 126);
+	
+	ctx.fillText("8", 0, 36);
+	ctx.fillText("5", 0, 96);
+	ctx.fillText("2", 0, 156);
+
+	ctx.fillText("6", 52, 66);
+	ctx.fillText("3", 52, 126);
+	
+	ctx.fillText("9", 104, 36);	
+	ctx.fillText("<", 104, 96);
 	
 	ctx.restore();
 };

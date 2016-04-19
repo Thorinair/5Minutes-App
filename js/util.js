@@ -1,4 +1,4 @@
-/*global window, document, tizen, console, setTimeout, tau, addPlate, colors, flowers, contacts, types, drawUI, user, pass */
+/*global window, document, tizen, console, setTimeout, tau, addPlate, colors, flowers, contacts, types, drawUI, user, pass, contact */
 
 var util = function(){
     'use strict';
@@ -278,6 +278,18 @@ util.typeField = function(ctx, char, field) {
     else if (field == 1) {
     	pass += char;
     }
+	drawUI(ctx);
+};
+
+/*
+ * Types into the contact field.
+ * @param ctx Context to draw the UI in.
+ * @param char Character to type.
+ * @param field Field to type to.
+ */
+util.typeContact = function(ctx, char) {
+    'use strict';
+    contact += char;
 	drawUI(ctx);
 };
 

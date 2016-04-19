@@ -53,7 +53,7 @@ var animations = {
 		"screens": {
 			"duration": 200,
 			"active": false,
-			"multiplier": [0, 1, 0, 0, 0, 0, 0, 0, 0] //TODO: Restore start to login.
+			"multiplier": [1, 0, 0, 0, 0, 0, 0, 0, 0] //TODO: Restore start to login.
 		},
 		"login": {
 			"duration": 200,
@@ -156,6 +156,8 @@ var listOffsetLast = 0;
 var user = "";
 var pass = "";
 var loginBox = 0;
+
+var contact = "";
 
 window.requestAnimationFrame = window.requestAnimationFrame ||
 	window.webkitRequestAnimationFrame ||
@@ -450,6 +452,16 @@ function drawUI(ctx) {
 		
 		ctx.restore();
 	}
+
+    // Screen: contactsAdd
+	if (animations.screens.multiplier[screens.contactsAdd].toFixed(3) > 0) {	
+		ctx.save();
+
+	    ctx.translate(canvas.width / 2, canvas.height / 2);
+	    draw.contactsAdd(ctx, animations.screens.multiplier[screens.contactsAdd]);
+		
+		ctx.restore();
+	}
 }
 
 /*
@@ -492,7 +504,6 @@ window.onload = function onLoad() {
     }   
     
     animation(context, false);
-	animate_startup(); //TODO: Remove this!
     drawUI(context);
 };
 
@@ -634,14 +645,12 @@ function processTapHold(x, y) {
 	    				animate_login(loginBox, util.copy(animations.login.opacity));
 	    			}
 	    			
-	    			else if (touchX >= 248 && touchX < 332 && touchY >= 116 && touchY < 160) {
+	    			else if (touchX >= 248 && touchX < 332 && touchY >= 116 && touchY < 160 && user.length == 8 && pass.length == 8) {
 	    				//TODO: Add login code here!
-	    				if (user.length == 8 && pass.length == 8) {
-	    					animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
-	    		    		window.setTimeout(function() {
-	    		    			animate_startup();
-	    					}, 200);
-	    				}
+    					animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
+    		    		window.setTimeout(function() {
+    		    			animate_startup();
+    					}, 200);
 	    			}
 	    			
 	    			if ((user.length < 8 && loginBox == 0) || (pass.length < 8 && loginBox == 1)) {
@@ -831,10 +840,64 @@ function processTapHold(x, y) {
     	    // Screen: contacts
     		if (animations.screens.multiplier[screens.contacts].toFixed(3) == 1) {	
     			if (!wasDragged && touchX >= 140 && touchX < 220 && touchY >= 300 && touchY < 340) {
+    				contact = "";
 					animate_screens(screens.contactsAdd, util.copy(animations.screens.multiplier));
     			}
 	    		wasDragged = false;	    		
     		}
+    		
+    	    // Screen: contactsAdd
+    		if (animations.screens.multiplier[screens.contactsAdd].toFixed(3) == 1) {	
+    			
+    			if (touchX >= 130 && touchX < 230 && touchY >= 119 && touchY < 163 && contact.length == 8) {
+    				//TODO: Add invite code here!
+					animate_screens(screens.contacts, util.copy(animations.screens.multiplier));
+    			}
+    			
+    			if (contact.length < 8) {
+    				if (touchX >= 50 && touchX < 102 && touchY >= 170 && touchY < 230) {
+    					util.typeContact(context, "7");
+	    			}
+    				else if (touchX >= 50 && touchX < 102 && touchY >= 230 && touchY < 290) {
+    					util.typeContact(context, "0");
+	    			}
+    				
+    				else if (touchX >= 102 && touchX < 154 && touchY >= 200 && touchY < 260) {
+    					util.typeContact(context, "4");
+	    			}
+    				else if (touchX >= 102 && touchX < 154 && touchY >= 260 && touchY < 320) {
+    					util.typeContact(context, "1");
+	    			}
+    				
+    				else if (touchX >= 154 && touchX < 206 && touchY >= 170 && touchY < 230) {
+    					util.typeContact(context, "8");
+	    			}
+    				else if (touchX >= 154 && touchX < 206 && touchY >= 230 && touchY < 290) {
+    					util.typeContact(context, "5");
+	    			}
+    				else if (touchX >= 154 && touchX < 206 && touchY >= 290 && touchY < 350) {
+    					util.typeContact(context, "2");
+	    			}
+    				
+    				else if (touchX >= 206 && touchX < 258 && touchY >= 200 && touchY < 260) {
+    					util.typeContact(context, "6");
+	    			}
+    				else if (touchX >= 206 && touchX < 258 && touchY >= 260 && touchY < 320) {
+    					util.typeContact(context, "3");
+	    			}
+    				
+    				else if (touchX >= 258 && touchX < 310 && touchY >= 170 && touchY < 230) {
+    					util.typeContact(context, "9");
+	    			}
+    			}
+    			
+    			if (contact.length > 0) {
+    				if (touchX >= 258 && touchX < 310 && touchY >= 230 && touchY < 290) {
+    					contact = contact.slice(0, -1);
+    					drawUI(context);
+	    			}
+    			}
+			}
     		
     	});
     });
