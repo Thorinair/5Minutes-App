@@ -176,7 +176,7 @@ draw.contactsLabel = function(ctx, offset) {
 };
 
 /*
- * Draws text and buttons on login.
+ * Draws the login screen.
  * @param ctx Context to draw in.
  * @param opacity Opacity to use when drawing.
  */
@@ -381,7 +381,7 @@ draw.editText = function(ctx, opacity) {
 };
 
 /*
- * Draws text when adding color.
+ * Draws screen for adding color to plate.
  * @param ctx Context to draw in.
  * @param opacity Opacity to use when drawing.
  */
@@ -460,7 +460,7 @@ draw.addColor = function(ctx, opacity) {
 };
 
 /*
- * Draws text when adding type.
+ * Draws screen for adding type to plate.
  * @param ctx Context to draw in.
  * @param opacity Opacity to use when drawing.
  */
@@ -539,7 +539,7 @@ draw.addType = function(ctx, opacity) {
 };
 
 /*
- * Draws text when adding duration.
+ * Draws screen for adding duration to plate.
  * @param ctx Context to draw in.
  * @param opacity Opacity to use when drawing.
  */
@@ -604,7 +604,7 @@ draw.addDuration = function(ctx, opacity) {
 };
 
 /*
- * Draws text when adding contacts.
+ * Draws screen for adding contacts to plate.
  * @param ctx Context to draw in.
  * @param offset Offset of the list.
  * @param opacity Opacity to use when drawing.
@@ -686,6 +686,75 @@ draw.addContacts = function(ctx, offset, opacity) {
 			ctx.fillStyle = "#ffffff";
 			ctx.fill();
 		}
+	}
+	
+	ctx.restore();
+};
+
+/*
+ * Draws the contacts screen.
+ * @param ctx Context to draw in.
+ * @param offset Offset of the list.
+ * @param opacity Opacity to use when drawing.
+ */
+draw.contacts = function(ctx, offset, opacity) {
+    'use strict';  
+	ctx.save();
+
+	ctx.globalAlpha = opacity;
+	ctx.beginPath();
+	ctx.moveTo(-40, 120);
+	ctx.lineTo(40, 120);
+	ctx.lineTo(40, 160);
+	ctx.lineTo(-40, 160);
+	ctx.fillStyle = "#ffffff";
+	ctx.closePath();
+	ctx.fill();
+
+	ctx.globalAlpha = opacity;
+	ctx.textAlign = "center";
+	
+	ctx.font = "32px Arial";
+	ctx.fillStyle = "#ffffff";
+	ctx.fillText("Contacts", 0, -120);
+	
+	ctx.font = "32px Arial";
+	ctx.fillStyle = "#000000";
+	ctx.fillText("Add", 0, 150);
+
+	ctx.beginPath();
+	ctx.moveTo(-190, -105);
+	ctx.lineTo(190, -105);
+	ctx.lineWidth = 2;
+	ctx.strokeStyle = "#ffffff";
+	ctx.stroke();
+
+	ctx.beginPath();
+	ctx.moveTo(-190, 105);
+	ctx.lineTo(190, 105);
+	ctx.lineWidth = 2;
+	ctx.strokeStyle = "#ffffff";
+	ctx.stroke();
+	
+	ctx.restore();
+
+	ctx.save();
+	
+	ctx.beginPath();
+	ctx.moveTo(-180, -100);
+	ctx.lineTo(180, -100);
+	ctx.lineTo(180, 100);
+	ctx.lineTo(-180, 100);
+	ctx.clip();
+
+	ctx.globalAlpha = opacity;
+	ctx.textAlign = "left";
+	ctx.font = "32px Arial";
+	ctx.fillStyle = "#ffffff";
+
+	var i;
+	for (i = 0; i < contacts.length; i += 1) {
+		ctx.fillText(contacts[i].name, -140, -64 + i*48 + offset);
 	}
 	
 	ctx.restore();
