@@ -10,6 +10,8 @@ var draw = function(){
  * @param use Whether a plate or an add symbol should be drawn.
  * @param color Color of the plate to draw.
  * @param type Type of the plate to draw.
+ * @param duration Duration of the event.
+ * @param fire Time when the event is supposed to happen.
  * @param x X position of a plate.
  * @param y Y position of a plate.
  * @param radius Radius of a plate.
@@ -17,7 +19,7 @@ var draw = function(){
  * @param colorB Secondary color, used for add symbols.
  * @param opacity Opacity of a plate or add symbol.
  */
-draw.plate = function(ctx, use, color, type, x, y, radius, stroke, colorB, opacity) {
+draw.plate = function(ctx, use, color, type, duration, fire, x, y, radius, stroke, colorB, opacity) {
     'use strict';
     
     // UI Parameters
@@ -50,6 +52,33 @@ draw.plate = function(ctx, use, color, type, x, y, radius, stroke, colorB, opaci
 			ctx.lineWidth = 3;
 			ctx.stroke();
 		}
+		
+		if (fire != null) {
+			if (util.processFireTime(fire) > 0) {
+				ctx.save();
+				
+				ctx.beginPath();
+				ctx.arc(0, 0, radius, 0, util.rad(360 * (util.processFireTime(fire) / (duration * 60))));
+				context.lineTo(0, 0);
+				ctx.clip();
+				
+				ctx.beginPath();
+				ctx.moveTo(radius - 3, 0);
+				for (i = 1; i < 6; i += 1) {
+					xOffset = (radius - 3) * Math.cos(util.rad(60 * i));
+					yOffset = (radius - 3) * Math.sin(util.rad(60 * i));
+				
+					ctx.lineTo(xOffset, yOffset);
+				}
+				ctx.closePath();
+				ctx.strokeStyle = "#000000";
+				ctx.lineWidth = 2;
+				ctx.stroke();
+				
+				ctx.restore();
+			}
+		}
+		
 		if (type != null) {
 			ctx.restore();
 			ctx.save();
@@ -104,10 +133,10 @@ draw.flower = function(ctx, flower, colorB, offset, opacity) {
 		yOffset = radiusCenter * Math.sin(util.rad(60 * -i));
 		
 		if (flower[i] != null) {
-			draw.plate(ctx, true, flower[i].color, flower[i].type, xOffset, yOffset, radiusPlate, false, colorB, opacity[i].toFixed(3) * animations.screens.multiplier[screens.flowers]);
+			draw.plate(ctx, true, flower[i].color, flower[i].type, flower[i].duration, flower[i].fire, xOffset, yOffset, radiusPlate, false, colorB, opacity[i].toFixed(3) * animations.screens.multiplier[screens.flowers]);
 		}
 		else {
-			draw.plate(ctx, false, null, null, xOffset, yOffset, radiusPlate, false, colorB, opacity[i].toFixed(3) * animations.screens.multiplier[screens.flowers]);
+			draw.plate(ctx, false, null, null, 0, null, xOffset, yOffset, radiusPlate, false, colorB, opacity[i].toFixed(3) * animations.screens.multiplier[screens.flowers]);
 		}
 	}
 };
@@ -202,28 +231,28 @@ draw.login = function(ctx, opacity) {
 	
 	xOffset = -radiusCenter * Math.cos(util.rad(60 * 0)) - 20;
 	yOffset = radiusCenter * Math.sin(util.rad(60 * 0)) - 104;	
-	draw.plate(ctx, true, "#ffffff", null, xOffset + radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
-	draw.plate(ctx, true, "#ffffff", null, xOffset, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset + radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset, yOffset, radiusPlate, false, null, newOpacity);
 
 	xOffset = -radiusCenter * Math.cos(util.rad(60 * -1)) - 20;
 	yOffset = radiusCenter * Math.sin(util.rad(60 * -1));
-	draw.plate(ctx, true, "#ffffff", null, xOffset, yOffset, radiusPlate, false, null, newOpacity);
-	draw.plate(ctx, true, "#ffffff", null, xOffset - radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset - radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
 
 	xOffset = -radiusCenter * Math.cos(util.rad(60 * 0)) - 20;
 	yOffset = radiusCenter * Math.sin(util.rad(60 * 0));	
-	draw.plate(ctx, true, "#ffffff", null, xOffset + radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
-	draw.plate(ctx, true, "#ffffff", null, xOffset, yOffset, radiusPlate, false, null, newOpacity);
-	draw.plate(ctx, true, "#ffffff", null, xOffset - radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset + radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset - radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
 
 	xOffset = -radiusCenter * Math.cos(util.rad(60 * 1)) - 20;
 	yOffset = radiusCenter * Math.sin(util.rad(60 * 1));
-	draw.plate(ctx, true, "#ffffff", null, xOffset, yOffset, radiusPlate, false, null, newOpacity);
-	draw.plate(ctx, true, "#ffffff", null, xOffset - radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset - radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
 
 	xOffset = -radiusCenter * Math.cos(util.rad(60 * 0)) - 20;
 	yOffset = radiusCenter * Math.sin(util.rad(60 * 0)) + 104;	
-	draw.plate(ctx, true, "#ffffff", null, xOffset + radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset + radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
 	
 	if ((user.length > 0 && loginBox == 0) || (pass.length > 0 && loginBox == 1)) {
 		newOpacity = opacity;
@@ -232,7 +261,7 @@ draw.login = function(ctx, opacity) {
 		newOpacity = opacity * 0.5;
 	}
 	
-	draw.plate(ctx, true, "#ffffff", null, xOffset, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset, yOffset, radiusPlate, false, null, newOpacity);
 	
 	ctx.restore();
 	
@@ -438,25 +467,25 @@ draw.addColor = function(ctx, opacity) {
     
 	xOffset = -radiusCenter * Math.cos(util.rad(60 * -1));
 	yOffset = radiusCenter * Math.sin(util.rad(60 * -1)) + 20;
-	draw.plate(ctx, true, colors[0].val, null, xOffset - radiusCenter * 1, yOffset, radiusPlate, stroke[0], null, opacity);
-	draw.plate(ctx, true, colors[1].val, null, xOffset, yOffset, radiusPlate, stroke[1], null, opacity);
-	draw.plate(ctx, true, colors[2].val, null, xOffset + radiusCenter * 1, yOffset, radiusPlate, stroke[2], null, opacity);
-	draw.plate(ctx, true, colors[3].val, null, xOffset + radiusCenter * 2, yOffset, radiusPlate, stroke[3], null, opacity);
+	draw.plate(ctx, true, colors[0].val, null, 0, null, xOffset - radiusCenter * 1, yOffset, radiusPlate, stroke[0], null, opacity);
+	draw.plate(ctx, true, colors[1].val, null, 0, null, xOffset, yOffset, radiusPlate, stroke[1], null, opacity);
+	draw.plate(ctx, true, colors[2].val, null, 0, null, xOffset + radiusCenter * 1, yOffset, radiusPlate, stroke[2], null, opacity);
+	draw.plate(ctx, true, colors[3].val, null, 0, null, xOffset + radiusCenter * 2, yOffset, radiusPlate, stroke[3], null, opacity);
 
 	xOffset = -radiusCenter * Math.cos(util.rad(60 * 0));
 	yOffset = radiusCenter * Math.sin(util.rad(60 * 0)) + 20;
-	draw.plate(ctx, true, colors[4].val, null, xOffset + radiusCenter * 3, yOffset, radiusPlate, stroke[4], null, opacity);
-	draw.plate(ctx, true, colors[5].val, null, xOffset + radiusCenter * 2, yOffset, radiusPlate, stroke[5], null, opacity);
-	draw.plate(ctx, true, colors[6].val, null, xOffset + radiusCenter * 1, yOffset, radiusPlate, stroke[6], null, opacity);
-	draw.plate(ctx, true, colors[7].val, null, xOffset, yOffset, radiusPlate, stroke[7], null, opacity);
-	draw.plate(ctx, true, colors[8].val, null, xOffset - radiusCenter * 1, yOffset, radiusPlate, stroke[8], null, opacity);
+	draw.plate(ctx, true, colors[4].val, null, 0, null, xOffset + radiusCenter * 3, yOffset, radiusPlate, stroke[4], null, opacity);
+	draw.plate(ctx, true, colors[5].val, null, 0, null, xOffset + radiusCenter * 2, yOffset, radiusPlate, stroke[5], null, opacity);
+	draw.plate(ctx, true, colors[6].val, null, 0, null, xOffset + radiusCenter * 1, yOffset, radiusPlate, stroke[6], null, opacity);
+	draw.plate(ctx, true, colors[7].val, null, 0, null, xOffset, yOffset, radiusPlate, stroke[7], null, opacity);
+	draw.plate(ctx, true, colors[8].val, null, 0, null, xOffset - radiusCenter * 1, yOffset, radiusPlate, stroke[8], null, opacity);
 	
 	xOffset = -radiusCenter * Math.cos(util.rad(60 * 1));
 	yOffset = radiusCenter * Math.sin(util.rad(60 * 1)) + 20;
-	draw.plate(ctx, true, colors[9].val, null, xOffset - radiusCenter * 1, yOffset, radiusPlate, stroke[9], null, opacity);
-	draw.plate(ctx, true, colors[10].val, null, xOffset, yOffset, radiusPlate, stroke[10], null, opacity);
-	draw.plate(ctx, true, colors[11].val, null, xOffset + radiusCenter * 1, yOffset, radiusPlate, stroke[11], null, opacity);
-	draw.plate(ctx, true, colors[12].val, null, xOffset + radiusCenter * 2, yOffset, radiusPlate, stroke[12], null, opacity);
+	draw.plate(ctx, true, colors[9].val, null, 0, null, xOffset - radiusCenter * 1, yOffset, radiusPlate, stroke[9], null, opacity);
+	draw.plate(ctx, true, colors[10].val, null, 0, null, xOffset, yOffset, radiusPlate, stroke[10], null, opacity);
+	draw.plate(ctx, true, colors[11].val, null, 0, null, xOffset + radiusCenter * 1, yOffset, radiusPlate, stroke[11], null, opacity);
+	draw.plate(ctx, true, colors[12].val, null, 0, null, xOffset + radiusCenter * 2, yOffset, radiusPlate, stroke[12], null, opacity);
 };
 
 /*
@@ -517,25 +546,25 @@ draw.addType = function(ctx, opacity) {
     
 	xOffset = -radiusCenter * Math.cos(util.rad(60 * -1));
 	yOffset = radiusCenter * Math.sin(util.rad(60 * -1)) + 20;
-	draw.plate(ctx, true, colors[addPlate.color].val, types[0].val, xOffset - radiusCenter * 1, yOffset, radiusPlate, stroke[0], null, opacity);
-	draw.plate(ctx, true, colors[addPlate.color].val, types[1].val, xOffset, yOffset, radiusPlate, stroke[1], null, opacity);
-	draw.plate(ctx, true, colors[addPlate.color].val, types[2].val, xOffset + radiusCenter * 1, yOffset, radiusPlate, stroke[2], null, opacity);
-	draw.plate(ctx, true, colors[addPlate.color].val, types[3].val, xOffset + radiusCenter * 2, yOffset, radiusPlate, stroke[3], null, opacity);
+	draw.plate(ctx, true, colors[addPlate.color].val, types[0].val, 0, null, xOffset - radiusCenter * 1, yOffset, radiusPlate, stroke[0], null, opacity);
+	draw.plate(ctx, true, colors[addPlate.color].val, types[1].val, 0, null, xOffset, yOffset, radiusPlate, stroke[1], null, opacity);
+	draw.plate(ctx, true, colors[addPlate.color].val, types[2].val, 0, null, xOffset + radiusCenter * 1, yOffset, radiusPlate, stroke[2], null, opacity);
+	draw.plate(ctx, true, colors[addPlate.color].val, types[3].val, 0, null, xOffset + radiusCenter * 2, yOffset, radiusPlate, stroke[3], null, opacity);
 
 	xOffset = -radiusCenter * Math.cos(util.rad(60 * 0));
 	yOffset = radiusCenter * Math.sin(util.rad(60 * 0)) + 20;
-	draw.plate(ctx, true, colors[addPlate.color].val, types[4].val, xOffset + radiusCenter * 3, yOffset, radiusPlate, stroke[4], null, opacity);
-	draw.plate(ctx, true, colors[addPlate.color].val, types[5].val, xOffset + radiusCenter * 2, yOffset, radiusPlate, stroke[5], null, opacity);
-	draw.plate(ctx, true, colors[addPlate.color].val, types[6].val, xOffset + radiusCenter * 1, yOffset, radiusPlate, stroke[6], null, opacity);
-	draw.plate(ctx, true, colors[addPlate.color].val, types[7].val, xOffset, yOffset, radiusPlate, stroke[7], null, opacity);
-	draw.plate(ctx, true, colors[addPlate.color].val, types[8].val, xOffset - radiusCenter * 1, yOffset, radiusPlate, stroke[8], null, opacity);
+	draw.plate(ctx, true, colors[addPlate.color].val, types[4].val, 0, null, xOffset + radiusCenter * 3, yOffset, radiusPlate, stroke[4], null, opacity);
+	draw.plate(ctx, true, colors[addPlate.color].val, types[5].val, 0, null, xOffset + radiusCenter * 2, yOffset, radiusPlate, stroke[5], null, opacity);
+	draw.plate(ctx, true, colors[addPlate.color].val, types[6].val, 0, null, xOffset + radiusCenter * 1, yOffset, radiusPlate, stroke[6], null, opacity);
+	draw.plate(ctx, true, colors[addPlate.color].val, types[7].val, 0, null, xOffset, yOffset, radiusPlate, stroke[7], null, opacity);
+	draw.plate(ctx, true, colors[addPlate.color].val, types[8].val, 0, null, xOffset - radiusCenter * 1, yOffset, radiusPlate, stroke[8], null, opacity);
 	
 	xOffset = -radiusCenter * Math.cos(util.rad(60 * 1));
 	yOffset = radiusCenter * Math.sin(util.rad(60 * 1)) + 20;
-	draw.plate(ctx, true, colors[addPlate.color].val, types[9].val, xOffset - radiusCenter * 1, yOffset, radiusPlate, stroke[9], null, opacity);
-	draw.plate(ctx, true, colors[addPlate.color].val, types[10].val, xOffset, yOffset, radiusPlate, stroke[10], null, opacity);
-	draw.plate(ctx, true, colors[addPlate.color].val, types[11].val, xOffset + radiusCenter * 1, yOffset, radiusPlate, stroke[11], null, opacity);
-	draw.plate(ctx, true, colors[addPlate.color].val, types[12].val, xOffset + radiusCenter * 2, yOffset, radiusPlate, stroke[12], null, opacity);
+	draw.plate(ctx, true, colors[addPlate.color].val, types[9].val, 0, null, xOffset - radiusCenter * 1, yOffset, radiusPlate, stroke[9], null, opacity);
+	draw.plate(ctx, true, colors[addPlate.color].val, types[10].val, 0, null, xOffset, yOffset, radiusPlate, stroke[10], null, opacity);
+	draw.plate(ctx, true, colors[addPlate.color].val, types[11].val, 0, null, xOffset + radiusCenter * 1, yOffset, radiusPlate, stroke[11], null, opacity);
+	draw.plate(ctx, true, colors[addPlate.color].val, types[12].val, 0, null, xOffset + radiusCenter * 2, yOffset, radiusPlate, stroke[12], null, opacity);
 };
 
 /*
@@ -787,28 +816,28 @@ draw.contactsAdd = function(ctx, opacity) {
 	
 	xOffset = -radiusCenter * Math.cos(util.rad(60 * 0)) - 20;
 	yOffset = radiusCenter * Math.sin(util.rad(60 * 0)) - 104;	
-	draw.plate(ctx, true, "#ffffff", null, xOffset + radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
-	draw.plate(ctx, true, "#ffffff", null, xOffset, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset + radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset, yOffset, radiusPlate, false, null, newOpacity);
 
 	xOffset = -radiusCenter * Math.cos(util.rad(60 * -1)) - 20;
 	yOffset = radiusCenter * Math.sin(util.rad(60 * -1));
-	draw.plate(ctx, true, "#ffffff", null, xOffset, yOffset, radiusPlate, false, null, newOpacity);
-	draw.plate(ctx, true, "#ffffff", null, xOffset - radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset - radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
 
 	xOffset = -radiusCenter * Math.cos(util.rad(60 * 0)) - 20;
 	yOffset = radiusCenter * Math.sin(util.rad(60 * 0));	
-	draw.plate(ctx, true, "#ffffff", null, xOffset + radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
-	draw.plate(ctx, true, "#ffffff", null, xOffset, yOffset, radiusPlate, false, null, newOpacity);
-	draw.plate(ctx, true, "#ffffff", null, xOffset - radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset + radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset - radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
 
 	xOffset = -radiusCenter * Math.cos(util.rad(60 * 1)) - 20;
 	yOffset = radiusCenter * Math.sin(util.rad(60 * 1));
-	draw.plate(ctx, true, "#ffffff", null, xOffset, yOffset, radiusPlate, false, null, newOpacity);
-	draw.plate(ctx, true, "#ffffff", null, xOffset - radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset - radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
 
 	xOffset = -radiusCenter * Math.cos(util.rad(60 * 0)) - 20;
 	yOffset = radiusCenter * Math.sin(util.rad(60 * 0)) + 104;	
-	draw.plate(ctx, true, "#ffffff", null, xOffset + radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset + radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
 	
 	if (contact.length > 0) {
 		newOpacity = opacity;
@@ -817,7 +846,7 @@ draw.contactsAdd = function(ctx, opacity) {
 		newOpacity = opacity * 0.5;
 	}
 	
-	draw.plate(ctx, true, "#ffffff", null, xOffset, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset, yOffset, radiusPlate, false, null, newOpacity);
 	
 	ctx.restore();
 	

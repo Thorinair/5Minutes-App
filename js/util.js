@@ -294,6 +294,54 @@ util.typeContact = function(ctx, char) {
 };
 
 /*
+ * Processes duration to return fire time.
+ * @param duration Total duration.
+ * @return Fire time in JSON.
+ */
+util.processDurationTime = function(duration) {
+    'use strict';
+	var fire = new Date((new Date()).getTime() + duration * 60000);
+	return fire.toJSON();
+};
+
+/*
+ * Processes fire time to return time left.
+ * @param fire Time to fire in JSON.
+ * @return Time left in seconds.
+ */
+util.processFireTime = function(fire) {
+    'use strict';
+    var left = ((new Date(fire)).getTime() - (new Date()).getTime()) / 1000;
+	return left;
+};
+
+/*
+ * Checks the flowers array if there are any pending fires.
+ * @return Boolean if there are any fires.
+ */
+util.checkForFires = function() {
+    'use strict';
+	var check = false;
+	var i, j;
+	for (i = 0; i < flowers.length; i += 1) {
+		for (j = 0; j < flowers[i].length; j += 1) {
+			if (flowers[i][j] != null) {
+				if (flowers[i][j].fire != null) {
+					if (util.processFireTime(flowers[i][j].fire) <= 0) {
+						flowers[i][j].fire = null;
+						localStorage.setItem("flowers", JSON.stringify(flowers));
+					}
+					else {
+						check = true;
+					}
+				}
+			}
+		}
+	}
+	return check;
+};
+
+/*
  * Performs a frame step for transition of a variable.
  * @param value Variable to transition.
  * @param type Type of transition. Check function body for list.

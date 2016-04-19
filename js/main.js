@@ -158,6 +158,7 @@ var pass = "";
 var loginBox = 0;
 
 var contact = "";
+var slowAnimated = false;
 
 window.requestAnimationFrame = window.requestAnimationFrame ||
 	window.webkitRequestAnimationFrame ||
@@ -490,6 +491,23 @@ function animation(ctx, run) {
 }
 
 /*
+ * Slow animation loop, used to update countdown timers.
+ * @param ctx Context to draw in.
+ */
+function animationSlow(ctx) {
+    'use strict';
+    
+    drawUI(ctx);
+
+    slowAnimated = util.checkForFires();
+	if (slowAnimated) {
+		window.setTimeout(function() {
+			animationSlow(ctx);
+		}, 1000);
+	}
+}
+
+/*
  * Fired when application loads.
  */
 window.onload = function onLoad() {
@@ -505,6 +523,11 @@ window.onload = function onLoad() {
     
     animation(context, false);
     drawUI(context);
+    
+    slowAnimated = util.checkForFires();
+    if (slowAnimated) {
+    	animationSlow(context);
+    }
 };
 
 /*
@@ -748,6 +771,15 @@ function processTapHold(x, y) {
 			    				//TODO: Add message sending code here!
 			    				console.log("Tap! flower: " + currentFlower + ", plate: " + plate);
 			    				console.log(JSON.stringify(flowers[currentFlower][plate]));
+			    				
+			    				if (flowers[currentFlower][plate].fire == null) {
+			    					flowers[currentFlower][plate].fire = util.processDurationTime(flowers[currentFlower][plate].duration);
+									localStorage.setItem("flowers", JSON.stringify(flowers));
+			    				    if (!slowAnimated) {
+			    				    	slowAnimated = true;
+			    				    	animationSlow(context);
+			    				    }			    					
+			    				}
 		    				}
 		    				else {
 			    				util.resetAdd(currentFlower, plate);
