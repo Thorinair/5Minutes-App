@@ -83,7 +83,7 @@ var animations = {
 	};
 
 var screens = {
-		"username": 0,
+		"login": 0,
 		"flowers": 1,
 		"contacts": 2,
 		"contactsAdd": 3,
@@ -321,9 +321,18 @@ function drawUI(ctx) {
 
     // UI Parameters
     var colorDark = "#343434";
-    var colorBright = "#007de4";
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Screen: login
+	if (animations.screens.multiplier[screens.login].toFixed(3) > 0) {	
+		ctx.save();
+
+	    ctx.translate(canvas.width / 2, canvas.height / 2);
+	    draw.login(ctx, animations.screens.multiplier[screens.edit]);
+		
+		ctx.restore();
+	}
     
     // Screen: flowers
 	if (animations.screens.multiplier[screens.flowers].toFixed(3) > 0) {	
@@ -333,7 +342,6 @@ function drawUI(ctx) {
 	    draw.flower(ctx, flowers[util.flowerPrev(currentFlower)], colorDark, -360, animations.startup.opacity);
 		draw.flower(ctx, flowers[currentFlower], colorDark, 0, animations.startup.opacity);
 		draw.flower(ctx, flowers[util.flowerNext(currentFlower)], colorDark, 360, animations.startup.opacity);
-		draw.countdown(ctx, 0, 3, colorBright, colorDark);
 
 		ctx.restore();
 	
@@ -350,8 +358,7 @@ function drawUI(ctx) {
 		ctx.save();
 
 	    ctx.translate(canvas.width / 2, canvas.height / 2);
-	    draw.colorText(ctx, animations.screens.multiplier[screens.addColor]);
-		draw.colorGrid(ctx, animations.screens.multiplier[screens.addColor]);
+	    draw.addColor(ctx, animations.screens.multiplier[screens.addColor]);
 		
 		ctx.restore();
 	}
@@ -361,8 +368,7 @@ function drawUI(ctx) {
 		ctx.save();
 
 	    ctx.translate(canvas.width / 2, canvas.height / 2);
-	    draw.typeText(ctx, animations.screens.multiplier[screens.addType]);
-		draw.typeGrid(ctx, animations.screens.multiplier[screens.addType]);
+	    draw.addType(ctx, animations.screens.multiplier[screens.addType]);
 		
 		ctx.restore();
 	}
@@ -372,7 +378,7 @@ function drawUI(ctx) {
 		ctx.save();
 
 	    ctx.translate(canvas.width / 2, canvas.height / 2);
-	    draw.durationText(ctx, animations.screens.multiplier[screens.addDuration]);
+	    draw.addDuration(ctx, animations.screens.multiplier[screens.addDuration]);
 		
 		ctx.restore();
 	}
@@ -382,8 +388,7 @@ function drawUI(ctx) {
 		ctx.save();
 
 	    ctx.translate(canvas.width / 2, canvas.height / 2);
-	    draw.contactsText(ctx, animations.screens.multiplier[screens.addContacts]);
-	    draw.contactsList(ctx, listOffset, animations.screens.multiplier[screens.addContacts]);
+	    draw.addContacts(ctx, listOffset, animations.screens.multiplier[screens.addContacts]);
 		
 		ctx.restore();
 	}

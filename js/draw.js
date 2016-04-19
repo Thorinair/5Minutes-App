@@ -113,55 +113,6 @@ draw.flower = function(ctx, flower, colorB, offset, opacity) {
 };
 
 /*
- * Draws the countdown in middle.
- * @param ctx Context to draw in.
- * @param minutesTotal Total number of minutes of a countdown.
- * @param minutesLeft Minutes left of a countdown.
- * @param colorA Primary color.
- * @param colorB Secondary Color.
- */
-draw.countdown = function(ctx, minutesTotal, minutesLeft, colorA, colorB) {
-    'use strict';
-    
-    if (minutesTotal > 0) {
-	    	
-	    // UI Parameters
-	    var circleRadius = 36;
-	    var circleWidth = 8;
-	    var textOffset = 11;
-	    var textStyle = "bold 32px Arial";
-	    
-		ctx.save();
-
-		ctx.font = textStyle;
-		ctx.textAlign = "center";
-		ctx.fillStyle = colorA;
-		if (minutesLeft >= 60) {
-			ctx.fillText(Math.floor(minutesLeft / 60) + "h", 0, textOffset);
-		}
-		else {
-			ctx.fillText(minutesLeft + "m", 0, textOffset);
-		}
-
-		ctx.rotate(util.rad(-90));
-		
-		ctx.beginPath();
-	  	ctx.arc(0, 0, circleRadius, 0, util.rad(360));
-		ctx.lineWidth = circleWidth;
-		ctx.strokeStyle = colorB;
-		ctx.stroke();
-		
-		ctx.beginPath();
-		ctx.arc(0, 0, circleRadius, 0, util.rad(360 * (minutesLeft / minutesTotal)));
-		ctx.lineWidth = circleWidth;
-		ctx.strokeStyle = colorA;
-		ctx.stroke();
-		
-		ctx.restore();
-    }
-};
-
-/*
  * Draws the flower overlay.
  * @param ctx Context to draw in.
  */
@@ -187,6 +138,40 @@ draw.dots = function(ctx) {
 		ctx.restore();
 		ctx.rotate(util.rad(90));
 	}
+	
+	ctx.restore();
+};
+
+/*
+ * Draws text and buttons on login.
+ * @param ctx Context to draw in.
+ * @param opacity Opacity to use when drawing.
+ */
+draw.login = function(ctx, opacity) {
+    'use strict';  
+	ctx.save();
+
+	ctx.globalAlpha = opacity;
+	
+	ctx.beginPath();
+	ctx.moveTo(-30, -30);
+	ctx.lineTo(30, -30);
+	ctx.lineTo(30, 30);
+	ctx.lineTo(-30, 30);
+	ctx.fillStyle = "#ffffff";
+	ctx.closePath();
+	ctx.fill();
+
+	ctx.globalAlpha = opacity;
+	ctx.textAlign = "center";
+	
+	ctx.font = "32px Arial";
+	ctx.fillStyle = "#ffffff";
+	ctx.fillText("Login", 0, -120);
+	
+	ctx.font = "48px Arial";
+	ctx.fillStyle = "#000000";
+	ctx.fillText("8", 0, 0);
 	
 	ctx.restore();
 };
@@ -243,7 +228,7 @@ draw.editText = function(ctx, opacity) {
  * @param ctx Context to draw in.
  * @param opacity Opacity to use when drawing.
  */
-draw.colorText = function(ctx, opacity) {
+draw.addColor = function(ctx, opacity) {
     'use strict';  
 	ctx.save();
 
@@ -283,16 +268,7 @@ draw.colorText = function(ctx, opacity) {
 	ctx.fillText("Next", 0, 150);
 	
 	ctx.restore();
-};
-
-/*
- * Draws all hexagon plates on the color grid.
- * @param ctx Context to draw in.
- * @param opacity Opacity to use when drawing.
- */
-draw.colorGrid = function(ctx, opacity) {
-    'use strict';
-
+	
     var radiusCenter = 60;
     var radiusPlate = radiusCenter * (8/15);
     var xOffset;
@@ -331,7 +307,7 @@ draw.colorGrid = function(ctx, opacity) {
  * @param ctx Context to draw in.
  * @param opacity Opacity to use when drawing.
  */
-draw.typeText = function(ctx, opacity) {
+draw.addType = function(ctx, opacity) {
     'use strict';  
 	ctx.save();
 
@@ -371,15 +347,6 @@ draw.typeText = function(ctx, opacity) {
 	ctx.fillText("Next", 0, 150);
 	
 	ctx.restore();
-};
-
-/*
- * Draws all hexagon plates on the type grid.
- * @param ctx Context to draw in.
- * @param opacity Opacity to use when drawing.
- */
-draw.typeGrid = function(ctx, opacity) {
-    'use strict';
 
     var radiusCenter = 60;
     var radiusPlate = radiusCenter * (8/15);
@@ -419,7 +386,7 @@ draw.typeGrid = function(ctx, opacity) {
  * @param ctx Context to draw in.
  * @param opacity Opacity to use when drawing.
  */
-draw.durationText = function(ctx, opacity) {
+draw.addDuration = function(ctx, opacity) {
     'use strict';  
 	ctx.save();
 
@@ -482,9 +449,10 @@ draw.durationText = function(ctx, opacity) {
 /*
  * Draws text when adding contacts.
  * @param ctx Context to draw in.
+ * @param offset Offset of the list.
  * @param opacity Opacity to use when drawing.
  */
-draw.contactsText = function(ctx, opacity) {
+draw.addContacts = function(ctx, offset, opacity) {
     'use strict';  
 	ctx.save();
 
@@ -518,21 +486,6 @@ draw.contactsText = function(ctx, opacity) {
 	ctx.font = "32px Arial";
 	ctx.fillStyle = "#000000";
 	ctx.fillText("Save", 0, 150);
-	
-	ctx.restore();
-};
-
-/*
- * Draws list when adding contacts.
- * @param ctx Context to draw in.
- * @param offset Offset of the list.
- * @param opacity Opacity to use when drawing.
- */
-draw.contactsList = function(ctx, offset, opacity) {
-    'use strict';  
-	ctx.save();
-
-	ctx.globalAlpha = opacity;
 
 	ctx.beginPath();
 	ctx.moveTo(-190, -105);
@@ -564,7 +517,6 @@ draw.contactsList = function(ctx, offset, opacity) {
 	ctx.font = "32px Arial";
 	ctx.fillStyle = "#ffffff";
 	
-	var i;
 	for (i = 0; i < contacts.length; i += 1) {
 		ctx.fillText(contacts[i].name, -140, -64 + i*48 + offset);
 		
