@@ -192,6 +192,53 @@ draw.dots = function(ctx) {
 };
 
 /*
+ * Draws text when editing a plate.
+ * @param ctx Context to draw in.
+ * @param opacity Opacity to use when drawing.
+ */
+draw.editText = function(ctx, opacity) {
+    'use strict';  
+	ctx.save();
+
+	ctx.globalAlpha = opacity;
+	
+	ctx.beginPath();
+	ctx.moveTo(-80, -53);
+	ctx.lineTo(80, -53);
+	ctx.lineTo(80, 5);
+	ctx.lineTo(-80, 5);
+	ctx.fillStyle = "#ffffff";
+	ctx.closePath();
+	ctx.fill();
+
+	ctx.beginPath();
+	ctx.moveTo(-80, 15);
+	ctx.lineTo(80, 15);
+	ctx.lineTo(80, 73);
+	ctx.lineTo(-80, 73);
+	ctx.fillStyle = "#ff0000";
+	ctx.closePath();
+	ctx.fill();
+
+	ctx.globalAlpha = opacity;
+	ctx.textAlign = "center";
+	
+	ctx.font = "32px Arial";
+	ctx.fillStyle = "#ffffff";
+	ctx.fillText("Edit Shortcut", 0, -120);
+	
+	ctx.font = "48px Arial";
+	ctx.fillStyle = "#000000";
+	ctx.fillText("Edit", 0, -7);
+	
+	ctx.font = "48px Arial";
+	ctx.fillStyle = "#000000";
+	ctx.fillText("Delete", 0, 61);
+	
+	ctx.restore();
+};
+
+/*
  * Draws text when adding color.
  * @param ctx Context to draw in.
  * @param opacity Opacity to use when drawing.
@@ -225,7 +272,7 @@ draw.colorText = function(ctx, opacity) {
 	
 	ctx.font = "32px Arial";
 	ctx.fillStyle = "#ffffff";
-	ctx.fillText("New Shortcut", 0, -120);
+	ctx.fillText(addPlate.title + " Shortcut", 0, -120);
 
 	ctx.font = "32px Arial";
 	ctx.fillStyle = "#ffffff";
@@ -313,7 +360,7 @@ draw.typeText = function(ctx, opacity) {
 	
 	ctx.font = "32px Arial";
 	ctx.fillStyle = "#ffffff";
-	ctx.fillText("New Shortcut", 0, -120);
+	ctx.fillText(addPlate.title + " Shortcut", 0, -120);
 
 	ctx.font = "32px Arial";
 	ctx.fillStyle = "#ffffff";
@@ -403,17 +450,13 @@ draw.durationText = function(ctx, opacity) {
 	ctx.fillStyle = "#ffffff";
 	ctx.closePath();
 	ctx.fill();
-	
-	ctx.restore();
-	
-	ctx.save();
 
 	ctx.globalAlpha = opacity;
 	ctx.textAlign = "center";
 	
 	ctx.font = "32px Arial";
 	ctx.fillStyle = "#ffffff";
-	ctx.fillText("New Shortcut", 0, -120);
+	ctx.fillText(addPlate.title + " Shortcut", 0, -120);
 
 	ctx.font = "32px Arial";
 	ctx.fillStyle = "#ffffff";
@@ -455,17 +498,13 @@ draw.contactsText = function(ctx, opacity) {
 	ctx.fillStyle = "#ffffff";
 	ctx.closePath();
 	ctx.fill();
-	
-	ctx.restore();
-	
-	ctx.save();
 
 	ctx.globalAlpha = opacity;
 	ctx.textAlign = "center";
 	
 	ctx.font = "32px Arial";
 	ctx.fillStyle = "#ffffff";
-	ctx.fillText("New Shortcut", 0, -120);
+	ctx.fillText(addPlate.title + " Shortcut", 0, -120);
 	
 	ctx.font = "32px Arial";
 	ctx.fillStyle = "#000000";

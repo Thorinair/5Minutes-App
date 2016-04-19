@@ -45,14 +45,15 @@ var addPlate = {
 		"type": null, 
 		"duration": 5, 
 		"message": null, 
-		"fire": null
+		"fire": null,
+		"title": "New"
 	};
 
 var animations = {
 		"screens": {
 			"duration": 200,
 			"active": false,
-			"multiplier": [0, 0, 1, 0, 0, 0, 0, 0]
+			"multiplier": [0, 0, 1, 0, 0, 0, 0, 0, 0]
 		},
 		"startup": {
 			"duration": 500,
@@ -89,7 +90,8 @@ var screens = {
 		"addColor": 4,
 		"addType": 5,
 		"addDuration": 6,
-		"addContacts": 7
+		"addContacts": 7,
+		"edit": 8
 	};
 
 var colors = [
@@ -165,11 +167,11 @@ function animate_screens(screen, oldMultiplier) {
     'use strict';
     animations.screens.active = true;
     
-    var newMultiplier = [0, 0, 0, 0, 0, 0, 0, 0];
+    var newMultiplier = [0, 0, 0, 0, 0, 0, 0, 0, 0];
     newMultiplier[screen] = 1;
 
     var i;
-    for (i = 0; i < 8; i += 1) {
+    for (i = 0; i < animations.screens.multiplier.length; i += 1) {
     	animations.screens.multiplier[i] = util.trans(animations.screens.multiplier[i], "quad-down", oldMultiplier[i], newMultiplier[i], animations.screens.duration);
     }
     
@@ -385,6 +387,16 @@ function drawUI(ctx) {
 		
 		ctx.restore();
 	}
+
+    // Screen: edit
+	if (animations.screens.multiplier[screens.edit].toFixed(3) > 0) {	
+		ctx.save();
+
+	    ctx.translate(canvas.width / 2, canvas.height / 2);
+	    draw.editText(ctx, animations.screens.multiplier[screens.edit]);
+		
+		ctx.restore();
+	}
 }
 
 /*
@@ -433,8 +445,14 @@ function processTapHold(x, y) {
     'use strict';
 	wasHeld = true;
 	var plate = util.plateFromCoords(x, y);
+	
 	console.log("Hold! flower: " + currentFlower + ", plate: " + plate);
 	console.log(JSON.stringify(flowers[currentFlower][plate]));
+	
+	if (flowers[currentFlower][plate] != null) {
+		util.loadPlate(currentFlower, plate);
+		animate_screens(screens.edit, util.copy(animations.screens.multiplier));
+	}
 }
 
 (function(tau) {
@@ -633,6 +651,21 @@ function processTapHold(x, y) {
     			}
 	    		wasDragged = false;	    		
     		}
+
+    	    // Screen: edit
+    		if (animations.screens.multiplier[screens.edit].toFixed(3) == 1) {	
+    			if (!wasHeld) {
+	    			if (touchX >= 100 && touchX < 260 && touchY >= 127 && touchY < 185) {
+	            		animate_screens(screens.addColor, util.copy(animations.screens.multiplier));
+	    			} 		
+	
+	    			else if (touchX >= 100 && touchX < 260 && touchY >= 195 && touchY < 253) {
+	    				flowers[addPlate.flower][addPlate.plate] = null;
+	            		animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
+	    			} 	
+    			}
+    			wasHeld = false;
+    		}
     		
     	});
     });
@@ -667,6 +700,11 @@ function processTapHold(x, y) {
     		// Screen: addContacts
     		if (animations.screens.multiplier[screens.addContacts].toFixed(3) == 1) {	
         		animate_screens(screens.addDuration, util.copy(animations.screens.multiplier));
+    		}  		
+    		
+    		// Screen: edit
+    		if (animations.screens.multiplier[screens.edit].toFixed(3) == 1) {	
+        		animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
     		}  		
 		}			
 	});

@@ -123,19 +123,45 @@ util.addPlateFromCoords = function(x, y) {
  */
 util.resetAdd = function(flower, plate) {
     'use strict';
-    addPlate = {
-    		"flower": flower, 
-    		"plate": plate, 
-    		"color": null, 
-    		"type": null, 
-    		"duration": 5, 
-    		"message": null, 
-    		"fire": null
-    	};
+    addPlate.flower = flower;
+    addPlate.plate = plate; 
+    addPlate.color = null; 
+    addPlate.type = null;
+    addPlate.duration = 5; 
+    addPlate.message = null;
+    addPlate.fire = null;
+    addPlate.title = "New";
     
     var i;
     for (i = 0; i < contacts.length; i += 1) {
     	contacts[i].sel = false;
+    }
+};
+
+/*
+ * Loads a plate from the list.
+ * @param flower Current flower.
+ * @param plate Plate ID to load.
+ */
+util.loadPlate = function(flower, plate) {
+    'use strict';
+    addPlate.flower = flower;
+    addPlate.plate = plate;
+    addPlate.color = util.translateColorBack(flowers[flower][plate].color);
+    addPlate.type = util.translateTypeBack(flowers[flower][plate].type);
+    addPlate.duration = flowers[flower][plate].duration;
+    addPlate.message = flowers[flower][plate].message; 
+    addPlate.fire = flowers[flower][plate].fire;
+    addPlate.title = "Edit";
+    
+    var i, j;
+    for (i = 0; i < contacts.length; i += 1) {
+    	contacts[i].sel = false;
+    	for (j = 0; j < flowers[flower][plate].contacts.length; j += 1) {
+    		if (contacts[i].id == flowers[flower][plate].contacts[j]) {
+    			contacts[i].sel = true;
+    		}
+    	}
     }
 };
 
@@ -154,8 +180,9 @@ util.addPlate = function() {
 	
     var i;
     for (i = 0; i < contacts.length; i += 1) {
-    	if (contacts[i].sel)
+    	if (contacts[i].sel) {
     		newPlate.contacts.push(contacts[i].id);
+    	}
     }
     
 	flowers[addPlate.flower][addPlate.plate] = util.copy(newPlate);
@@ -182,6 +209,25 @@ util.translateColor = function(id) {
 };
 
 /*
+ * Translates an input color to number.
+ * @param color The color in hex.
+ */
+util.translateColorBack = function(color) {
+    'use strict';
+	var id;
+	
+	var i;
+	for (i = 0; i < colors.length; i += 1) {
+		if (colors[i].val == color) {
+			id = i;
+			break;
+		}
+	}
+	
+	return id;
+};
+
+/*
  * Translates an input number to type name.
  * @param id ID of the type.
  */
@@ -197,6 +243,25 @@ util.translateType = function(id) {
 	}
 	
 	return type;
+};
+
+/*
+ * Translates an input type to number.
+ * @param type The type name.
+ */
+util.translateTypeBack = function(type) {
+    'use strict';
+	var id;
+	
+	var i;
+	for (i = 0; i < types.length; i += 1) {
+		if (types[i].val == type) {
+			id = i;
+			break;
+		}
+	}
+	
+	return id;
 };
 
 /*
