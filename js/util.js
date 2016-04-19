@@ -1,4 +1,4 @@
-/*global window, document, tizen, console, setTimeout, tau, addPlate, colors, flowers, contacts, types */
+/*global window, document, tizen, console, setTimeout, tau, addPlate, colors, flowers, contacts, types, drawUI, user, pass */
 
 var util = function(){
     'use strict';
@@ -262,6 +262,23 @@ util.translateTypeBack = function(type) {
 	}
 	
 	return id;
+};
+
+/*
+ * Types into the login fields.
+ * @param ctx Context to draw the UI in.
+ * @param char Character to type.
+ * @param field Field to type to.
+ */
+util.typeField = function(ctx, char, field) {
+    'use strict';
+    if (field == 0) {
+    	user += char;
+    }
+    else if (field == 1) {
+    	pass += char;
+    }
+	drawUI(ctx);
 };
 
 /*

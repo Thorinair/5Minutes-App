@@ -1,4 +1,4 @@
-/*global window, document, tizen, console, setTimeout, tau, animations, screens, colors, addPlate, colors, types, contacts, util */
+/*global window, document, tizen, console, setTimeout, tau, animations, screens, colors, addPlate, colors, types, contacts, loginBox, user, pass, util */
 
 var draw = function(){
     'use strict';
@@ -149,29 +149,153 @@ draw.dots = function(ctx) {
  */
 draw.login = function(ctx, opacity) {
     'use strict';  
+
+	ctx.save();
+	
+    var radiusCenter = 60;
+    var radiusPlate = radiusCenter * (8/15);
+    var xOffset;
+    var yOffset;
+    var newOpacity;
+	
+	ctx.rotate(util.rad(-90));
+	
+	if ((user.length < 8 && loginBox == 0) || (pass.length < 8 && loginBox == 1)) {
+		newOpacity = opacity;
+	}
+	else {
+		newOpacity = opacity * 0.5;
+	}
+	
+	xOffset = -radiusCenter * Math.cos(util.rad(60 * 0)) - 20;
+	yOffset = radiusCenter * Math.sin(util.rad(60 * 0)) - 104;	
+	draw.plate(ctx, true, "#ffffff", null, xOffset + radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, xOffset, yOffset, radiusPlate, false, null, newOpacity);
+
+	xOffset = -radiusCenter * Math.cos(util.rad(60 * -1)) - 20;
+	yOffset = radiusCenter * Math.sin(util.rad(60 * -1));
+	draw.plate(ctx, true, "#ffffff", null, xOffset, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, xOffset - radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
+
+	xOffset = -radiusCenter * Math.cos(util.rad(60 * 0)) - 20;
+	yOffset = radiusCenter * Math.sin(util.rad(60 * 0));	
+	draw.plate(ctx, true, "#ffffff", null, xOffset + radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, xOffset, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, xOffset - radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
+
+	xOffset = -radiusCenter * Math.cos(util.rad(60 * 1)) - 20;
+	yOffset = radiusCenter * Math.sin(util.rad(60 * 1));
+	draw.plate(ctx, true, "#ffffff", null, xOffset, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, xOffset - radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
+
+	xOffset = -radiusCenter * Math.cos(util.rad(60 * 0)) - 20;
+	yOffset = radiusCenter * Math.sin(util.rad(60 * 0)) + 104;	
+	draw.plate(ctx, true, "#ffffff", null, xOffset + radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
+	
+	if ((user.length > 0 && loginBox == 0) || (pass.length > 0 && loginBox == 1)) {
+		newOpacity = opacity;
+	}
+	else {
+		newOpacity = opacity * 0.5;
+	}
+	
+	draw.plate(ctx, true, "#ffffff", null, xOffset, yOffset, radiusPlate, false, null, newOpacity);
+	
+	ctx.restore();
+	
+
 	ctx.save();
 
-	ctx.globalAlpha = opacity;
-	
+	ctx.globalAlpha = opacity * animations.login.opacity[0];
 	ctx.beginPath();
-	ctx.moveTo(-30, -30);
-	ctx.lineTo(30, -30);
-	ctx.lineTo(30, 30);
-	ctx.lineTo(-30, 30);
+	ctx.moveTo(-60, -72);
+	ctx.lineTo(116, -72);
+	ctx.lineWidth = 2;
+	ctx.strokeStyle = "#ffffff";
+	ctx.stroke();
+
+	ctx.fillStyle = "#ffffff";
+	ctx.textAlign = "left";
+	ctx.font = "40px Arial";
+	ctx.fillText(user, -60, -80);
+
+	ctx.restore();
+	
+
+	ctx.save();
+
+	ctx.globalAlpha = opacity * animations.login.opacity[1];
+	ctx.beginPath();
+	ctx.moveTo(-60, -24);
+	ctx.lineTo(60, -24);
+	ctx.lineWidth = 2;
+	ctx.strokeStyle = "#ffffff";
+	ctx.stroke();
+
+	ctx.fillStyle = "#ffffff";
+	ctx.textAlign = "left";
+	ctx.font = "40px Arial";
+	var hidden = "••••••••";
+	ctx.fillText(hidden.substring(0, pass.length), -60, -32);
+
+	ctx.restore();
+	
+
+	ctx.save();
+	
+	if (user.length == 8 && pass.length == 8) {
+		ctx.globalAlpha = opacity;
+	}
+	else {
+		ctx.globalAlpha = opacity * 0.25;
+	}
+	ctx.beginPath();
+	ctx.moveTo(68, -64);
+	ctx.lineTo(152, -64);
+	ctx.lineTo(152, -20);
+	ctx.lineTo(68, -20);
 	ctx.fillStyle = "#ffffff";
 	ctx.closePath();
 	ctx.fill();
+
+	ctx.restore();
+	
+	  
+	ctx.save();
 
 	ctx.globalAlpha = opacity;
 	ctx.textAlign = "center";
 	
 	ctx.font = "32px Arial";
 	ctx.fillStyle = "#ffffff";
-	ctx.fillText("Login", 0, -120);
-	
-	ctx.font = "48px Arial";
+	ctx.fillText("Login", 0, -140);
+
+	ctx.textAlign = "right";
+	ctx.font = "40px Arial";
+	ctx.fillText("ID:", -70, -80);
+	ctx.fillText("Pass:", -70, -32);
+
+	ctx.textAlign = "center";
+	ctx.font = "32px Arial";
 	ctx.fillStyle = "#000000";
-	ctx.fillText("8", 0, 0);
+	ctx.fillText("Go!", 110, -31);	
+	
+	ctx.font = "48px Arial";	
+	ctx.fillText("7", -104, 36);
+	ctx.fillText("0", -104, 96);
+
+	ctx.fillText("4", -52, 66);
+	ctx.fillText("1", -52, 126);
+	
+	ctx.fillText("8", 0, 36);
+	ctx.fillText("5", 0, 96);
+	ctx.fillText("2", 0, 156);
+
+	ctx.fillText("6", 52, 66);
+	ctx.fillText("3", 52, 126);
+	
+	ctx.fillText("9", 104, 36);	
+	ctx.fillText("<", 104, 96);
 	
 	ctx.restore();
 };
@@ -465,7 +589,7 @@ draw.addContacts = function(ctx, offset, opacity) {
 		ctx.globalAlpha = opacity;
 	}
 	else {
-		ctx.globalAlpha = opacity * 0.25;
+		ctx.globalAlpha = opacity * 0.5;
 	}
 	ctx.beginPath();
 	ctx.moveTo(-50, 120);

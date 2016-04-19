@@ -5,3 +5,7 @@ body {
 .ui-page.ui-scroll-on .ui-scroller{
 	overflow-y:hidden;
 	}
+	
+.canvas {
+    background-color:#000000; 
+}	
