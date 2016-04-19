@@ -53,7 +53,7 @@ var animations = {
 		"screens": {
 			"duration": 200,
 			"active": false,
-			"multiplier": [0, 0, 1, 0, 0, 0, 0, 0, 0]
+			"multiplier": [0, 1, 0, 0, 0, 0, 0, 0, 0]
 		},
 		"startup": {
 			"duration": 500,
@@ -84,9 +84,9 @@ var animations = {
 
 var screens = {
 		"username": 0,
-		"password": 1,
-		"flowers": 2,
-		"contacts": 3,
+		"flowers": 1,
+		"contacts": 2,
+		"contactsAdd": 3,
 		"addColor": 4,
 		"addType": 5,
 		"addDuration": 6,
@@ -636,12 +636,18 @@ function processTapHold(x, y) {
     		if (animations.screens.multiplier[screens.addContacts].toFixed(3) == 1) {	
     			
     			if (!wasDragged) {
+	    			var i;
 	    			if (touchX >= 130 && touchX < 230 && touchY >= 300 && touchY < 340) {
-	    				util.addPlate();
-						animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
+	    				var contactExists = false;
+	    				for (i = 0; i < contacts.length; i += 1) {
+	    					contactExists = contactExists || contacts[i].sel;
+	    				}
+	    				if (contactExists) {
+		    				util.addPlate();
+							animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
+	    				}
 	    			}
 	    			
-	    			var i;
 	    			for (i = 0; i < contacts.length; i +=1) {
 	        			if (touchX >= 280 && touchX < 320 && touchY >= 86 + i*48 + listOffset && touchY < 126 + i*48 + listOffset) {
 	        				contacts[i].sel = !contacts[i].sel;

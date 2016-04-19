@@ -488,8 +488,17 @@ draw.contactsText = function(ctx, opacity) {
     'use strict';  
 	ctx.save();
 
-	ctx.globalAlpha = opacity;
-	
+	var contactExists = false;
+	var i;
+	for (i = 0; i < contacts.length; i += 1) {
+		contactExists = contactExists || contacts[i].sel;
+	}
+	if (contactExists) {
+		ctx.globalAlpha = opacity;
+	}
+	else {
+		ctx.globalAlpha = opacity * 0.25;
+	}
 	ctx.beginPath();
 	ctx.moveTo(-50, 120);
 	ctx.lineTo(50, 120);
