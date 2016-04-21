@@ -222,7 +222,7 @@ draw.login = function(ctx, opacity) {
 	
 	ctx.rotate(util.rad(-90));
 	
-	if ((user.length < 8 && loginBox == 0) || (pass.length < 8 && loginBox == 1)) {
+	if (code.length < 8) {
 		newOpacity = opacity;
 	}
 	else {
@@ -254,7 +254,7 @@ draw.login = function(ctx, opacity) {
 	yOffset = radiusCenter * Math.sin(util.rad(60 * 0)) + 104;	
 	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset + radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
 	
-	if ((user.length > 0 && loginBox == 0) || (pass.length > 0 && loginBox == 1)) {
+	if (code.length > 0) {
 		newOpacity = opacity;
 	}
 	else {
@@ -268,25 +268,7 @@ draw.login = function(ctx, opacity) {
 
 	ctx.save();
 
-	ctx.globalAlpha = opacity * animations.login.opacity[0];
-	ctx.beginPath();
-	ctx.moveTo(-60, -72);
-	ctx.lineTo(116, -72);
-	ctx.lineWidth = 2;
-	ctx.strokeStyle = "#ffffff";
-	ctx.stroke();
-
-	ctx.fillStyle = "#ffffff";
-	ctx.textAlign = "left";
-	ctx.font = "40px Arial";
-	ctx.fillText(user, -60, -80);
-
-	ctx.restore();
-	
-
-	ctx.save();
-
-	ctx.globalAlpha = opacity * animations.login.opacity[1];
+	ctx.globalAlpha = opacity;
 	ctx.beginPath();
 	ctx.moveTo(-60, -24);
 	ctx.lineTo(60, -24);
@@ -298,14 +280,14 @@ draw.login = function(ctx, opacity) {
 	ctx.textAlign = "left";
 	ctx.font = "40px Arial";
 	var hidden = "••••••••";
-	ctx.fillText(hidden.substring(0, pass.length), -60, -32);
+	ctx.fillText(hidden.substring(0, code.length), -60, -32);
 
 	ctx.restore();
 	
 
 	ctx.save();
 	
-	if (user.length == 8 && pass.length == 8) {
+	if (code.length == 8) {
 		ctx.globalAlpha = opacity;
 	}
 	else {
@@ -330,12 +312,15 @@ draw.login = function(ctx, opacity) {
 	
 	ctx.font = "32px Arial";
 	ctx.fillStyle = "#ffffff";
-	ctx.fillText("Login", 0, -140);
+	ctx.fillText("Login", 0, -130);
+
+	ctx.font = "24px Arial";
+	ctx.fillStyle = "#ffffff";
+	ctx.fillText("Register at 5minapp.com", 0, -90);
 
 	ctx.textAlign = "right";
 	ctx.font = "40px Arial";
-	ctx.fillText("ID:", -70, -80);
-	ctx.fillText("Pass:", -70, -32);
+	ctx.fillText("Code:", -70, -32);
 
 	ctx.textAlign = "center";
 	ctx.font = "32px Arial";

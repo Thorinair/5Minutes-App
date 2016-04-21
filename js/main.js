@@ -55,11 +55,6 @@ var animations = {
 			"active": false,
 			"multiplier": [1, 0, 0, 0, 0, 0, 0, 0, 0] //TODO: Restore start to login.
 		},
-		"login": {
-			"duration": 200,
-			"active": false,
-			"opacity": [1.0, 0.5]
-		},
 		"startup": {
 			"duration": 500,
 			"active": false,
@@ -154,8 +149,7 @@ var listOffset = 0;
 var listOffsetLast = 0;
 
 var user = "";
-var pass = "";
-var loginBox = 0;
+var code = "";
 
 var contact = "";
 var slowAnimated = false;
@@ -194,34 +188,6 @@ function animate_screens(screen, oldMultiplier) {
 	if (animations.screens.active) {
 		window.requestAnimationFrame(function() {
 			animate_screens(screen, oldMultiplier);
-		});
-	}
-}
-
-/*
- * Animates the fade when changing active field on login screen.
- * @param curr Current field at the time of animation start.
- * @param oldOpacity Opacity of fields before the transition.
- */
-function animate_login(curr, oldOpacity) {
-    'use strict';
-	animations.login.active = true;
-    
-    var newOpacity = [0.5, 0.5];
-    newOpacity[curr] = 1;
-
-    var i;
-    for (i = 0; i < 2; i += 1) {
-    	animations.login.opacity[i] = util.trans(animations.login.opacity[i], "quad-down", oldOpacity[i], newOpacity[i], animations.login.duration);
-    }
-	
-	if (animations.login.opacity[curr].toFixed(3) == 1) {
-		animations.login.active = false;
-	}
-		
-	if (animations.login.active) {
-		window.requestAnimationFrame(function() {
-			animate_login(curr, oldOpacity);
 		});
 	}
 }
@@ -478,7 +444,6 @@ function animation(ctx, run) {
     }
     
 	run = animations.screens.active
-	|| animations.login.active
 	|| animations.startup.active
 	|| animations.flowers.active 
 	|| animations.dotTransition.active
@@ -657,72 +622,56 @@ function processTapHold(x, y) {
 
     	    // Screen: login
     		if (animations.screens.multiplier[screens.login].toFixed(3) == 1) {	
-    			if (!animations.login.active) {
-	    			if (touchX >= 120 && touchX < 296 && touchY >= 65 && touchY < 109) {
-	    				loginBox = 0;
-	    				animate_login(loginBox, util.copy(animations.login.opacity));
-	    			} 		
-	
-	    			else if (touchX >= 120 && touchX < 240 && touchY >= 113 && touchY < 157) {
-	    				loginBox = 1;
-	    				animate_login(loginBox, util.copy(animations.login.opacity));
-	    			}
 	    			
-	    			else if (touchX >= 248 && touchX < 332 && touchY >= 116 && touchY < 160 && user.length == 8 && pass.length == 8) {
-	    				//TODO: Add login code here!
-    					animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
-    		    		window.setTimeout(function() {
-    		    			animate_startup();
-    					}, 200);
+    			if (touchX >= 248 && touchX < 332 && touchY >= 116 && touchY < 160 && code.length == 8) {
+    				//TODO: Add login code here!
+					animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
+		    		window.setTimeout(function() {
+		    			animate_startup();
+					}, 200);
+    			}
+    			
+    			if (code.length < 8) {
+    				if (touchX >= 50 && touchX < 102 && touchY >= 170 && touchY < 230) {
+    					util.typeCode(context, "7");
 	    			}
-	    			
-	    			if ((user.length < 8 && loginBox == 0) || (pass.length < 8 && loginBox == 1)) {
-	    				if (touchX >= 50 && touchX < 102 && touchY >= 170 && touchY < 230) {
-	    					util.typeField(context, "7", loginBox);
-		    			}
-	    				else if (touchX >= 50 && touchX < 102 && touchY >= 230 && touchY < 290) {
-	    					util.typeField(context, "0", loginBox);
-		    			}
-	    				
-	    				else if (touchX >= 102 && touchX < 154 && touchY >= 200 && touchY < 260) {
-	    					util.typeField(context, "4", loginBox);
-		    			}
-	    				else if (touchX >= 102 && touchX < 154 && touchY >= 260 && touchY < 320) {
-	    					util.typeField(context, "1", loginBox);
-		    			}
-	    				
-	    				else if (touchX >= 154 && touchX < 206 && touchY >= 170 && touchY < 230) {
-	    					util.typeField(context, "8", loginBox);
-		    			}
-	    				else if (touchX >= 154 && touchX < 206 && touchY >= 230 && touchY < 290) {
-	    					util.typeField(context, "5", loginBox);
-		    			}
-	    				else if (touchX >= 154 && touchX < 206 && touchY >= 290 && touchY < 350) {
-	    					util.typeField(context, "2", loginBox);
-		    			}
-	    				
-	    				else if (touchX >= 206 && touchX < 258 && touchY >= 200 && touchY < 260) {
-	    					util.typeField(context, "6", loginBox);
-		    			}
-	    				else if (touchX >= 206 && touchX < 258 && touchY >= 260 && touchY < 320) {
-	    					util.typeField(context, "3", loginBox);
-		    			}
-	    				
-	    				else if (touchX >= 258 && touchX < 310 && touchY >= 170 && touchY < 230) {
-	    					util.typeField(context, "9", loginBox);
-		    			}
+    				else if (touchX >= 50 && touchX < 102 && touchY >= 230 && touchY < 290) {
+    					util.typeCode(context, "0");
 	    			}
-	    			
-	    			if ((user.length > 0 && loginBox == 0) || (pass.length > 0 && loginBox == 1)) {
-	    				if (touchX >= 258 && touchX < 310 && touchY >= 230 && touchY < 290) {
-	    					if (loginBox == 0) {
-	    						user = user.slice(0, -1);
-	    					}
-	    					else if (loginBox == 1) {
-	    						pass = pass.slice(0, -1);
-	    					}
-	    					drawUI(context);
-		    			}
+    				
+    				else if (touchX >= 102 && touchX < 154 && touchY >= 200 && touchY < 260) {
+    					util.typeCode(context, "4");
+	    			}
+    				else if (touchX >= 102 && touchX < 154 && touchY >= 260 && touchY < 320) {
+    					util.typeCode(context, "1");
+	    			}
+    				
+    				else if (touchX >= 154 && touchX < 206 && touchY >= 170 && touchY < 230) {
+    					util.typeCode(context, "8");
+	    			}
+    				else if (touchX >= 154 && touchX < 206 && touchY >= 230 && touchY < 290) {
+    					util.typeCode(context, "5");
+	    			}
+    				else if (touchX >= 154 && touchX < 206 && touchY >= 290 && touchY < 350) {
+    					util.typeCode(context, "2");
+	    			}
+    				
+    				else if (touchX >= 206 && touchX < 258 && touchY >= 200 && touchY < 260) {
+    					util.typeCode(context, "6");
+	    			}
+    				else if (touchX >= 206 && touchX < 258 && touchY >= 260 && touchY < 320) {
+    					util.typeCode(context, "3");
+	    			}
+    				
+    				else if (touchX >= 258 && touchX < 310 && touchY >= 170 && touchY < 230) {
+    					util.typeCode(context, "9");
+	    			}
+    			}
+    			
+    			if (code.length) {
+    				if (touchX >= 258 && touchX < 310 && touchY >= 230 && touchY < 290) {
+    					code = code.slice(0, -1);
+    					drawUI(context);
 	    			}
     			}
     		}
