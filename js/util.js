@@ -1,4 +1,4 @@
-/*global window, document, tizen, console, setTimeout, tau, addPlate, colors, flowers, contacts, types, drawUI, user, code, contact */
+/*global window, document, tizen, console, setTimeout, tau, addPlate, colors, flowers, contacts, types, drawUI, user, code, pass, contact, web */
 
 var util = function(){
     'use strict';
@@ -410,4 +410,35 @@ util.trans = function(value, type, start, end, duration) {
     }
     
     return value;
+};
+
+util.webOnetime = function() {	
+	var http = new XMLHttpRequest();
+	//var params = "request=onetime&code=" + code;
+	http.open("GET", web, true);
+
+	//Send the proper header information along with the request
+	http.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+	http.onreadystatechange = function() {//Call a function when the state changes.
+	        console.log("Out:" + http.responseText);
+	};
+	http.send();
+	console.log("Requested...");
+};
+
+util.webUpdatePush = function(regID) {
+	var http = new XMLHttpRequest();
+	var params = "request=update_push&user=" + user + "&pass=" + pass + "&push=" + regID;
+	http.open("POST", web, true);
+
+	//Send the proper header information along with the request
+	http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+	http.onreadystatechange = function() {//Call a function when the state changes.
+	    if(http.readyState == 4 && http.status == 200) {
+	        console.log(http.responseText);
+	    }
+	};
+	http.send(params);
 };

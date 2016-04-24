@@ -1,4 +1,4 @@
-/*global window, document, tizen, console, setTimeout, tau, animations, screens, colors, addPlate, colors, types, contacts, loginBox, user, pass, util */
+/*global window, document, tizen, console, setTimeout, tau, animations, screens, colors, addPlate, colors, types, contacts, loginBox, user, pass, code, util */
 
 var draw = function(){
     'use strict';
@@ -908,6 +908,38 @@ draw.contactsAdd = function(ctx, opacity) {
 	
 	ctx.fillText("9", 104, 36);	
 	ctx.fillText("<", 104, 96);
+	
+	ctx.restore();
+};
+
+/*
+ * Draws a message on the screen.
+ * @param ctx Context to draw in.
+ * @param opacity Opacity to use when drawing.
+ */
+draw.message = function(ctx, opacity) {
+    'use strict';  
+	ctx.save();
+
+	ctx.globalAlpha = opacity * 0.75;
+	ctx.beginPath();
+	ctx.moveTo(-100, -50);
+	ctx.lineTo(100, -50);
+	ctx.lineTo(100, 50);
+	ctx.lineTo(-100, 50);
+	ctx.fillStyle = "#000000";
+	ctx.closePath();
+	ctx.fill();
+	
+	ctx.restore();
+
+	ctx.save();
+
+	ctx.globalAlpha = opacity;
+	ctx.textAlign = "center";
+	ctx.font = "32px Arial";
+	ctx.fillStyle = "#ffffff";
+	ctx.fillText(animations.messageFade.text, 0, 16);
 	
 	ctx.restore();
 };

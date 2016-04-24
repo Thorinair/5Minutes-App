@@ -2,6 +2,8 @@
 
 var canvas, context;
 
+var web = "https://5minutes.celestek.xyz/test.html";
+
 var currentFlower = 0;
 var flowers = [
 		[
@@ -53,7 +55,7 @@ var animations = {
 		"screens": {
 			"duration": 200,
 			"active": false,
-			"multiplier": [1, 0, 0, 0, 0, 0, 0, 0, 0] //TODO: Restore start to login.
+			"multiplier": [0, 0, 0, 0, 0, 0, 0, 0, 0]
 		},
 		"startup": {
 			"duration": 500,
@@ -79,6 +81,15 @@ var animations = {
 			"activeOut": false,
 			"multiplier": 0,
 			"reference": null
+		},
+		"messageFade": {
+			"duration": 200,
+			"onScreen": 2000,
+			"activeIn": false,
+			"activeOut": false,
+			"multiplier": 0,
+			"reference": null,
+			"text": ""
 		}
 	};
 
@@ -127,15 +138,15 @@ var types = [
    ];
 
 var contacts = [
-       {"name": "Denis Vajak", 	"id": "87436543", "sel": false},
-       {"name": "Josip Balen", 	"id": "47522432", "sel": false},
-       {"name": "Thorinair", "id": "85820345", "sel": false},
-       {"name": "Twilight Sparkle", "id": "24287541", "sel": false},
-       {"name": "Rainbow Dash", "id": "32042352", "sel": false},
-       {"name": "Pinkie Pie", "id": "34565346", "sel": false},
-       {"name": "Fluttershy", "id": "54312244", "sel": false},
-       {"name": "Rarity", "id": "24657888", "sel": false},
-       {"name": "Applejack", "id": "00056765", "sel": false}
+       {"name": "Denis Vajak", 	"id": 87436543, "sel": false},
+       {"name": "Josip Balen", 	"id": 47522432, "sel": false},
+       {"name": "Thorinair", "id": 85820345, "sel": false},
+       {"name": "Twilight Sparkle", "id": 24287541, "sel": false},
+       {"name": "Rainbow Dash", "id": 32042352, "sel": false},
+       {"name": "Pinkie Pie", "id": 34565346, "sel": false},
+       {"name": "Fluttershy", "id": 54312244, "sel": false},
+       {"name": "Rarity", "id": 24657888, "sel": false},
+       {"name": "Applejack", "id": 56765, "sel": false}
    ];
 
 var dragLastX = 0;
@@ -149,6 +160,7 @@ var listOffset = 0;
 var listOffsetLast = 0;
 
 var user = "";
+var pass = "";
 var code = "";
 
 var contact = "";
@@ -319,6 +331,63 @@ function animate_dotFadeOut(multiOld) {
 }
 
 /*
+ * Animates the message fade in.
+ * @param multiOld The old opacity.
+ */
+function animate_messageFadeIn(multiOld) {
+    'use strict';
+	animations.messageFade.activeIn = true;
+    
+    animations.messageFade.multiplier = util.trans(animations.messageFade.multiplier, "quad-down", multiOld, 1, animations.messageFade.duration);
+	
+	if (animations.messageFade.multiplier.toFixed(3) == 1) {
+		animations.messageFade.activeIn = false;
+	}
+		
+	if (animations.messageFade.activeIn) {
+		window.requestAnimationFrame(function() {
+			animate_messageFadeIn(multiOld);
+		});
+	}
+}
+
+/*
+ * Animates the message fade out.
+ * @param multiOld The old opacity.
+ */
+function animate_messageFadeOut(multiOld) {
+    'use strict';
+	animations.messageFade.activeOut = true;
+	
+	animations.messageFade.multiplier = util.trans(animations.messageFade.multiplier, "quad-down", multiOld, 0, animations.messageFade.duration);
+	
+	if (animations.messageFade.multiplier.toFixed(3) == 0) {
+		animations.messageFade.activeOut = false;
+	}
+		
+	if (animations.messageFade.activeOut) {
+		window.requestAnimationFrame(function() {
+			animate_messageFadeOut(multiOld);
+		});
+	}
+}
+
+/*
+ * Shows a message on the screen.
+ * @param text Text to show.
+ */
+function showMessage(text) {
+	window.clearTimeout(animations.messageFade.reference);
+	animations.messageFade.text = text;	
+	
+	animate_messageFadeIn(animations.messageFade.multiplier);	
+	
+	animations.messageFade.reference = window.setTimeout(function() {
+    	animate_messageFadeOut(animations.messageFade.multiplier);
+	}, animations.messageFade.onScreen + animations.messageFade.duration);
+}
+
+/*
  * Draws the whole UI.
  * @param ctx Context to draw in.
  */
@@ -429,6 +498,16 @@ function drawUI(ctx) {
 		
 		ctx.restore();
 	}
+    
+    // Message
+	if (animations.messageFade.multiplier.toFixed(3) > 0) {	
+		ctx.save();
+
+	    ctx.translate(canvas.width / 2, canvas.height / 2);
+	    draw.message(ctx, animations.messageFade.multiplier);
+		
+		ctx.restore();
+	}
 }
 
 /*
@@ -448,7 +527,9 @@ function animation(ctx, run) {
 	|| animations.flowers.active 
 	|| animations.dotTransition.active
 	|| animations.dotFade.activeIn
-	|| animations.dotFade.activeOut;
+	|| animations.dotFade.activeOut
+	|| animations.messageFade.activeIn
+	|| animations.messageFade.activeOut;
     
 	window.requestAnimationFrame(function() {
 		animation(ctx, run);
@@ -472,6 +553,19 @@ function animationSlow(ctx) {
 	}
 }
 
+function errorCallback(response) 
+{
+    'use strict';
+   console.log('The following error occurred: ' +  response.name);
+}
+
+function registerSuccessCallback(regID) 
+{
+    'use strict';
+   console.log("Registration succeeded with id: " + regID);
+   util.webUpdatePush(regID);
+}
+
 /*
  * Fired when application loads.
  */
@@ -486,13 +580,24 @@ window.onload = function onLoad() {
     	flowers = data;
     }   
     
+    user = localStorage.getItem("user");
+    pass = localStorage.getItem("pass");
+    
+    if (user != null && pass != null) {
+        var service = new tizen.ApplicationControl("http://tizen.org/appcontrol/operation/push_test");
+        tizen.push.registerService(service, registerSuccessCallback, errorCallback);
+    }
+    else {
+    	animations.screens.multiplier = [1, 0, 0, 0, 0, 0, 0, 0, 0];
+    }
+    
     animation(context, false);
     drawUI(context);
     
     slowAnimated = util.checkForFires();
     if (slowAnimated) {
     	animationSlow(context);
-    }
+    }    
 };
 
 /*
@@ -624,7 +729,7 @@ function processTapHold(x, y) {
     		if (animations.screens.multiplier[screens.login].toFixed(3) == 1) {	
 	    			
     			if (touchX >= 248 && touchX < 332 && touchY >= 116 && touchY < 160 && code.length == 8) {
-    				//TODO: Add login code here!
+    				util.webOnetime();
 					animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
 		    		window.setTimeout(function() {
 		    			animate_startup();
@@ -832,6 +937,7 @@ function processTapHold(x, y) {
     			
     			if (touchX >= 130 && touchX < 230 && touchY >= 119 && touchY < 163 && contact.length == 8) {
     				//TODO: Add invite code here!
+    				showMessage("Invited!");
 					animate_screens(screens.contacts, util.copy(animations.screens.multiplier));
     			}
     			

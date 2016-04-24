@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <widget xmlns="http://www.w3.org/ns/widgets" xmlns:tizen="http://tizen.org/ns/widgets" id="http://yourdomain/fivemin" version="1.0.0" viewmodes="maximized">
+    <access origin="*" subdomains="true"/>
     <tizen:application id="YWW5xQ7sHt.fivemin" package="YWW5xQ7sHt" required_version="2.3.1"/>
     <content src="index.html"/>
     <feature name="http://tizen.org/feature/screen.size.normal"/>
+    <feature name="http://tizen.org/feature/network.internet"/>
     <icon src="icon.png"/>
     <name>5Minutes</name>
+    <tizen:privilege name="http://tizen.org/privilege/push"/>
+    <tizen:privilege name="http://tizen.org/privilege/internet"/>
     <tizen:profile name="wearable"/>
     <tizen:setting hwkey-event="enable"/>
 </widget>
