@@ -1,4 +1,4 @@
-/*global window, document, tizen, console, setTimeout, tau, addPlate, colors, flowers, contacts, types, drawUI, user, code, pass, contact, web */
+/*global window, document, tizen, console, setTimeout, tau, addPlate, colors, flowers, contacts, types, drawUI, user, code, pass, loggingIn, contact, web, animate_screens, animate_startup, animations, screens, showMessage */
 
 var util = function(){
     'use strict';
@@ -188,6 +188,22 @@ util.addPlate = function() {
 	flowers[addPlate.flower][addPlate.plate] = util.copy(newPlate);
 	
 	localStorage.setItem("flowers", JSON.stringify(flowers));
+};
+
+/*
+ * Loads account data from storage.
+ */
+util.loadAccount = function() {
+	user = localStorage.getItem("user");
+    pass = localStorage.getItem("pass");
+};
+
+/*
+ * Saves account data to storage.
+ */
+util.saveAccount = function() {
+	localStorage.setItem("user", user);
+	localStorage.setItem("pass", pass);
 };
 
 /*
@@ -412,33 +428,261 @@ util.trans = function(value, type, start, end, duration) {
     return value;
 };
 
+function pushCallbackError(response) {
+    'use strict';
+    console.log('The following error occurred: ' +  response.name);
+	showMessage("Push server error.");
+	loggingIn = false;
+}
+
+function pushCallbackSuccess(regID) {
+    'use strict';
+	console.log("Registration succeeded with id: " + regID);
+	util.webUpdatePush(regID);
+}
+
+util.logout = function(message) {
+    'use strict';
+	showMessage(message);
+	loggingIn = false;
+	code = "";
+	user = "";
+	pass = "";
+	util.saveAccount();
+	animate_screens(screens.login, util.copy(animations.screens.multiplier));
+};
+
+util.close = function(message) {
+    'use strict';
+	showMessage(message);
+	loggingIn = false;
+	window.setTimeout(function() {
+		try {
+			tizen.application.getCurrentApplication().exit();
+		} 
+		catch (ignore) {
+		}
+	}, 2000);
+};
+
+util.getPushID = function() {
+    'use strict';
+    var pushService = new tizen.ApplicationControl("http://tizen.org/appcontrol/operation/push_test");
+    tizen.push.registerService(pushService, pushCallbackSuccess, pushCallbackError);
+};
+
 util.webOnetime = function() {	
-	var http = new XMLHttpRequest();
-	//var params = "request=onetime&code=" + code;
-	http.open("GET", web, true);
-
-	//Send the proper header information along with the request
-	http.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-	http.onreadystatechange = function() {//Call a function when the state changes.
-	        console.log("Out:" + http.responseText);
+    'use strict';
+	
+	showMessage("Logging in...");
+	loggingIn = true;
+    
+	var param = "request=onetime&code=" + code;
+	
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", web, true);
+	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	xhr.setRequestHeader("Header-Custom-TizenCORS", "OK");
+	xhr.timeout = 2000;
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState === 4) {  
+			if (xhr.status === 200) {  
+				
+				console.log("webOnetime:" + xhr.responseText);
+				var response = JSON.parse(xhr.responseText);
+				if (response.response == "onetime_okay") {
+					user = response.user;
+					pass = response.pass;
+					util.saveAccount();
+				    util.getPushID();
+				}
+				else if (response.response == "onetime_incorrect") {
+					util.logout("Incorrect code.");
+				}
+				else if (response.response == "db_error") {
+					util.logout("Database error.");
+				}
+				else {
+					util.logout("Server error.");
+				}
+			    
+			} 
+			else {  
+				util.logout("Connection error.");
+			}  
+		}  
 	};
-	http.send();
-	console.log("Requested...");
+	
+	xhr.send(param);
 };
 
 util.webUpdatePush = function(regID) {
-	var http = new XMLHttpRequest();
-	var params = "request=update_push&user=" + user + "&pass=" + pass + "&push=" + regID;
-	http.open("POST", web, true);
+    'use strict';
 
-	//Send the proper header information along with the request
-	http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-
-	http.onreadystatechange = function() {//Call a function when the state changes.
-	    if(http.readyState == 4 && http.status == 200) {
-	        console.log(http.responseText);
-	    }
+	showMessage("Logging in...");
+	loggingIn = true;
+	
+	var param = "request=update_push&user=" + user + "&pass=" + pass + "&push=" + regID;
+	
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", web, true);
+	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	xhr.setRequestHeader("Header-Custom-TizenCORS", "OK");
+	xhr.timeout = 2000;
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState === 4) {  
+			if (xhr.status === 200) {  
+				
+				console.log("webUpdatePush:" + xhr.responseText);
+				var response = JSON.parse(xhr.responseText);
+				if (response.response == "update_push_okay") {
+					util.webContactGetList();
+				}
+				else if (response.response == "update_push_expired") {
+					util.logout("Login expired.");
+				}
+				else if (response.response == "db_error") {
+					util.close("Database error.");
+				}
+				else {
+					util.close("Server error.");
+				}
+			    
+			} 
+			else {  
+				util.close("Connection error.");
+			}  
+		}  
 	};
-	http.send(params);
+	
+	xhr.send(param);
+};
+
+util.webContactGetList = function() {
+    'use strict';
+
+	showMessage("Logging in...");
+	loggingIn = true;
+	
+	var param = "request=contact_get_list&user=" + user + "&pass=" + pass;
+	
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", web, true);
+	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	xhr.setRequestHeader("Header-Custom-TizenCORS", "OK");
+	xhr.timeout = 2000;
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState === 4) {  
+			if (xhr.status === 200) {  
+				
+				console.log("webContactGetList:" + xhr.responseText);
+				var response = JSON.parse(xhr.responseText);
+				if (response.response == "contact_get_list_okay") {
+					
+					var newContacts = [];
+					
+					var i;
+					for (i = 0; i < response.contacts.length; i += 1) {
+						var newContact = {
+								"id": response.contacts[i].id,
+								"name": response.contacts[i].firstname + " " + response.contacts[i].lastname,
+								"sel": false
+						};
+						newContacts.push(newContact);
+					}
+					
+					contacts = newContacts;
+					
+					showMessage("Success!");
+					loggingIn = false;
+					animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
+		    		window.setTimeout(function() {
+		    			animate_startup();
+					}, 200);
+				}
+				else if (response.response == "contact_get_list_expired") {
+					util.logout("Login expired.");
+				}
+				else {
+					showMessage("Error fetching contacts.");
+					loggingIn = false;
+					animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
+		    		window.setTimeout(function() {
+		    			animate_startup();
+					}, 200);
+				}
+			    
+			} 
+			else {  
+				showMessage("Error fetching contacts.");
+				loggingIn = false;
+				animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
+	    		window.setTimeout(function() {
+	    			animate_startup();
+				}, 200);
+			}  
+		}  
+	};
+	
+	xhr.send(param);
+};
+
+util.webContactGetListUpdate = function() {
+    'use strict';
+
+	showMessage("Loading contacts...");
+	
+	var param = "request=contact_get_list&user=" + user + "&pass=" + pass;
+	
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", web, true);
+	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	xhr.setRequestHeader("Header-Custom-TizenCORS", "OK");
+	xhr.timeout = 2000;
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState === 4) {  
+			if (xhr.status === 200) {  
+				
+				console.log("webContactGetList:" + xhr.responseText);
+				var response = JSON.parse(xhr.responseText);
+				if (response.response == "contact_get_list_okay") {
+					
+					var newContacts = [];
+					
+					var i;
+					for (i = 0; i < response.contacts.length; i += 1) {
+						var newContact = {
+								"id": response.contacts[i].id,
+								"name": response.contacts[i].firstname + " " + response.contacts[i].lastname,
+								"sel": false
+						};
+						newContacts.push(newContact);
+					}
+					
+					contacts = newContacts;
+					
+    				listOffset = 0;
+            		animate_screens(screens.contacts, util.copy(animations.screens.multiplier));
+				}
+				else if (response.response == "contact_get_list_expired") {
+					util.logout("Login expired.");
+				}
+				else {
+					showMessage("Error fetching contacts.");
+					
+    				listOffset = 0;
+            		animate_screens(screens.contacts, util.copy(animations.screens.multiplier));
+				}
+			    
+			} 
+			else {  
+				showMessage("Error fetching contacts.");
+				
+				listOffset = 0;
+        		animate_screens(screens.contacts, util.copy(animations.screens.multiplier));
+			}  
+		}  
+	};
+	
+	xhr.send(param);
 };

@@ -923,10 +923,10 @@ draw.message = function(ctx, opacity) {
 
 	ctx.globalAlpha = opacity * 0.75;
 	ctx.beginPath();
-	ctx.moveTo(-100, -50);
-	ctx.lineTo(100, -50);
-	ctx.lineTo(100, 50);
-	ctx.lineTo(-100, 50);
+	ctx.moveTo(-180, -30);
+	ctx.lineTo(180, -30);
+	ctx.lineTo(180, 30);
+	ctx.lineTo(-180, 30);
 	ctx.fillStyle = "#000000";
 	ctx.closePath();
 	ctx.fill();

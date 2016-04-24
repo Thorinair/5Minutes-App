@@ -2,7 +2,7 @@
 
 var canvas, context;
 
-var web = "https://5minutes.celestek.xyz/test.html";
+var web = "https://5minutes.celestek.xyz/watch/index.php";
 
 var currentFlower = 0;
 var flowers = [
@@ -138,15 +138,15 @@ var types = [
    ];
 
 var contacts = [
-       {"name": "Denis Vajak", 	"id": 87436543, "sel": false},
-       {"name": "Josip Balen", 	"id": 47522432, "sel": false},
-       {"name": "Thorinair", "id": 85820345, "sel": false},
-       {"name": "Twilight Sparkle", "id": 24287541, "sel": false},
-       {"name": "Rainbow Dash", "id": 32042352, "sel": false},
-       {"name": "Pinkie Pie", "id": 34565346, "sel": false},
-       {"name": "Fluttershy", "id": 54312244, "sel": false},
-       {"name": "Rarity", "id": 24657888, "sel": false},
-       {"name": "Applejack", "id": 56765, "sel": false}
+       {"id": 87436543, "name": "Denis Vajak", 	"sel": false},
+       {"id": 47522432, "name": "Josip Balen", "sel": false},
+       {"id": 85820345, "name": "Thorinair", "sel": false},
+       {"id": 24287541, "name": "Twilight Sparkle", "sel": false},
+       {"id": 32042352, "name": "Rainbow Dash", "sel": false},
+       {"id": 34565346, "name": "Pinkie Pie", "sel": false},
+       {"id": 54312244, "name": "Fluttershy", "sel": false},
+       {"id": 24657888, "name": "Rarity", "sel": false},
+       {"id": 56765, "name": "Applejack", "sel": false}
    ];
 
 var dragLastX = 0;
@@ -162,9 +162,11 @@ var listOffsetLast = 0;
 var user = "";
 var pass = "";
 var code = "";
+var push = "";
 
 var contact = "";
 var slowAnimated = false;
+var loggingIn = false;
 
 window.requestAnimationFrame = window.requestAnimationFrame ||
 	window.webkitRequestAnimationFrame ||
@@ -379,6 +381,7 @@ function animate_messageFadeOut(multiOld) {
 function showMessage(text) {
 	window.clearTimeout(animations.messageFade.reference);
 	animations.messageFade.text = text;	
+	drawUI(context);
 	
 	animate_messageFadeIn(animations.messageFade.multiplier);	
 	
@@ -553,19 +556,6 @@ function animationSlow(ctx) {
 	}
 }
 
-function errorCallback(response) 
-{
-    'use strict';
-   console.log('The following error occurred: ' +  response.name);
-}
-
-function registerSuccessCallback(regID) 
-{
-    'use strict';
-   console.log("Registration succeeded with id: " + regID);
-   util.webUpdatePush(regID);
-}
-
 /*
  * Fired when application loads.
  */
@@ -580,12 +570,9 @@ window.onload = function onLoad() {
     	flowers = data;
     }   
     
-    user = localStorage.getItem("user");
-    pass = localStorage.getItem("pass");
-    
+    util.loadAccount();
     if (user != null && pass != null) {
-        var service = new tizen.ApplicationControl("http://tizen.org/appcontrol/operation/push_test");
-        tizen.push.registerService(service, registerSuccessCallback, errorCallback);
+    	util.getPushID();
     }
     else {
     	animations.screens.multiplier = [1, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -644,12 +631,12 @@ function processTapHold(x, y) {
     		}
     		
     	    // Screen: addContacts
-    		if (animations.screens.multiplier[screens.addContacts].toFixed(3) == 1) {	
+    		if (animations.screens.multiplier[screens.addContacts].toFixed(3) == 1 && contacts.length * 48 > 200) {	
     			listOffsetLast = listOffset;
     		}
     		
     	    // Screen: contacts
-    		if (animations.screens.multiplier[screens.contacts].toFixed(3) == 1) {	
+    		if (animations.screens.multiplier[screens.contacts].toFixed(3) == 1 && contacts.length * 48 > 200) {	
     			listOffsetLast = listOffset;
     		}
     	});
@@ -693,7 +680,7 @@ function processTapHold(x, y) {
     		}
 
     	    // Screen: addContacts
-    		if (animations.screens.multiplier[screens.addContacts].toFixed(3) == 1) {	
+    		if (animations.screens.multiplier[screens.addContacts].toFixed(3) == 1 && contacts.length * 48 > 200) {	
 	    		wasDragged = true;
 	    		dragY = e.detail.deltaY;
 	    		listOffset = listOffsetLast + dragY;
@@ -707,7 +694,7 @@ function processTapHold(x, y) {
     		}
 
     	    // Screen: contacts
-    		if (animations.screens.multiplier[screens.contacts].toFixed(3) == 1) {	
+    		if (animations.screens.multiplier[screens.contacts].toFixed(3) == 1 && contacts.length * 48 > 200) {	
 	    		wasDragged = true;
 	    		dragY = e.detail.deltaY;
 	    		listOffset = listOffsetLast + dragY;
@@ -730,10 +717,6 @@ function processTapHold(x, y) {
 	    			
     			if (touchX >= 248 && touchX < 332 && touchY >= 116 && touchY < 160 && code.length == 8) {
     				util.webOnetime();
-					animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
-		    		window.setTimeout(function() {
-		    			animate_startup();
-					}, 200);
     			}
     			
     			if (code.length < 8) {
@@ -791,8 +774,7 @@ function processTapHold(x, y) {
 	    				animations.flowers.active = true;
 	    				
 	    				if (animations.flowers.centerY >= 360) {
-	        				listOffset = 0;
-		            		animate_screens(screens.contacts, util.copy(animations.screens.multiplier));
+	    					util.webContactGetListUpdate();
 	    				}	   
 	    				
 	    	    	    if (animations.flowers.centerX <= 0) {
