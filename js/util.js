@@ -492,7 +492,7 @@ util.webOnetime = function() {
 	xhr.open("POST", web, true);
 	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	xhr.setRequestHeader("Header-Custom-TizenCORS", "OK");
-	xhr.timeout = 2000;
+	xhr.timeout = 5000;
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {  
 			if (xhr.status === 200) {  
@@ -537,7 +537,7 @@ util.webUpdatePush = function(regID) {
 	xhr.open("POST", web, true);
 	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	xhr.setRequestHeader("Header-Custom-TizenCORS", "OK");
-	xhr.timeout = 2000;
+	xhr.timeout = 5000;
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {  
 			if (xhr.status === 200) {  
@@ -579,7 +579,7 @@ util.webContactGetList = function() {
 	xhr.open("POST", web, true);
 	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	xhr.setRequestHeader("Header-Custom-TizenCORS", "OK");
-	xhr.timeout = 2000;
+	xhr.timeout = 5000;
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {  
 			if (xhr.status === 200) {  
@@ -650,7 +650,7 @@ util.webContactGetListUpdate = function() {
 	xhr.open("POST", web, true);
 	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	xhr.setRequestHeader("Header-Custom-TizenCORS", "OK");
-	xhr.timeout = 2000;
+	xhr.timeout = 5000;
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {  
 			if (xhr.status === 200) {  
@@ -708,7 +708,7 @@ util.webContactRequest = function() {
 	xhr.open("POST", web, true);
 	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	xhr.setRequestHeader("Header-Custom-TizenCORS", "OK");
-	xhr.timeout = 2000;
+	xhr.timeout = 5000;
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {  
 			if (xhr.status === 200) {  
@@ -737,6 +737,41 @@ util.webContactRequest = function() {
 			} 
 			else {  
 				showMessage("Error sending contact request.");
+			}  
+		}  
+	};
+	
+	xhr.send(param);
+};
+
+util.webContactReject = function(reject) {
+    'use strict';	
+    
+	var param = "request=contact_reject&user=" + user + "&pass=" + pass + "&contact=" + reject;
+	
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", web, true);
+	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	xhr.setRequestHeader("Header-Custom-TizenCORS", "OK");
+	xhr.timeout = 5000;
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState === 4) {  
+			if (xhr.status === 200) {  
+				
+				console.log("webContactReject:" + xhr.responseText);
+				var response = JSON.parse(xhr.responseText);
+				if (response.response == "contact_reject_okay") {
+				}
+				else if (response.response == "contact_reject_expired") {
+					util.logout("Login expired.");
+				}
+				else {
+					showMessage("Error rejecting.");
+				}
+			    
+			} 
+			else {  
+				showMessage("Error rejecting.");
 			}  
 		}  
 	};

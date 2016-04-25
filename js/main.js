@@ -362,8 +362,6 @@ function animate_messageFadeIn(multiOld) {
  */
 function animate_messageFadeOut(multiOld) {
     'use strict';
-	animations.messageFade.activeOut = true;
-	
 	animations.messageFade.multiplier = util.trans(animations.messageFade.multiplier, "quad-down", multiOld, 0, animations.messageFade.duration);
 	
 	if (animations.messageFade.multiplier.toFixed(3) == 0) {
@@ -382,6 +380,7 @@ function animate_messageFadeOut(multiOld) {
  * @param text Text to show.
  */
 function showMessage(text) {
+	animations.messageFade.activeOut = false;
 	window.clearTimeout(animations.messageFade.reference);
 	animations.messageFade.text = text;	
 	drawUI(context);
@@ -389,6 +388,7 @@ function showMessage(text) {
 	animate_messageFadeIn(animations.messageFade.multiplier);	
 	
 	animations.messageFade.reference = window.setTimeout(function() {
+		animations.messageFade.activeOut = true;
     	animate_messageFadeOut(animations.messageFade.multiplier);
 	}, animations.messageFade.onScreen + animations.messageFade.duration);
 }
@@ -985,20 +985,41 @@ function processTapHold(x, y) {
 
     	    // Screen: notifications
     		if (animations.screens.multiplier[screens.notifications].toFixed(3) == 1) {	
-    			if (touchX >= 120 && touchX < 240 && touchY >= 240 && touchY < 280) {
-    				// TODO: Send contact accept.
-    				notifications.pop();
-    				if (notifications.length == 0) {
-    					animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
-    				}
+    			if (notifications.length > 0) {
+    				var notification = notifications[notifications.length - 1];
+	    			if (notification.type == "contact_request") {
+		    			if (touchX >= 120 && touchX < 240 && touchY >= 240 && touchY < 280) {
+		    				// TODO: Send contact accept.
+		    				notifications.pop();
+		    				if (notifications.length == 0) {
+		    					animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
+		    				}
+		    			}
+		    			else if (touchX >= 120 && touchX < 240 && touchY >= 290 && touchY < 330) {
+		    				util.webContactReject(notification.contact);
+		    				notifications.pop();
+		    				if (notifications.length == 0) {
+		    					animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
+		    				}
+		    			}  	
+	    			}
+	    			else if (notification.type == "contact_reject") {
+		    			if (touchX >= 120 && touchX < 240 && touchY >= 265 && touchY < 305) {
+		    				notifications.pop();
+		    				if (notifications.length == 0) {
+		    					animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
+		    				}
+		    			}
+	    			}
+	    			else if (notification.type == "contact_accept") {
+		    			if (touchX >= 120 && touchX < 240 && touchY >= 265 && touchY < 305) {
+		    				notifications.pop();
+		    				if (notifications.length == 0) {
+		    					animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
+		    				}
+		    			}
+	    			}
     			}
-    			else if (touchX >= 120 && touchX < 240 && touchY >= 290 && touchY < 330) {
-    				// TODO: Send contact reject.
-    				notifications.pop();
-    				if (notifications.length == 0) {
-    					animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
-    				}
-    			}  		
     		}
     		
     	});

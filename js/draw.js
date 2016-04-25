@@ -963,7 +963,7 @@ draw.notifications = function(ctx, offset, opacity) {
 			ctx.fillStyle = "#000000";
 			ctx.fillText("Decline", 0, 140);
 		}
-		else if (notification.type == "contact_rejected") {
+		else if (notification.type == "contact_reject") {
 			ctx.globalAlpha = opacity;
 			
 			ctx.beginPath();
@@ -990,7 +990,7 @@ draw.notifications = function(ctx, offset, opacity) {
 			ctx.fillStyle = "#000000";
 			ctx.fillText("Okay", 0, 115);
 		}
-		else if (notification.type == "contact_accepted") {
+		else if (notification.type == "contact_accept") {
 			ctx.globalAlpha = opacity;
 			
 			ctx.beginPath();
