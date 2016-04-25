@@ -913,6 +913,116 @@ draw.contactsAdd = function(ctx, opacity) {
 };
 
 /*
+ * Draws the notification screen.
+ * @param ctx Context to draw in.
+ * @param opacity Opacity to use when drawing.
+ */
+draw.notifications = function(ctx, offset, opacity) {
+    'use strict';
+	ctx.save();
+	
+	if (notifications.length != 0) {
+		var notification = notifications[notifications.length - 1];
+		if (notification.type == "contact_request") {
+			ctx.globalAlpha = opacity;
+			
+			ctx.beginPath();
+			ctx.moveTo(-60, 60);
+			ctx.lineTo(60, 60);
+			ctx.lineTo(60, 100);
+			ctx.lineTo(-60, 100);
+			ctx.fillStyle = "#ffffff";
+			ctx.closePath();
+			ctx.fill();	
+			
+			ctx.beginPath();
+			ctx.moveTo(-60, 110);
+			ctx.lineTo(60, 110);
+			ctx.lineTo(60, 150);
+			ctx.lineTo(-60, 150);
+			ctx.fillStyle = "#ffffff";
+			ctx.closePath();
+			ctx.fill();	
+			
+			ctx.textAlign = "center";
+			
+			ctx.font = "32px Arial";
+			ctx.fillStyle = "#ffffff";
+			ctx.fillText("Notifications", 0, -120);
+
+			ctx.font = "32px Arial";
+			ctx.fillStyle = "#ffffff";
+			ctx.fillText(notification.firstname + " " + notification.lastname + " wants to", 0, -40);
+			ctx.fillText("add you to contacts.", 0, -0);
+			
+			ctx.font = "32px Arial";
+			ctx.fillStyle = "#000000";
+			ctx.fillText("Accept", 0, 90);
+			
+			ctx.font = "32px Arial";
+			ctx.fillStyle = "#000000";
+			ctx.fillText("Decline", 0, 140);
+		}
+		else if (notification.type == "contact_rejected") {
+			ctx.globalAlpha = opacity;
+			
+			ctx.beginPath();
+			ctx.moveTo(-60, 85);
+			ctx.lineTo(60, 85);
+			ctx.lineTo(60, 125);
+			ctx.lineTo(-60, 125);
+			ctx.fillStyle = "#ffffff";
+			ctx.closePath();
+			ctx.fill();	
+			
+			ctx.textAlign = "center";
+			
+			ctx.font = "32px Arial";
+			ctx.fillStyle = "#ffffff";
+			ctx.fillText("Notifications", 0, -120);
+
+			ctx.font = "32px Arial";
+			ctx.fillStyle = "#ffffff";
+			ctx.fillText(notification.firstname + " " + notification.lastname + " rejected", 0, -40);
+			ctx.fillText("your contact request.", 0, -0);
+			
+			ctx.font = "32px Arial";
+			ctx.fillStyle = "#000000";
+			ctx.fillText("Okay", 0, 115);
+		}
+		else if (notification.type == "contact_accepted") {
+			ctx.globalAlpha = opacity;
+			
+			ctx.beginPath();
+			ctx.moveTo(-60, 85);
+			ctx.lineTo(60, 85);
+			ctx.lineTo(60, 125);
+			ctx.lineTo(-60, 125);
+			ctx.fillStyle = "#ffffff";
+			ctx.closePath();
+			ctx.fill();	
+			
+			ctx.textAlign = "center";
+			
+			ctx.font = "32px Arial";
+			ctx.fillStyle = "#ffffff";
+			ctx.fillText("Notifications", 0, -120);
+
+			ctx.font = "32px Arial";
+			ctx.fillStyle = "#ffffff";
+			ctx.fillText(notification.firstname + " " + notification.lastname + " accepted", 0, -40);
+			ctx.fillText("your contact request.", 0, -0);
+			
+			ctx.font = "32px Arial";
+			ctx.fillStyle = "#000000";
+			ctx.fillText("Okay", 0, 115);
+		}
+	}
+	
+	ctx.restore();
+};
+
+/*
  * Draws a message on the screen.
  * @param ctx Context to draw in.
  * @param opacity Opacity to use when drawing.
@@ -939,7 +1049,7 @@ draw.message = function(ctx, opacity) {
 	ctx.textAlign = "center";
 	ctx.font = "32px Arial";
 	ctx.fillStyle = "#ffffff";
-	ctx.fillText(animations.messageFade.text, 0, 16);
+	ctx.fillText(animations.messageFade.text, 0, 8);
 	
 	ctx.restore();
 };

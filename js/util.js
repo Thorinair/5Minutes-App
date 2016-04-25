@@ -1,4 +1,4 @@
-/*global window, document, tizen, console, setTimeout, tau, addPlate, colors, flowers, contacts, types, drawUI, user, code, pass, loggingIn, contact, web, animate_screens, animate_startup, animations, screens, showMessage */
+/*global window, document, tizen, console, setTimeout, tau, addPlate, colors, flowers, contacts, types, drawUI, user, code, pass, loggingIn, contact, web, animate_screens, animate_startup, animations, screens, showMessage, notifications */
 
 var util = function(){
     'use strict';
@@ -428,6 +428,14 @@ util.trans = function(value, type, start, end, duration) {
     return value;
 };
 
+function pushCallbackNotification(notification) {
+    'use strict';
+	console.log("Alert: " + notification.alertMessage);
+	console.log("Data: " + notification.appData);
+	notifications.push(JSON.parse(notification.appData));
+	animate_screens(screens.notifications, util.copy(animations.screens.multiplier));
+}
+
 function pushCallbackError(response) {
     'use strict';
     console.log('The following error occurred: ' +  response.name);
@@ -438,6 +446,7 @@ function pushCallbackError(response) {
 function pushCallbackSuccess(regID) {
     'use strict';
 	console.log("Registration succeeded with id: " + regID);
+    tizen.push.connectService(pushCallbackNotification, pushCallbackError);
 	util.webUpdatePush(regID);
 }
 
@@ -597,8 +606,9 @@ util.webContactGetList = function() {
 					loggingIn = false;
 					animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
 		    		window.setTimeout(function() {
+		    			tizen.push.getUnreadNotifications();
 		    			animate_startup();
-					}, 200);
+					}, 500);
 				}
 				else if (response.response == "contact_get_list_expired") {
 					util.logout("Login expired.");
@@ -606,10 +616,11 @@ util.webContactGetList = function() {
 				else {
 					showMessage("Error fetching contacts.");
 					loggingIn = false;
-					animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
+					animations.screens.reference = animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
 		    		window.setTimeout(function() {
+		    			tizen.push.getUnreadNotifications();
 		    			animate_startup();
-					}, 200);
+					}, 500);
 				}
 			    
 			} 
@@ -618,8 +629,9 @@ util.webContactGetList = function() {
 				loggingIn = false;
 				animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
 	    		window.setTimeout(function() {
+	    			tizen.push.getUnreadNotifications();
 	    			animate_startup();
-				}, 200);
+				}, 500);
 			}  
 		}  
 	};
@@ -643,7 +655,7 @@ util.webContactGetListUpdate = function() {
 		if (xhr.readyState === 4) {  
 			if (xhr.status === 200) {  
 				
-				console.log("webContactGetList:" + xhr.responseText);
+				console.log("webContactGetListUpdate:" + xhr.responseText);
 				var response = JSON.parse(xhr.responseText);
 				if (response.response == "contact_get_list_okay") {
 					
@@ -680,6 +692,51 @@ util.webContactGetListUpdate = function() {
 				
 				listOffset = 0;
         		animate_screens(screens.contacts, util.copy(animations.screens.multiplier));
+			}  
+		}  
+	};
+	
+	xhr.send(param);
+};
+
+util.webContactRequest = function() {
+    'use strict';	
+    
+	var param = "request=contact_request&user=" + user + "&pass=" + pass + "&contact=" + parseInt(contact);
+	
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", web, true);
+	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	xhr.setRequestHeader("Header-Custom-TizenCORS", "OK");
+	xhr.timeout = 2000;
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState === 4) {  
+			if (xhr.status === 200) {  
+				
+				console.log("webContactRequest:" + xhr.responseText);
+				var response = JSON.parse(xhr.responseText);
+				if (response.response == "contact_request_okay") {
+					showMessage("Contact request sent.");
+				}
+				else if (response.response == "contact_request_self") {
+					showMessage("Cannot invite yourself.");
+				}
+				else if (response.response == "contact_request_miss") {
+					showMessage("User doesn't exist.");
+				}
+				else if (response.response == "contact_request_already") {
+					showMessage("Contact already added.");
+				}
+				else if (response.response == "contact_request_expired") {
+					util.logout("Login expired.");
+				}
+				else {
+					showMessage("Error sending contact request.");
+				}
+			    
+			} 
+			else {  
+				showMessage("Error sending contact request.");
 			}  
 		}  
 	};

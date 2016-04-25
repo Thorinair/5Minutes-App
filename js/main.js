@@ -55,7 +55,7 @@ var animations = {
 		"screens": {
 			"duration": 200,
 			"active": false,
-			"multiplier": [0, 0, 0, 0, 0, 0, 0, 0, 0]
+			"multiplier": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 		},
 		"startup": {
 			"duration": 500,
@@ -102,7 +102,8 @@ var screens = {
 		"addContacts": 5,
 		"edit": 6,
 		"contacts": 7,
-		"contactsAdd": 8
+		"contactsAdd": 8,
+		"notifications": 9
 	};
 
 var colors = [
@@ -168,6 +169,8 @@ var contact = "";
 var slowAnimated = false;
 var loggingIn = false;
 
+var notifications = [];
+
 window.requestAnimationFrame = window.requestAnimationFrame ||
 	window.webkitRequestAnimationFrame ||
 	window.mozRequestAnimationFrame ||
@@ -187,7 +190,7 @@ function animate_screens(screen, oldMultiplier) {
     'use strict';
     animations.screens.active = true;
     
-    var newMultiplier = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+    var newMultiplier = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     newMultiplier[screen] = 1;
 
     var i;
@@ -501,6 +504,16 @@ function drawUI(ctx) {
 		
 		ctx.restore();
 	}
+
+    // Screen: notifications
+	if (animations.screens.multiplier[screens.notifications].toFixed(3) > 0) {	
+		ctx.save();
+
+	    ctx.translate(canvas.width / 2, canvas.height / 2);
+	    draw.notifications(ctx, animations.screens.multiplier[screens.notifications]);
+		
+		ctx.restore();
+	}
     
     // Message
 	if (animations.messageFade.multiplier.toFixed(3) > 0) {	
@@ -561,6 +574,7 @@ function animationSlow(ctx) {
  */
 window.onload = function onLoad() {
     'use strict';
+	console.log("Loading...");
 
     canvas = document.querySelector('canvas');
     context = canvas.getContext('2d');
@@ -575,7 +589,7 @@ window.onload = function onLoad() {
     	util.getPushID();
     }
     else {
-    	animations.screens.multiplier = [1, 0, 0, 0, 0, 0, 0, 0, 0];
+    	animations.screens.multiplier = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     }
     
     animation(context, false);
@@ -919,7 +933,8 @@ function processTapHold(x, y) {
     			
     			if (touchX >= 130 && touchX < 230 && touchY >= 119 && touchY < 163 && contact.length == 8) {
     				//TODO: Add invite code here!
-    				showMessage("Invited!");
+    				util.webContactRequest();
+    				contact = "";
 					animate_screens(screens.contacts, util.copy(animations.screens.multiplier));
     			}
     			
@@ -967,6 +982,24 @@ function processTapHold(x, y) {
 	    			}
     			}
 			}
+
+    	    // Screen: notifications
+    		if (animations.screens.multiplier[screens.notifications].toFixed(3) == 1) {	
+    			if (touchX >= 120 && touchX < 240 && touchY >= 240 && touchY < 280) {
+    				// TODO: Send contact accept.
+    				notifications.pop();
+    				if (notifications.length == 0) {
+    					animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
+    				}
+    			}
+    			else if (touchX >= 120 && touchX < 240 && touchY >= 290 && touchY < 330) {
+    				// TODO: Send contact reject.
+    				notifications.pop();
+    				if (notifications.length == 0) {
+    					animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
+    				}
+    			}  		
+    		}
     		
     	});
     });
