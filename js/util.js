@@ -428,28 +428,44 @@ util.trans = function(value, type, start, end, duration) {
     return value;
 };
 
+/*
+ * Fired when Push notification is received.
+ * @param notification Object of the notification.
+ */
 function pushCallbackNotification(notification) {
     'use strict';
-	console.log("Alert: " + notification.alertMessage);
-	console.log("Data: " + notification.appData);
+	//console.log("Alert: " + notification.alertMessage);
+	//console.log("Data: " + notification.appData);
 	notifications.push(JSON.parse(notification.appData));
 	animate_screens(screens.notifications, util.copy(animations.screens.multiplier));
 }
 
+/*
+ * Fired when Push returns an error.
+ * @param response Response of the error.
+ */
 function pushCallbackError(response) {
     'use strict';
-    console.log('The following error occurred: ' +  response.name);
+    //console.log('The following error occurred: ' +  response.name);
 	showMessage("Push server error.");
 	loggingIn = false;
 }
 
+/*
+ * Fired when Push notification successfully registers.
+ * @param regID ID of the registration.
+ */
 function pushCallbackSuccess(regID) {
     'use strict';
-	console.log("Registration succeeded with id: " + regID);
+	//console.log("Registration succeeded with id: " + regID);
     tizen.push.connectService(pushCallbackNotification, pushCallbackError);
 	util.webUpdatePush(regID);
 }
 
+/*
+ * Logs the user out, usually when the session expires.
+ * @param message Message to show.
+ */
 util.logout = function(message) {
     'use strict';
 	showMessage(message);
@@ -461,6 +477,10 @@ util.logout = function(message) {
 	animate_screens(screens.login, util.copy(animations.screens.multiplier));
 };
 
+/*
+ * Closes the application on network error.
+ * @param message Message to show.
+ */
 util.close = function(message) {
     'use strict';
 	showMessage(message);
@@ -474,12 +494,18 @@ util.close = function(message) {
 	}, 2000);
 };
 
+/*
+ * Fetches the regID of Push.
+ */
 util.getPushID = function() {
     'use strict';
     var pushService = new tizen.ApplicationControl("http://tizen.org/appcontrol/operation/push_test");
     tizen.push.registerService(pushService, pushCallbackSuccess, pushCallbackError);
 };
 
+/*
+ * Sends a POST request for onetime login.
+ */
 util.webOnetime = function() {	
     'use strict';
 	
@@ -497,7 +523,7 @@ util.webOnetime = function() {
 		if (xhr.readyState === 4) {  
 			if (xhr.status === 200) {  
 				
-				console.log("webOnetime:" + xhr.responseText);
+				//console.log("webOnetime:" + xhr.responseText);
 				var response = JSON.parse(xhr.responseText);
 				if (response.response == "onetime_okay") {
 					user = response.user;
@@ -525,6 +551,10 @@ util.webOnetime = function() {
 	xhr.send(param);
 };
 
+/*
+ * Sends a POST request to update the regID of Push.
+ * @param regID ID of the registration.
+ */
 util.webUpdatePush = function(regID) {
     'use strict';
 
@@ -542,7 +572,7 @@ util.webUpdatePush = function(regID) {
 		if (xhr.readyState === 4) {  
 			if (xhr.status === 200) {  
 				
-				console.log("webUpdatePush:" + xhr.responseText);
+				//console.log("webUpdatePush:" + xhr.responseText);
 				var response = JSON.parse(xhr.responseText);
 				if (response.response == "update_push_okay") {
 					util.webContactGetList();
@@ -567,6 +597,9 @@ util.webUpdatePush = function(regID) {
 	xhr.send(param);
 };
 
+/*
+ * Sends a POST request to get the contact list.
+ */
 util.webContactGetList = function() {
     'use strict';
 
@@ -584,7 +617,7 @@ util.webContactGetList = function() {
 		if (xhr.readyState === 4) {  
 			if (xhr.status === 200) {  
 				
-				console.log("webContactGetList:" + xhr.responseText);
+				//console.log("webContactGetList:" + xhr.responseText);
 				var response = JSON.parse(xhr.responseText);
 				if (response.response == "contact_get_list_okay") {
 					
@@ -639,6 +672,9 @@ util.webContactGetList = function() {
 	xhr.send(param);
 };
 
+/*
+ * Sends a POST request to get the contact list, this is fired when opening the list.
+ */
 util.webContactGetListUpdate = function() {
     'use strict';
 
@@ -655,7 +691,7 @@ util.webContactGetListUpdate = function() {
 		if (xhr.readyState === 4) {  
 			if (xhr.status === 200) {  
 				
-				console.log("webContactGetListUpdate:" + xhr.responseText);
+				//console.log("webContactGetListUpdate:" + xhr.responseText);
 				var response = JSON.parse(xhr.responseText);
 				if (response.response == "contact_get_list_okay") {
 					
@@ -699,6 +735,9 @@ util.webContactGetListUpdate = function() {
 	xhr.send(param);
 };
 
+/*
+ * Sends a POST request when adding a contact.
+ */
 util.webContactRequest = function() {
     'use strict';	
     
@@ -713,7 +752,7 @@ util.webContactRequest = function() {
 		if (xhr.readyState === 4) {  
 			if (xhr.status === 200) {  
 				
-				console.log("webContactRequest:" + xhr.responseText);
+				//console.log("webContactRequest:" + xhr.responseText);
 				var response = JSON.parse(xhr.responseText);
 				if (response.response == "contact_request_okay") {
 					showMessage("Contact request sent.");
@@ -744,6 +783,9 @@ util.webContactRequest = function() {
 	xhr.send(param);
 };
 
+/*
+ * Sends a POST request when rejecting a contact.
+ */
 util.webContactReject = function(reject) {
     'use strict';	
     
@@ -758,7 +800,7 @@ util.webContactReject = function(reject) {
 		if (xhr.readyState === 4) {  
 			if (xhr.status === 200) {  
 				
-				console.log("webContactReject:" + xhr.responseText);
+				//console.log("webContactReject:" + xhr.responseText);
 				var response = JSON.parse(xhr.responseText);
 				if (response.response == "contact_reject_okay") {
 				}
@@ -779,6 +821,9 @@ util.webContactReject = function(reject) {
 	xhr.send(param);
 };
 
+/*
+ * Sends a POST request when accepting a contact.
+ */
 util.webContactAccept = function(accept) {
     'use strict';	
     
@@ -793,7 +838,7 @@ util.webContactAccept = function(accept) {
 		if (xhr.readyState === 4) {  
 			if (xhr.status === 200) {  
 				
-				console.log("webContactAccept:" + xhr.responseText);
+				//console.log("webContactAccept:" + xhr.responseText);
 				var response = JSON.parse(xhr.responseText);
 				if (response.response == "contact_accept_okay") {
 					showMessage("Request accepted.");
@@ -815,6 +860,9 @@ util.webContactAccept = function(accept) {
 	xhr.send(param);
 };
 
+/*
+ * Sends a POST request when sending a message.
+ */
 util.webPushMessage = function(message, plate) {
     'use strict';	
     
@@ -835,8 +883,7 @@ util.webPushMessage = function(message, plate) {
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {  
 			if (xhr.status === 200) {  
-				console.log(param);
-				console.log("webPushMessage:" + xhr.responseText);
+				//console.log("webPushMessage:" + xhr.responseText);
 				var response = JSON.parse(xhr.responseText);
 				if (response.response == "push_message_okay") {
 					showMessage("Message sent!");

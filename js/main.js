@@ -7,36 +7,36 @@ var web = "https://5minutes.celestek.xyz/watch/index.php";
 var currentFlower = 0;
 var flowers = [
 		[
-	       {"type": "coffee", "color": "#0080ff", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
-	       {"type": "meeting", "color": "#ff0000", "duration": 5, "message": "Meeting in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
-	       {"type": "office", "color": "#ffff00", "duration": 5, "message": "Office in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
 	       null,
 	       null,
-	       {"type": "dinner", "color": "#0080ff", "duration": 5, "message": "Dinner in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null}
+	       null,
+	       null,
+	       null,
+	       null,
 		],  
 	    [
-		   null,
-		   {"type": "gaming", "color": "#8000ff", "duration": 5, "message": "Gaming in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
-		   null,
-		   {"type": "movies", "color": "#8000ff", "duration": 5, "message": "Movies in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
-		   null,
-		   {"type": "concert", "color": "#8000ff", "duration": 5, "message": "Concert in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null}
+	       null,
+	       null,
+	       null,
+	       null,
+	       null,
+	       null,
 		],
 		[
-		   {"type": "coffee", "color": "#0000ff", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
-		   {"type": "coffee", "color": "#0000ff", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
-		   null,
-		   {"type": "coffee", "color": "#8000ff", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
-		   {"type": "coffee", "color": "#ff00ff", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
-		   null
+	       null,
+	       null,
+	       null,
+	       null,
+	       null,
+	       null,
 		], 
 		[
-	       {"type": "coffee", "color": "#0080ff", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
 	       null,
 	       null,
-	       {"type": "coffee", "color": "#0080ff", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
-	       {"type": "coffee", "color": "#0080ff", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [345435, 356345, 346345], "fire": null},
-	       null
+	       null,
+	       null,
+	       null,
+	       null,
 		]
 	];
 
@@ -139,15 +139,6 @@ var types = [
    ];
 
 var contacts = [
-       {"id": 87436543, "name": "Denis Vajak", 	"sel": false},
-       {"id": 47522432, "name": "Josip Balen", "sel": false},
-       {"id": 85820345, "name": "Thorinair", "sel": false},
-       {"id": 24287541, "name": "Twilight Sparkle", "sel": false},
-       {"id": 32042352, "name": "Rainbow Dash", "sel": false},
-       {"id": 34565346, "name": "Pinkie Pie", "sel": false},
-       {"id": 54312244, "name": "Fluttershy", "sel": false},
-       {"id": 24657888, "name": "Rarity", "sel": false},
-       {"id": 56765, "name": "Applejack", "sel": false}
    ];
 
 var dragLastX = 0;
@@ -163,7 +154,6 @@ var listOffsetLast = 0;
 var user = "";
 var pass = "";
 var code = "";
-var push = "";
 
 var contact = "";
 var slowAnimated = false;
@@ -574,7 +564,6 @@ function animationSlow(ctx) {
  */
 window.onload = function onLoad() {
     'use strict';
-	console.log("Loading...");
 
     canvas = document.querySelector('canvas');
     context = canvas.getContext('2d');
@@ -616,6 +605,9 @@ function processTapHold(x, y) {
 	}
 }
 
+/*
+ * Registers all event handlers.
+ */
 (function(tau) {
     'use strict';
     document.addEventListener("pagebeforeshow", function() {
@@ -974,7 +966,7 @@ function processTapHold(x, y) {
 			}
 
     	    // Screen: notifications
-    		if (animations.screens.multiplier[screens.notifications].toFixed(3) == 1) {	
+    		if (animations.screens.multiplier[screens.notifications].toFixed(3) > 0.1) {	
     			if (notifications.length > 0) {
     				var notification = notifications[notifications.length - 1];
 	    			if (notification.type == "contact_request") {
