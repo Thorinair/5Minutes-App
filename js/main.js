@@ -989,7 +989,7 @@ function processTapHold(x, y) {
     				var notification = notifications[notifications.length - 1];
 	    			if (notification.type == "contact_request") {
 		    			if (touchX >= 120 && touchX < 240 && touchY >= 240 && touchY < 280) {
-		    				// TODO: Send contact accept.
+		    				util.webContactAccept(notification.contact);
 		    				notifications.pop();
 		    				if (notifications.length == 0) {
 		    					animate_screens(screens.flowers, util.copy(animations.screens.multiplier));

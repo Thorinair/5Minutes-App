@@ -778,3 +778,39 @@ util.webContactReject = function(reject) {
 	
 	xhr.send(param);
 };
+
+util.webContactAccept = function(accept) {
+    'use strict';	
+    
+	var param = "request=contact_accept&user=" + user + "&pass=" + pass + "&contact=" + accept;
+	
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", web, true);
+	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	xhr.setRequestHeader("Header-Custom-TizenCORS", "OK");
+	xhr.timeout = 5000;
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState === 4) {  
+			if (xhr.status === 200) {  
+				
+				console.log("webContactAccept:" + xhr.responseText);
+				var response = JSON.parse(xhr.responseText);
+				if (response.response == "contact_accept_okay") {
+					showMessage("Request accepted.");
+				}
+				else if (response.response == "contact_accept_expired") {
+					util.logout("Login expired.");
+				}
+				else {
+					showMessage("Error accepting.");
+				}
+			    
+			} 
+			else {  
+				showMessage("Error accepting.");
+			}  
+		}  
+	};
+	
+	xhr.send(param);
+};
