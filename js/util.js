@@ -1,4 +1,4 @@
-/*global window, document, tizen, console, setTimeout, tau, addPlate, colors, flowers, contacts, types, drawUI, user, code, pass, loggingIn, contact, web, animate_screens, animate_startup, animations, screens, showMessage, notifications */
+/*global window, document, tizen, console, setTimeout, tau, addPlate, colors, flowers, contacts, types, drawUI, user, code, pass, loggingIn, animationSlow, slowAnimated, currentFlower, contact, web, animate_screens, animate_startup, animations, screens, showMessage, notifications */
 
 var util = function(){
     'use strict';
@@ -808,6 +808,55 @@ util.webContactAccept = function(accept) {
 			} 
 			else {  
 				showMessage("Error accepting.");
+			}  
+		}  
+	};
+	
+	xhr.send(param);
+};
+
+util.webPushMessage = function(message, plate) {
+    'use strict';	
+    
+	showMessage("Sending...");
+    
+	var param = "request=push_message&user=" + user + "&pass=" + pass +
+		"&type=" + message.type + 
+		"&color=" + message.color.substring(1) +
+		"&duration=" + message.duration +
+		"&message=" + encodeURIComponent(message.message) +
+		"&contacts=" + message.contacts.join();
+	
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", web, true);
+	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	xhr.setRequestHeader("Header-Custom-TizenCORS", "OK");
+	xhr.timeout = 5000;
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState === 4) {  
+			if (xhr.status === 200) {  
+				console.log(param);
+				console.log("webPushMessage:" + xhr.responseText);
+				var response = JSON.parse(xhr.responseText);
+				if (response.response == "push_message_okay") {
+					showMessage("Message sent!");
+					flowers[currentFlower][plate].fire = util.processDurationTime(flowers[currentFlower][plate].duration);
+					localStorage.setItem("flowers", JSON.stringify(flowers));
+				    if (!slowAnimated) {
+				    	slowAnimated = true;
+				    	animationSlow(context);
+				    }
+				}
+				else if (response.response == "push_message_expired") {
+					util.logout("Login expired.");
+				}
+				else {
+					showMessage("Error sending.");
+				}
+			    
+			} 
+			else {  
+				showMessage("Error sending.");
 			}  
 		}  
 	};

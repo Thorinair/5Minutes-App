@@ -1017,6 +1017,36 @@ draw.notifications = function(ctx, offset, opacity) {
 			ctx.fillStyle = "#000000";
 			ctx.fillText("Okay", 0, 115);
 		}
+		else if (notification.type == "push_message") {
+			
+			draw.plate(ctx, true, "#" + notification.color, notification.plateType, null, null, 0, -5, 64, false, null, opacity);
+						
+			ctx.globalAlpha = opacity;
+			
+			ctx.beginPath();
+			ctx.moveTo(-60, 110);
+			ctx.lineTo(60, 110);
+			ctx.lineTo(60, 150);
+			ctx.lineTo(-60, 150);
+			ctx.fillStyle = "#ffffff";
+			ctx.closePath();
+			ctx.fill();	
+			
+			ctx.textAlign = "center";
+			
+			ctx.font = "32px Arial";
+			ctx.fillStyle = "#ffffff";
+			ctx.fillText("Notifications", 0, -120);
+
+			ctx.font = "24px Arial";
+			ctx.fillStyle = "#ffffff";
+			ctx.fillText(notification.firstname + " " + notification.lastname + " notified you:", 0, -85);
+			ctx.fillText(notification.message, 0, 90);
+			
+			ctx.font = "32px Arial";
+			ctx.fillStyle = "#000000";
+			ctx.fillText("Okay", 0, 140);
+		}
 	}
 	
 	ctx.restore();
@@ -1049,7 +1079,7 @@ draw.message = function(ctx, opacity) {
 	ctx.textAlign = "center";
 	ctx.font = "32px Arial";
 	ctx.fillStyle = "#ffffff";
-	ctx.fillText(animations.messageFade.text, 0, 8);
+	ctx.fillText(animations.messageFade.text, 0, 10);
 	
 	ctx.restore();
 };

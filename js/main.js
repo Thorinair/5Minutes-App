@@ -817,18 +817,9 @@ function processTapHold(x, y) {
 	    			else {
 	    				var plate = util.plateFromCoords(touchX, touchY);
 	    				if (plate != null) {
-		    				if (flowers[currentFlower][plate]) {
-			    				//TODO: Add message sending code here!
-			    				console.log("Tap! flower: " + currentFlower + ", plate: " + plate);
-			    				console.log(JSON.stringify(flowers[currentFlower][plate]));
-			    				
+		    				if (flowers[currentFlower][plate]) {			    				
 			    				if (flowers[currentFlower][plate].fire == null) {
-			    					flowers[currentFlower][plate].fire = util.processDurationTime(flowers[currentFlower][plate].duration);
-									localStorage.setItem("flowers", JSON.stringify(flowers));
-			    				    if (!slowAnimated) {
-			    				    	slowAnimated = true;
-			    				    	animationSlow(context);
-			    				    }			    					
+			    					util.webPushMessage(flowers[currentFlower][plate], plate);		    					
 			    				}
 		    				}
 		    				else {
@@ -932,7 +923,6 @@ function processTapHold(x, y) {
     		if (animations.screens.multiplier[screens.contactsAdd].toFixed(3) == 1) {	
     			
     			if (touchX >= 130 && touchX < 230 && touchY >= 119 && touchY < 163 && contact.length == 8) {
-    				//TODO: Add invite code here!
     				util.webContactRequest();
     				contact = "";
 					animate_screens(screens.contacts, util.copy(animations.screens.multiplier));
@@ -1013,6 +1003,14 @@ function processTapHold(x, y) {
 	    			}
 	    			else if (notification.type == "contact_accept") {
 		    			if (touchX >= 120 && touchX < 240 && touchY >= 265 && touchY < 305) {
+		    				notifications.pop();
+		    				if (notifications.length == 0) {
+		    					animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
+		    				}
+		    			}
+	    			}
+	    			else if (notification.type == "push_message") {
+		    			if (touchX >= 120 && touchX < 240 && touchY >= 290 && touchY < 330) {
 		    				notifications.pop();
 		    				if (notifications.length == 0) {
 		    					animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
