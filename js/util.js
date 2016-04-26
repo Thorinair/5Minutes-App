@@ -170,15 +170,22 @@ util.loadPlate = function(flower, plate) {
  */
 util.addPlate = function() {
     'use strict';
+    var plateid = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    var i;
+    for(i = 0; i < 8; i += 1) {
+    	plateid += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    
 	var newPlate = {
 			"type": types[addPlate.type].val, 
 			"color": colors[addPlate.color].val, 
 			"duration": addPlate.duration, 
 			"message": util.translateType(addPlate.type) + " in " + addPlate.duration + " minutes.", 
 			"contacts": [], 
-			"fire": null}; 
+			"fire": null,
+			"plateid": plateid}; 
 	
-    var i;
     for (i = 0; i < contacts.length; i += 1) {
     	if (contacts[i].sel) {
     		newPlate.contacts.push(contacts[i].id);
@@ -674,8 +681,9 @@ util.webContactGetList = function() {
 
 /*
  * Sends a POST request to get the contact list, this is fired when opening the list.
+ * @param type Type of the contact screen to load.
  */
-util.webContactGetListUpdate = function() {
+util.webContactGetListUpdate = function(type) {
     'use strict';
 
 	showMessage("Loading contacts...");
@@ -710,24 +718,39 @@ util.webContactGetListUpdate = function() {
 					contacts = newContacts;
 					
     				listOffset = 0;
-            		animate_screens(screens.contacts, util.copy(animations.screens.multiplier));
+    				if (type == "main") {
+                		animate_screens(screens.contacts, util.copy(animations.screens.multiplier));
+    				}
+    				else if (type == "plate") {
+    					animate_screens(screens.addContacts, util.copy(animations.screens.multiplier));
+    				}
 				}
 				else if (response.response == "contact_get_list_expired") {
 					util.logout("Login expired.");
 				}
 				else {
-					showMessage("Error fetching contacts.");
+					showMessage("Error updating contacts.");
 					
     				listOffset = 0;
-            		animate_screens(screens.contacts, util.copy(animations.screens.multiplier));
+    				if (type == "main") {
+                		animate_screens(screens.contacts, util.copy(animations.screens.multiplier));
+    				}
+    				else if (type == "plate") {
+    					animate_screens(screens.addContacts, util.copy(animations.screens.multiplier));
+    				}
 				}
 			    
 			} 
 			else {  
-				showMessage("Error fetching contacts.");
+				showMessage("Error updating contacts.");
 				
 				listOffset = 0;
-        		animate_screens(screens.contacts, util.copy(animations.screens.multiplier));
+				if (type == "main") {
+            		animate_screens(screens.contacts, util.copy(animations.screens.multiplier));
+				}
+				else if (type == "plate") {
+					animate_screens(screens.addContacts, util.copy(animations.screens.multiplier));
+				}
 			}  
 		}  
 	};
@@ -785,6 +808,7 @@ util.webContactRequest = function() {
 
 /*
  * Sends a POST request when rejecting a contact.
+ * @param reject Contact that should be notified about rejection.
  */
 util.webContactReject = function(reject) {
     'use strict';	
@@ -823,6 +847,7 @@ util.webContactReject = function(reject) {
 
 /*
  * Sends a POST request when accepting a contact.
+ * @param accept Contact that should be notified about accepting.
  */
 util.webContactAccept = function(accept) {
     'use strict';	
@@ -862,6 +887,8 @@ util.webContactAccept = function(accept) {
 
 /*
  * Sends a POST request when sending a message.
+ * @param message Message object to send.
+ * @param plate ID of the plate.
  */
 util.webPushMessage = function(message, plate) {
     'use strict';	
@@ -873,6 +900,7 @@ util.webPushMessage = function(message, plate) {
 		"&color=" + message.color.substring(1) +
 		"&duration=" + message.duration +
 		"&message=" + encodeURIComponent(message.message) +
+		"&plateid=" + message.plateid + 
 		"&contacts=" + message.contacts.join();
 	
 	var xhr = new XMLHttpRequest();
@@ -904,6 +932,94 @@ util.webPushMessage = function(message, plate) {
 			} 
 			else {  
 				showMessage("Error sending.");
+			}  
+		}  
+	};
+	
+	xhr.send(param);
+};
+
+/*
+ * Sends a POST request when declining an event.
+ * @param decline Contact that should be notified about declining.
+ * @param message Original message that was sent.
+ * @param plateid ID of the original sending plate.
+ */
+util.webEventDecline = function(decline, message, plateid) {
+    'use strict';	
+    
+	var param = "request=event_decline&user=" + user + "&pass=" + pass + 
+		"&contact=" + decline + 
+		"&message=" + encodeURIComponent(message) + 
+		"&plateid=" + plateid;
+	
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", web, true);
+	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	xhr.setRequestHeader("Header-Custom-TizenCORS", "OK");
+	xhr.timeout = 5000;
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState === 4) {  
+			if (xhr.status === 200) {  
+				
+				//console.log("webEventDecline:" + xhr.responseText);
+				var response = JSON.parse(xhr.responseText);
+				if (response.response == "event_decline_okay") {
+				}
+				else if (response.response == "event_decline_expired") {
+					util.logout("Login expired.");
+				}
+				else {
+					showMessage("Error declining.");
+				}
+			    
+			} 
+			else {  
+				showMessage("Error declining.");
+			}  
+		}  
+	};
+	
+	xhr.send(param);
+};
+
+/*
+ * Sends a POST request when accepting an event.
+ * @param accept Contact that should be notified about accepting.
+ * @param message Original message that was sent.
+ * @param plateid ID of the original sending plate.
+ */
+util.webEventAccept = function(accept, message, plateid) {
+    'use strict';	
+    
+	var param = "request=event_accept&user=" + user + "&pass=" + pass +
+		"&contact=" + accept + 
+		"&message=" + encodeURIComponent(message) + 
+		"&plateid=" + plateid;
+	
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", web, true);
+	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	xhr.setRequestHeader("Header-Custom-TizenCORS", "OK");
+	xhr.timeout = 5000;
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState === 4) {  
+			if (xhr.status === 200) {  
+				
+				//console.log("webEventAccept:" + xhr.responseText);
+				var response = JSON.parse(xhr.responseText);
+				if (response.response == "event_accept_okay") {
+				}
+				else if (response.response == "event_accept_expired") {
+					util.logout("Login expired.");
+				}
+				else {
+					showMessage("Error accepting.");
+				}
+			    
+			} 
+			else {  
+				showMessage("Error accepting.");
 			}  
 		}  
 	};

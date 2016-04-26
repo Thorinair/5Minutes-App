@@ -953,7 +953,7 @@ draw.notifications = function(ctx, offset, opacity) {
 			ctx.font = "32px Arial";
 			ctx.fillStyle = "#ffffff";
 			ctx.fillText(notification.firstname + " " + notification.lastname + " wants to", 0, -40);
-			ctx.fillText("add you to contacts.", 0, -0);
+			ctx.fillText("add you to contacts.", 0, 0);
 			
 			ctx.font = "32px Arial";
 			ctx.fillStyle = "#000000";
@@ -984,7 +984,7 @@ draw.notifications = function(ctx, offset, opacity) {
 			ctx.font = "32px Arial";
 			ctx.fillStyle = "#ffffff";
 			ctx.fillText(notification.firstname + " " + notification.lastname + " rejected", 0, -40);
-			ctx.fillText("your contact request.", 0, -0);
+			ctx.fillText("your contact request.", 0, 0);
 			
 			ctx.font = "32px Arial";
 			ctx.fillStyle = "#000000";
@@ -1011,7 +1011,7 @@ draw.notifications = function(ctx, offset, opacity) {
 			ctx.font = "32px Arial";
 			ctx.fillStyle = "#ffffff";
 			ctx.fillText(notification.firstname + " " + notification.lastname + " accepted", 0, -40);
-			ctx.fillText("your contact request.", 0, -0);
+			ctx.fillText("your contact request.", 0, 0);
 			
 			ctx.font = "32px Arial";
 			ctx.fillStyle = "#000000";
@@ -1022,13 +1022,22 @@ draw.notifications = function(ctx, offset, opacity) {
 			draw.plate(ctx, true, "#" + notification.color, notification.plateType, null, null, 0, -5, 64, false, null, opacity);
 						
 			ctx.globalAlpha = opacity;
-			
+
 			ctx.beginPath();
-			ctx.moveTo(-60, 110);
-			ctx.lineTo(60, 110);
-			ctx.lineTo(60, 150);
-			ctx.lineTo(-60, 150);
-			ctx.fillStyle = "#ffffff";
+			ctx.moveTo(-70, 100);
+			ctx.lineTo(-5, 100);
+			ctx.lineTo(-5, 155);
+			ctx.lineTo(-70, 155);
+			ctx.fillStyle = "#ff0000";
+			ctx.closePath();
+			ctx.fill();	
+
+			ctx.beginPath();
+			ctx.moveTo(70, 100);
+			ctx.lineTo(5, 100);
+			ctx.lineTo(5, 155);
+			ctx.lineTo(70, 155);
+			ctx.fillStyle = "#00ff00";
 			ctx.closePath();
 			ctx.fill();	
 			
@@ -1041,11 +1050,97 @@ draw.notifications = function(ctx, offset, opacity) {
 			ctx.font = "24px Arial";
 			ctx.fillStyle = "#ffffff";
 			ctx.fillText(notification.firstname + " " + notification.lastname + " notified you:", 0, -85);
-			ctx.fillText(notification.message, 0, 90);
+			ctx.fillText(notification.message, 0, 88);
+
+			ctx.beginPath();
+			ctx.moveTo(-56, 116);
+			ctx.lineTo(-49, 109);
+			ctx.lineTo(-37, 121);
+			ctx.lineTo(-25, 109);
+			ctx.lineTo(-18, 116);
+			ctx.lineTo(-30, 128);
+			ctx.lineTo(-18, 140);
+			ctx.lineTo(-25, 147);
+			ctx.lineTo(-37, 135);
+			ctx.lineTo(-49, 147);
+			ctx.lineTo(-56, 140);
+			ctx.lineTo(-44, 128);
+			ctx.fillStyle = "#000000";
+			ctx.closePath();
+			ctx.fill();
+
+			ctx.beginPath();
+			ctx.moveTo(14, 131);
+			ctx.lineTo(21, 125);
+			ctx.lineTo(30, 133);
+			ctx.lineTo(54, 109);
+			ctx.lineTo(61, 116);
+			ctx.lineTo(31, 147);
+			ctx.fillStyle = "#000000";
+			ctx.closePath();
+			ctx.fill();
+		}
+		else if (notification.type == "event_decline") {
+			
+			console.log(notification.plateid);
+			
+			ctx.globalAlpha = opacity;
+			
+			ctx.beginPath();
+			ctx.moveTo(-60, 85);
+			ctx.lineTo(60, 85);
+			ctx.lineTo(60, 125);
+			ctx.lineTo(-60, 125);
+			ctx.fillStyle = "#ffffff";
+			ctx.closePath();
+			ctx.fill();	
+			
+			ctx.textAlign = "center";
+			
+			ctx.font = "32px Arial";
+			ctx.fillStyle = "#ffffff";
+			ctx.fillText("Notifications", 0, -120);
+
+			ctx.font = "32px Arial";
+			ctx.fillStyle = "#ffffff";
+			ctx.fillText(notification.firstname + " " + notification.lastname, 0, -60);
+			ctx.fillText("declined your event:", 0, -20);
+			ctx.fillText(notification.message, 0, 40);
 			
 			ctx.font = "32px Arial";
 			ctx.fillStyle = "#000000";
-			ctx.fillText("Okay", 0, 140);
+			ctx.fillText("Okay", 0, 115);
+		}
+		else if (notification.type == "event_accept") {
+			
+			console.log(notification.plateid);
+			
+			ctx.globalAlpha = opacity;
+			
+			ctx.beginPath();
+			ctx.moveTo(-60, 85);
+			ctx.lineTo(60, 85);
+			ctx.lineTo(60, 125);
+			ctx.lineTo(-60, 125);
+			ctx.fillStyle = "#ffffff";
+			ctx.closePath();
+			ctx.fill();	
+			
+			ctx.textAlign = "center";
+			
+			ctx.font = "32px Arial";
+			ctx.fillStyle = "#ffffff";
+			ctx.fillText("Notifications", 0, -120);
+
+			ctx.font = "32px Arial";
+			ctx.fillStyle = "#ffffff";
+			ctx.fillText(notification.firstname + " " + notification.lastname, 0, -60);
+			ctx.fillText("accepted your event:", 0, -20);
+			ctx.fillText(notification.message, 0, 40);
+			
+			ctx.font = "32px Arial";
+			ctx.fillStyle = "#000000";
+			ctx.fillText("Okay", 0, 115);
 		}
 	}
 	

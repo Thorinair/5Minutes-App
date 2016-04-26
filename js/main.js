@@ -7,12 +7,12 @@ var web = "https://5minutes.celestek.xyz/watch/index.php";
 var currentFlower = 0;
 var flowers = [
 		[
+	       {"type": "coffee", "color": "#ffffff", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [], "fire": null, "plateid": null},
+	       {"type": "meeting", "color": "#ffff00", "duration": 5, "message": "Meeting in 5 minutes.", "contacts": [], "fire": null, "plateid": null},
+	       {"type": "office", "color": "#ff0000", "duration": 5, "message": "In my office in 5 minutes.", "contacts": [], "fire": null, "plateid": null},
 	       null,
-	       null,
-	       null,
-	       null,
-	       null,
-	       null,
+	       {"type": "lunch", "color": "#00ff00", "duration": 5, "message": "Lunch in 5 minutes.", "contacts": [], "fire": null, "plateid": null},
+	       {"type": "party", "color": "#0080ff", "duration": 5, "message": "Party in 5 minutes.", "contacts": [], "fire": null, "plateid": null}
 		],  
 	    [
 	       null,
@@ -20,7 +20,7 @@ var flowers = [
 	       null,
 	       null,
 	       null,
-	       null,
+	       null
 		],
 		[
 	       null,
@@ -28,7 +28,7 @@ var flowers = [
 	       null,
 	       null,
 	       null,
-	       null,
+	       null
 		], 
 		[
 	       null,
@@ -36,7 +36,7 @@ var flowers = [
 	       null,
 	       null,
 	       null,
-	       null,
+	       null
 		]
 	];
 
@@ -106,13 +106,31 @@ var screens = {
 		"notifications": 9
 	};
 
+/*
+var colors = [
+	   {"val": "#ff0000", "name": "Red"},
+	   {"val": "#ff8000", "name": "Orange"},
+	   {"val": "#ffff00", "name": "Yellow"},
+	   {"val": "#00ff00", "name": "Green"},
+	   {"val": "#00ffff", "name": "Cyan"},
+	   {"val": "#0080ff", "name": "Sky Blue"},
+	   {"val": "#0000ff", "name": "Blue"},
+	   {"val": "#8000ff", "name": "Purple"},
+	   {"val": "#ff00ff", "name": "Magenta"},
+	   {"val": "#ff0080", "name": "Pink"},
+	   {"val": "#ffffff", "name": "White"},
+	   {"val": "#808080", "name": "Gray"},
+	   {"val": "#904b00", "name": "Brown"}
+   ];
+   */
+
 var colors = [
 	   {"val": "#ff0000", "name": "Red"},
 	   {"val": "#ff8000", "name": "Orange"},
 	   {"val": "#ffff00", "name": "Yellow"},
 	   {"val": "#80ff00", "name": "Lime"},
 	   {"val": "#00ff00", "name": "Green"},
-	   {"val": "#00ff80", "name": "Turquoise"},
+	   {"val": "#00ff80", "name": "Torquoise"},
 	   {"val": "#00ffff", "name": "Cyan"},
 	   {"val": "#0080ff", "name": "Sky Blue"},
 	   {"val": "#0000ff", "name": "Blue"},
@@ -124,13 +142,13 @@ var colors = [
 
 var types = [
   	   {"val": "meeting", 	"name": "Meeting"},
-	   {"val": "office", 	"name": "Office"},
+	   {"val": "office", 	"name": "In my office"},
 	   {"val": "conference","name": "Conference"},
 	   {"val": "break", 	"name": "Break"},
 	   {"val": "workout", 	"name": "Workout"},
 	   {"val": "call", 		"name": "Call"},
 	   {"val": "pizza", 	"name": "Pizza"},
-	   {"val": "dinner", 	"name": "Dinner"},
+	   {"val": "lunch", 	"name": "Lunch"},
 	   {"val": "coffee", 	"name": "Coffee"},
 	   {"val": "gaming", 	"name": "Gaming"},
 	   {"val": "movies", 	"name": "Movies"},
@@ -780,7 +798,7 @@ function processTapHold(x, y) {
 	    				animations.flowers.active = true;
 	    				
 	    				if (animations.flowers.centerY >= 360) {
-	    					util.webContactGetListUpdate();
+	    					util.webContactGetListUpdate("main");
 	    				}	   
 	    				
 	    	    	    if (animations.flowers.centerX <= 0) {
@@ -809,10 +827,16 @@ function processTapHold(x, y) {
 	    			else {
 	    				var plate = util.plateFromCoords(touchX, touchY);
 	    				if (plate != null) {
-		    				if (flowers[currentFlower][plate]) {			    				
-			    				if (flowers[currentFlower][plate].fire == null) {
-			    					util.webPushMessage(flowers[currentFlower][plate], plate);		    					
-			    				}
+		    				if (flowers[currentFlower][plate]) {	
+		    					if (flowers[currentFlower][plate].contacts.length > 0) {
+				    				if (flowers[currentFlower][plate].fire == null) {
+				    					util.webPushMessage(flowers[currentFlower][plate], plate);		    					
+				    				}
+		    					}
+		    					else {
+		    						util.loadPlate(currentFlower, plate);
+		    						animate_screens(screens.edit, util.copy(animations.screens.multiplier));
+		    					}
 		    				}
 		    				else {
 			    				util.resetAdd(currentFlower, plate);
@@ -855,8 +879,7 @@ function processTapHold(x, y) {
     	    // Screen: addDuration
     		if (animations.screens.multiplier[screens.addDuration].toFixed(3) == 1) {	
     			if (touchX >= 130 && touchX < 230 && touchY >= 300 && touchY < 340 && !wasDragged) {
-    				listOffset = 0;
-					animate_screens(screens.addContacts, util.copy(animations.screens.multiplier));
+					util.webContactGetListUpdate("plate");
     			}
 	    		wasDragged = false;
     		}
@@ -896,6 +919,7 @@ function processTapHold(x, y) {
 	
 	    			else if (touchX >= 100 && touchX < 260 && touchY >= 195 && touchY < 253) {
 	    				flowers[addPlate.flower][addPlate.plate] = null;
+	    				localStorage.setItem("flowers", JSON.stringify(flowers));
 	            		animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
 	    			} 	
     			}
@@ -1002,7 +1026,33 @@ function processTapHold(x, y) {
 		    			}
 	    			}
 	    			else if (notification.type == "push_message") {
-		    			if (touchX >= 120 && touchX < 240 && touchY >= 290 && touchY < 330) {
+		    			if (touchX >= 110 && touchX < 175 && touchY >= 280 && touchY < 330) {
+		    				util.webEventDecline(notification.contact, notification.message, notification.plateid);
+		    				notifications.pop();
+		    				if (notifications.length == 0) {
+		    					animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
+		    				}
+		    			}
+		    			else if (touchX >= 185 && touchX < 250 && touchY >= 280 && touchY < 330) {
+		    				util.webEventAccept(notification.contact, notification.message, notification.plateid);
+		    				notifications.pop();
+		    				if (notifications.length == 0) {
+		    					animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
+		    				}
+		    			}  
+	    			}
+	    			else if (notification.type == "event_decline") {
+		    			if (touchX >= 120 && touchX < 240 && touchY >= 265 && touchY < 305) {
+		    				console.log(notification.plateid);
+		    				notifications.pop();
+		    				if (notifications.length == 0) {
+		    					animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
+		    				}
+		    			}
+	    			}
+	    			else if (notification.type == "event_accept") {
+		    			if (touchX >= 120 && touchX < 240 && touchY >= 265 && touchY < 305) {
+		    				console.log(notification.plateid);
 		    				notifications.pop();
 		    				if (notifications.length == 0) {
 		    					animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
