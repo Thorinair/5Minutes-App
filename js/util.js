@@ -1,4 +1,4 @@
-/*global window, document, tizen, console, setTimeout, tau, addPlate, colors, flowers, contacts, types, drawUI, user, code, pass, loggingIn, animationSlow, slowAnimated, currentFlower, contact, web, animate_screens, animate_startup, animations, screens, showMessage, notifications */
+/*global window, document, tizen, console, setTimeout, tau, addPlate, colors, flowers, contacts, types, drawUI, user, code, pass, loggingIn, sending, animationSlow, slowAnimated, currentFlower, contact, web, animate_screens, animate_startup, animations, screens, showMessage, notifications */
 
 var util = function(){
     'use strict';
@@ -184,7 +184,8 @@ util.addPlate = function() {
 			"message": util.translateType(addPlate.type) + " in " + addPlate.duration + " minutes.", 
 			"contacts": [], 
 			"fire": null,
-			"plateid": plateid}; 
+			"plateid": plateid,
+			"accepted": 0}; 
 	
     for (i = 0; i < contacts.length; i += 1) {
     	if (contacts[i].sel) {
@@ -892,7 +893,7 @@ util.webContactAccept = function(accept) {
  */
 util.webPushMessage = function(message, plate) {
     'use strict';	
-    
+    sending = true;
 	showMessage("Sending...");
     
 	var param = "request=push_message&user=" + user + "&pass=" + pass +
@@ -915,23 +916,28 @@ util.webPushMessage = function(message, plate) {
 				var response = JSON.parse(xhr.responseText);
 				if (response.response == "push_message_okay") {
 					showMessage("Message sent!");
+					flowers[currentFlower][plate].accepted = 0;
 					flowers[currentFlower][plate].fire = util.processDurationTime(flowers[currentFlower][plate].duration);
 					localStorage.setItem("flowers", JSON.stringify(flowers));
 				    if (!slowAnimated) {
 				    	slowAnimated = true;
 				    	animationSlow(context);
 				    }
+				    sending = false;
 				}
 				else if (response.response == "push_message_expired") {
 					util.logout("Login expired.");
+				    sending = false;
 				}
 				else {
 					showMessage("Error sending.");
+				    sending = false;
 				}
 			    
 			} 
 			else {  
 				showMessage("Error sending.");
+			    sending = false;
 			}  
 		}  
 	};

@@ -7,12 +7,12 @@ var web = "https://5minutes.celestek.xyz/watch/index.php";
 var currentFlower = 0;
 var flowers = [
 		[
-	       {"type": "coffee", "color": "#ffffff", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [], "fire": null, "plateid": null},
-	       {"type": "meeting", "color": "#ffff00", "duration": 5, "message": "Meeting in 5 minutes.", "contacts": [], "fire": null, "plateid": null},
-	       {"type": "office", "color": "#ff0000", "duration": 5, "message": "In my office in 5 minutes.", "contacts": [], "fire": null, "plateid": null},
+	       {"type": "coffee", "color": "#ffffff", "duration": 5, "message": "Coffee in 5 minutes.", "contacts": [], "fire": null, "plateid": null, "accepted": 0},
+	       {"type": "meeting", "color": "#ffff00", "duration": 5, "message": "Meeting in 5 minutes.", "contacts": [], "fire": null, "plateid": null, "accepted": 0},
+	       {"type": "office", "color": "#ff0000", "duration": 5, "message": "In my office in 5 minutes.", "contacts": [], "fire": null, "plateid": null, "accepted": 0},
 	       null,
-	       {"type": "lunch", "color": "#00ff00", "duration": 5, "message": "Lunch in 5 minutes.", "contacts": [], "fire": null, "plateid": null},
-	       {"type": "party", "color": "#0080ff", "duration": 5, "message": "Party in 5 minutes.", "contacts": [], "fire": null, "plateid": null}
+	       {"type": "lunch", "color": "#00ff00", "duration": 5, "message": "Lunch in 5 minutes.", "contacts": [], "fire": null, "plateid": null, "accepted": 0},
+	       {"type": "party", "color": "#0080ff", "duration": 5, "message": "Party in 5 minutes.", "contacts": [], "fire": null, "plateid": null, "accepted": 0}
 		],  
 	    [
 	       null,
@@ -55,7 +55,8 @@ var animations = {
 		"screens": {
 			"duration": 200,
 			"active": false,
-			"multiplier": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+			"multiplier": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+			"reference": null
 		},
 		"startup": {
 			"duration": 500,
@@ -176,6 +177,7 @@ var code = "";
 var contact = "";
 var slowAnimated = false;
 var loggingIn = false;
+var sending = false;
 
 var notifications = [];
 
@@ -196,6 +198,7 @@ window.requestAnimationFrame = window.requestAnimationFrame ||
  */
 function animate_screens(screen, oldMultiplier) {
     'use strict';
+    window.clearTimeout(animations.screens.reference);
     animations.screens.active = true;
     
     var newMultiplier = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -211,9 +214,9 @@ function animate_screens(screen, oldMultiplier) {
 	}
 		
 	if (animations.screens.active) {
-		window.requestAnimationFrame(function() {
+		animations.screens.reference = window.setTimeout(function() {
 			animate_screens(screen, oldMultiplier);
-		});
+		}, 1000 / util.fps);
 	}
 }
 
@@ -618,8 +621,10 @@ function processTapHold(x, y) {
 	wasHeld = true;
 	var plate = util.plateFromCoords(x, y);	
 	if (flowers[currentFlower][plate] != null) {
-		util.loadPlate(currentFlower, plate);
-		animate_screens(screens.edit, util.copy(animations.screens.multiplier));
+		if (flowers[currentFlower][plate].fire == null) {
+			util.loadPlate(currentFlower, plate);
+			animate_screens(screens.edit, util.copy(animations.screens.multiplier));
+		}
 	}
 }
 
@@ -830,7 +835,9 @@ function processTapHold(x, y) {
 		    				if (flowers[currentFlower][plate]) {	
 		    					if (flowers[currentFlower][plate].contacts.length > 0) {
 				    				if (flowers[currentFlower][plate].fire == null) {
-				    					util.webPushMessage(flowers[currentFlower][plate], plate);		    					
+				    					if (!sending) {
+				    						util.webPushMessage(flowers[currentFlower][plate], plate);	
+				    					}
 				    				}
 		    					}
 		    					else {
@@ -990,7 +997,7 @@ function processTapHold(x, y) {
 			}
 
     	    // Screen: notifications
-    		if (animations.screens.multiplier[screens.notifications].toFixed(3) > 0.1) {	
+    		if (animations.screens.multiplier[screens.notifications].toFixed(3) == 1) {	
     			if (notifications.length > 0) {
     				var notification = notifications[notifications.length - 1];
 	    			if (notification.type == "contact_request") {
@@ -1043,7 +1050,6 @@ function processTapHold(x, y) {
 	    			}
 	    			else if (notification.type == "event_decline") {
 		    			if (touchX >= 120 && touchX < 240 && touchY >= 265 && touchY < 305) {
-		    				console.log(notification.plateid);
 		    				notifications.pop();
 		    				if (notifications.length == 0) {
 		    					animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
@@ -1052,7 +1058,17 @@ function processTapHold(x, y) {
 	    			}
 	    			else if (notification.type == "event_accept") {
 		    			if (touchX >= 120 && touchX < 240 && touchY >= 265 && touchY < 305) {
-		    				console.log(notification.plateid);
+		    				var i, j;
+		    				for (i = 0; i < 4; i += 1) {
+		    					for (j = 0; j < 6; j += 1) {
+		    						if (flowers[i][j] != null) {
+			    						if (flowers[i][j].plateid == notification.plateid) {
+			    							flowers[i][j].accepted += 1;
+			    							break;
+			    						}
+		    						}
+		    					}
+		    				}
 		    				notifications.pop();
 		    				if (notifications.length == 0) {
 		    					animate_screens(screens.flowers, util.copy(animations.screens.multiplier));

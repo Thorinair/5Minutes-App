@@ -112,6 +112,37 @@ draw.plate = function(ctx, use, color, type, duration, fire, x, y, radius, strok
 };
 
 /*
+ * Draws text for a single plate.
+ * @param ctx Context to draw in.
+ * @param color Color of the text to draw.
+ * @param fire Time when the event is supposed to happen.
+ * @param x X position of the text.
+ * @param y Y position of the text.
+ * @param rot Rotation of the text.
+ * @param count Number of people that should accept the invite.
+ * @param accepted Number of people that have accepted the invite.
+ * @param opacity Opacity of a plate or add symbol.
+ */
+draw.plateText = function(ctx, color, fire, x, y, rot, count, accepted, opacity) {
+    'use strict';
+    
+    if (fire != null) {
+		ctx.save();
+		
+		ctx.translate(x,y);
+		ctx.globalAlpha = opacity;
+		ctx.rotate(util.rad(rot));
+		
+		ctx.textAlign = "center";
+		ctx.font = "bold 16px Arial";
+		ctx.fillStyle = color;
+		ctx.fillText(accepted + "/" + count, 0, 5);
+		
+		ctx.restore();
+    }
+};
+
+/*
  * Draws all hexagon plates and add symbols.
  * @param ctx Context to draw in.
  * @param flower Array of plates and their status.
@@ -138,6 +169,40 @@ draw.flower = function(ctx, flower, colorB, offset, opacity) {
 		else {
 			draw.plate(ctx, false, null, null, 0, null, xOffset, yOffset, radiusPlate, false, colorB, opacity[i].toFixed(3) * animations.screens.multiplier[screens.flowers]);
 		}
+	}
+
+	
+    var radiusCenter = 37;
+    
+	xOffset = -radiusCenter * Math.cos(util.rad(0)) + offset;
+	yOffset = radiusCenter * Math.sin(util.rad(0));
+	if (flower[0] != null) {
+		draw.plateText(ctx, flower[0].color, flower[0].fire, xOffset, yOffset, -90, flower[0].contacts.length, flower[0].accepted, opacity[0].toFixed(3) * animations.screens.multiplier[screens.flowers]);
+	}
+	xOffset = -radiusCenter * Math.cos(util.rad(-60)) + offset;
+	yOffset = radiusCenter * Math.sin(util.rad(-60));
+	if (flower[1] != null) {
+		draw.plateText(ctx, flower[1].color, flower[1].fire, xOffset, yOffset, -30, flower[1].contacts.length, flower[1].accepted, opacity[1].toFixed(3) * animations.screens.multiplier[screens.flowers]);
+	}
+	xOffset = -radiusCenter * Math.cos(util.rad(-120)) + offset;
+	yOffset = radiusCenter * Math.sin(util.rad(-120));
+	if (flower[2] != null) {
+		draw.plateText(ctx, flower[2].color, flower[2].fire, xOffset, yOffset, 30, flower[2].contacts.length, flower[2].accepted, opacity[2].toFixed(3) * animations.screens.multiplier[screens.flowers]);
+	}
+	xOffset = -radiusCenter * Math.cos(util.rad(-180)) + offset;
+	yOffset = radiusCenter * Math.sin(util.rad(-180));
+	if (flower[3] != null) {
+		draw.plateText(ctx, flower[3].color, flower[3].fire, xOffset, yOffset, 90, flower[3].contacts.length, flower[3].accepted, opacity[3].toFixed(3) * animations.screens.multiplier[screens.flowers]);
+	}
+	xOffset = -radiusCenter * Math.cos(util.rad(-240)) + offset;
+	yOffset = radiusCenter * Math.sin(util.rad(-240));
+	if (flower[4] != null) {
+		draw.plateText(ctx, flower[4].color, flower[4].fire, xOffset, yOffset, -30, flower[4].contacts.length, flower[4].accepted, opacity[4].toFixed(3) * animations.screens.multiplier[screens.flowers]);
+	}
+	xOffset = -radiusCenter * Math.cos(util.rad(-300)) + offset;
+	yOffset = radiusCenter * Math.sin(util.rad(-300));
+	if (flower[5] != null) {
+		draw.plateText(ctx, flower[5].color, flower[5].fire, xOffset, yOffset, 30, flower[5].contacts.length, flower[5].accepted, opacity[5].toFixed(3) * animations.screens.multiplier[screens.flowers]);
 	}
 };
 
@@ -1080,10 +1145,7 @@ draw.notifications = function(ctx, offset, opacity) {
 			ctx.closePath();
 			ctx.fill();
 		}
-		else if (notification.type == "event_decline") {
-			
-			console.log(notification.plateid);
-			
+		else if (notification.type == "event_decline") {			
 			ctx.globalAlpha = opacity;
 			
 			ctx.beginPath();
@@ -1111,10 +1173,7 @@ draw.notifications = function(ctx, offset, opacity) {
 			ctx.fillStyle = "#000000";
 			ctx.fillText("Okay", 0, 115);
 		}
-		else if (notification.type == "event_accept") {
-			
-			console.log(notification.plateid);
-			
+		else if (notification.type == "event_accept") {			
 			ctx.globalAlpha = opacity;
 			
 			ctx.beginPath();
