@@ -530,7 +530,7 @@ util.webOnetime = function() {
 	xhr.timeout = 5000;
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {  
-			if (xhr.status === 200 || xhr.status === 0) {  
+			if (xhr.status === 200) {  
 				
 				//console.log("webOnetime:" + xhr.responseText);
 				var response = JSON.parse(xhr.responseText);
@@ -579,7 +579,7 @@ util.webUpdatePush = function(regID) {
 	xhr.timeout = 5000;
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {  
-			if (xhr.status === 200 || xhr.status === 0) {  
+			if (xhr.status === 200) {  
 				
 				//console.log("webUpdatePush:" + xhr.responseText);
 				var response = JSON.parse(xhr.responseText);
@@ -624,7 +624,7 @@ util.webContactGetList = function() {
 	xhr.timeout = 5000;
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {  
-			if (xhr.status === 200 || xhr.status === 0) {  
+			if (xhr.status === 200) {  
 				
 				//console.log("webContactGetList:" + xhr.responseText);
 				var response = JSON.parse(xhr.responseText);
@@ -699,7 +699,7 @@ util.webContactGetListUpdate = function(type) {
 	xhr.timeout = 5000;
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {  
-			if (xhr.status === 200 || xhr.status === 0) {  
+			if (xhr.status === 200) {  
 				
 				//console.log("webContactGetListUpdate:" + xhr.responseText);
 				var response = JSON.parse(xhr.responseText);
@@ -775,7 +775,7 @@ util.webContactRequest = function() {
 	xhr.timeout = 5000;
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {  
-			if (xhr.status === 200 || xhr.status === 0) {  
+			if (xhr.status === 200) {  
 				
 				//console.log("webContactRequest:" + xhr.responseText);
 				var response = JSON.parse(xhr.responseText);
@@ -824,7 +824,7 @@ util.webContactReject = function(reject) {
 	xhr.timeout = 5000;
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {  
-			if (xhr.status === 200 || xhr.status === 0) {  
+			if (xhr.status === 200) {  
 				
 				//console.log("webContactReject:" + xhr.responseText);
 				var response = JSON.parse(xhr.responseText);
@@ -863,7 +863,7 @@ util.webContactAccept = function(accept) {
 	xhr.timeout = 5000;
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {  
-			if (xhr.status === 200 || xhr.status === 0) {  
+			if (xhr.status === 200) {  
 				
 				//console.log("webContactAccept:" + xhr.responseText);
 				var response = JSON.parse(xhr.responseText);
@@ -912,7 +912,7 @@ util.webPushMessage = function(message, plate) {
 	xhr.timeout = 5000;
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {  
-			if (xhr.status === 200 || xhr.status === 0) {  
+			if (xhr.status === 200) {  
 				//console.log("webPushMessage:" + xhr.responseText);
 				var response = JSON.parse(xhr.responseText);
 				if (response.response == "push_message_okay") {
@@ -967,7 +967,7 @@ util.webEventDecline = function(decline, message, plateid) {
 	xhr.timeout = 5000;
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {  
-			if (xhr.status === 200 || xhr.status === 0) {  
+			if (xhr.status === 200) {  
 				
 				//console.log("webEventDecline:" + xhr.responseText);
 				var response = JSON.parse(xhr.responseText);
@@ -1011,7 +1011,7 @@ util.webEventAccept = function(accept, message, plateid) {
 	xhr.timeout = 5000;
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {  
-			if (xhr.status === 200 || xhr.status === 0) {  
+			if (xhr.status === 200) {  
 				
 				//console.log("webEventAccept:" + xhr.responseText);
 				var response = JSON.parse(xhr.responseText);
