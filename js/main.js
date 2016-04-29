@@ -2,7 +2,7 @@
 
 var canvas, context;
 
-var web = "https://5minutes.celestek.xyz/watch/index.php";
+var web = "https://5minutes.link/watch/index.php";
 
 var currentFlower = 0;
 var flowers = [
@@ -107,7 +107,6 @@ var screens = {
 		"notifications": 9
 	};
 
-/*
 var colors = [
 	   {"val": "#ff0000", "name": "Red"},
 	   {"val": "#ff8000", "name": "Orange"},
@@ -123,8 +122,8 @@ var colors = [
 	   {"val": "#808080", "name": "Gray"},
 	   {"val": "#904b00", "name": "Brown"}
    ];
-   */
 
+/*
 var colors = [
 	   {"val": "#ff0000", "name": "Red"},
 	   {"val": "#ff8000", "name": "Orange"},
@@ -140,6 +139,7 @@ var colors = [
 	   {"val": "#ff0080", "name": "Pink"},
 	   {"val": "#ffffff", "name": "White"}
    ];
+   */
 
 var types = [
   	   {"val": "meeting", 	"name": "Meeting"},

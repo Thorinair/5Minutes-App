@@ -445,6 +445,7 @@ function pushCallbackNotification(notification) {
 	//console.log("Alert: " + notification.alertMessage);
 	//console.log("Data: " + notification.appData);
 	notifications.push(JSON.parse(notification.appData));
+	navigator.vibrate(1000);
 	animate_screens(screens.notifications, util.copy(animations.screens.multiplier));
 }
 

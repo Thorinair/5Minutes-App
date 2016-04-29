@@ -381,7 +381,7 @@ draw.login = function(ctx, opacity) {
 
 	ctx.font = "24px Arial";
 	ctx.fillStyle = "#ffffff";
-	ctx.fillText("Register at 5minapp.com", 0, -90);
+	ctx.fillText("Register at 5minutes.link", 0, -90);
 
 	ctx.textAlign = "right";
 	ctx.font = "40px Arial";
