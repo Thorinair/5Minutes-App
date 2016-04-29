@@ -1,4 +1,4 @@
-/*global window, document, tizen, console, setTimeout, tau, animations, screens, colors, addPlate, colors, types, contacts, loginBox, user, pass, code, util */
+/*global window, document, tizen, console, setTimeout, tau, animations, screens, colors, tap, addPlate, colors, types, contacts, loginBox, user, pass, code, util */
 
 var draw = function(){
     'use strict';
@@ -296,28 +296,28 @@ draw.login = function(ctx, opacity) {
 	
 	xOffset = -radiusCenter * Math.cos(util.rad(60 * 0)) - 20;
 	yOffset = radiusCenter * Math.sin(util.rad(60 * 0)) - 104;	
-	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset + radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
-	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset + radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity * tap[7]);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset, yOffset, radiusPlate, false, null, newOpacity * tap[0]);
 
 	xOffset = -radiusCenter * Math.cos(util.rad(60 * -1)) - 20;
 	yOffset = radiusCenter * Math.sin(util.rad(60 * -1));
-	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset, yOffset, radiusPlate, false, null, newOpacity);
-	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset - radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset, yOffset, radiusPlate, false, null, newOpacity * tap[4]);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset - radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity * tap[1]);
 
 	xOffset = -radiusCenter * Math.cos(util.rad(60 * 0)) - 20;
 	yOffset = radiusCenter * Math.sin(util.rad(60 * 0));	
-	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset + radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
-	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset, yOffset, radiusPlate, false, null, newOpacity);
-	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset - radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset + radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity * tap[8]);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset, yOffset, radiusPlate, false, null, newOpacity * tap[5]);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset - radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity * tap[2]);
 
 	xOffset = -radiusCenter * Math.cos(util.rad(60 * 1)) - 20;
 	yOffset = radiusCenter * Math.sin(util.rad(60 * 1));
-	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset, yOffset, radiusPlate, false, null, newOpacity);
-	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset - radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset, yOffset, radiusPlate, false, null, newOpacity * tap[6]);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset - radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity * tap[3]);
 
 	xOffset = -radiusCenter * Math.cos(util.rad(60 * 0)) - 20;
 	yOffset = radiusCenter * Math.sin(util.rad(60 * 0)) + 104;	
-	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset + radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset + radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity * tap[9]);
 	
 	if (code.length > 0) {
 		newOpacity = opacity;
@@ -326,7 +326,7 @@ draw.login = function(ctx, opacity) {
 		newOpacity = opacity * 0.5;
 	}
 	
-	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset, yOffset, radiusPlate, false, null, newOpacity * tap[10]);
 	
 	ctx.restore();
 	
@@ -353,7 +353,7 @@ draw.login = function(ctx, opacity) {
 	ctx.save();
 	
 	if (code.length == 8) {
-		ctx.globalAlpha = opacity;
+		ctx.globalAlpha = opacity * tap[11];
 	}
 	else {
 		ctx.globalAlpha = opacity * 0.5;
@@ -421,7 +421,7 @@ draw.editText = function(ctx, opacity) {
     'use strict';  
 	ctx.save();
 
-	ctx.globalAlpha = opacity;
+	ctx.globalAlpha = opacity * tap[0];
 	
 	ctx.beginPath();
 	ctx.moveTo(-80, -53);
@@ -432,6 +432,12 @@ draw.editText = function(ctx, opacity) {
 	ctx.closePath();
 	ctx.fill();
 
+	ctx.restore();
+	 
+	ctx.save();
+
+	ctx.globalAlpha = opacity * tap[1];
+	
 	ctx.beginPath();
 	ctx.moveTo(-80, 15);
 	ctx.lineTo(80, 15);
@@ -440,6 +446,10 @@ draw.editText = function(ctx, opacity) {
 	ctx.fillStyle = "#ff0000";
 	ctx.closePath();
 	ctx.fill();
+
+	ctx.restore();
+	
+	ctx.globalAlpha = opacity;
 
 	ctx.globalAlpha = opacity;
 	ctx.textAlign = "center";
@@ -469,7 +479,7 @@ draw.addColor = function(ctx, opacity) {
 	ctx.save();
 
 	if (addPlate.color != null) {
-		ctx.globalAlpha = opacity;
+		ctx.globalAlpha = opacity * tap[0];
 	}
 	else {
 		ctx.globalAlpha = opacity * 0.25;
@@ -548,7 +558,7 @@ draw.addType = function(ctx, opacity) {
 	ctx.save();
 
 	if (addPlate.type != null) {
-		ctx.globalAlpha = opacity;
+		ctx.globalAlpha = opacity * tap[0];
 	}
 	else {
 		ctx.globalAlpha = opacity * 0.25;
@@ -626,7 +636,7 @@ draw.addDuration = function(ctx, opacity) {
     'use strict';  
 	ctx.save();
 
-	ctx.globalAlpha = opacity;
+	ctx.globalAlpha = opacity * tap[0];
 	
 	ctx.beginPath();
 	ctx.moveTo(-50, 120);
@@ -637,6 +647,12 @@ draw.addDuration = function(ctx, opacity) {
 	ctx.fillStyle = "#ffffff";
 	ctx.closePath();
 	ctx.fill();
+	
+	ctx.restore();
+
+	ctx.save();
+	
+	ctx.globalAlpha = opacity;
 	
 	ctx.beginPath();
 	ctx.moveTo(-15, 10);
@@ -698,7 +714,7 @@ draw.addContacts = function(ctx, offset, opacity) {
 		contactExists = contactExists || contacts[i].sel;
 	}
 	if (contactExists) {
-		ctx.globalAlpha = opacity;
+		ctx.globalAlpha = opacity * tap[0];
 	}
 	else {
 		ctx.globalAlpha = opacity * 0.25;
@@ -780,7 +796,7 @@ draw.contacts = function(ctx, offset, opacity) {
     'use strict';  
 	ctx.save();
 
-	ctx.globalAlpha = opacity;
+	ctx.globalAlpha = opacity * tap[0];
 	ctx.beginPath();
 	ctx.moveTo(-40, 120);
 	ctx.lineTo(40, 120);
@@ -790,6 +806,10 @@ draw.contacts = function(ctx, offset, opacity) {
 	ctx.closePath();
 	ctx.fill();
 
+	ctx.restore(); 
+	
+	ctx.save();
+	
 	ctx.globalAlpha = opacity;
 	ctx.textAlign = "center";
 	
@@ -866,31 +886,31 @@ draw.contactsAdd = function(ctx, opacity) {
 	
 	xOffset = -radiusCenter * Math.cos(util.rad(60 * 0)) - 20;
 	yOffset = radiusCenter * Math.sin(util.rad(60 * 0)) - 104;	
-	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset + radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
-	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset + radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity * tap[7]);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset, yOffset, radiusPlate, false, null, newOpacity * tap[0]);
 
 	xOffset = -radiusCenter * Math.cos(util.rad(60 * -1)) - 20;
 	yOffset = radiusCenter * Math.sin(util.rad(60 * -1));
-	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset, yOffset, radiusPlate, false, null, newOpacity);
-	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset - radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset, yOffset, radiusPlate, false, null, newOpacity * tap[4]);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset - radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity * tap[1]);
 
 	xOffset = -radiusCenter * Math.cos(util.rad(60 * 0)) - 20;
 	yOffset = radiusCenter * Math.sin(util.rad(60 * 0));	
-	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset + radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
-	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset, yOffset, radiusPlate, false, null, newOpacity);
-	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset - radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset + radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity * tap[8]);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset, yOffset, radiusPlate, false, null, newOpacity * tap[5]);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset - radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity * tap[2]);
 
 	xOffset = -radiusCenter * Math.cos(util.rad(60 * 1)) - 20;
 	yOffset = radiusCenter * Math.sin(util.rad(60 * 1));
-	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset, yOffset, radiusPlate, false, null, newOpacity);
-	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset - radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset, yOffset, radiusPlate, false, null, newOpacity * tap[6]);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset - radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity * tap[3]);
 
 	xOffset = -radiusCenter * Math.cos(util.rad(60 * 0)) - 20;
 	yOffset = radiusCenter * Math.sin(util.rad(60 * 0)) + 104;	
-	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset + radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity);
+	draw.plate(ctx, true, "#ffffff", null, 0, null, xOffset + radiusCenter * 1, yOffset, radiusPlate, false, null, newOpacity * tap[9]);
 	
 	if (contact.length > 0) {
-		newOpacity = opacity;
+		newOpacity = opacity * tap[10];
 	}
 	else {
 		newOpacity = opacity * 0.5;
@@ -922,7 +942,7 @@ draw.contactsAdd = function(ctx, opacity) {
 	ctx.save();
 	
 	if (contact.length == 8) {
-		ctx.globalAlpha = opacity;
+		ctx.globalAlpha = opacity * tap[11];
 	}
 	else {
 		ctx.globalAlpha = opacity * 0.5;
@@ -984,13 +1004,13 @@ draw.contactsAdd = function(ctx, opacity) {
  */
 draw.notifications = function(ctx, offset, opacity) {
     'use strict';
-	ctx.save();
 	
-	if (notifications.length != 0) {
+	if (notifications.length > 0) {
 		var notification = notifications[notifications.length - 1];
 		if (notification.type == "contact_request") {
-			ctx.globalAlpha = opacity;
+			ctx.save();
 			
+			ctx.globalAlpha = opacity * tap[0];
 			ctx.beginPath();
 			ctx.moveTo(-60, 60);
 			ctx.lineTo(60, 60);
@@ -1000,6 +1020,11 @@ draw.notifications = function(ctx, offset, opacity) {
 			ctx.closePath();
 			ctx.fill();	
 			
+			ctx.restore();
+			
+			ctx.save();
+
+			ctx.globalAlpha = opacity * tap[1];
 			ctx.beginPath();
 			ctx.moveTo(-60, 110);
 			ctx.lineTo(60, 110);
@@ -1008,6 +1033,12 @@ draw.notifications = function(ctx, offset, opacity) {
 			ctx.fillStyle = "#ffffff";
 			ctx.closePath();
 			ctx.fill();	
+
+			ctx.restore();
+			
+			ctx.save();
+			
+			ctx.globalAlpha = opacity;
 			
 			ctx.textAlign = "center";
 			
@@ -1027,9 +1058,13 @@ draw.notifications = function(ctx, offset, opacity) {
 			ctx.font = "32px Arial";
 			ctx.fillStyle = "#000000";
 			ctx.fillText("Decline", 0, 140);
+			
+			ctx.restore();
 		}
 		else if (notification.type == "contact_reject") {
-			ctx.globalAlpha = opacity;
+			ctx.save();
+			
+			ctx.globalAlpha = opacity * tap[0];
 			
 			ctx.beginPath();
 			ctx.moveTo(-60, 85);
@@ -1039,6 +1074,12 @@ draw.notifications = function(ctx, offset, opacity) {
 			ctx.fillStyle = "#ffffff";
 			ctx.closePath();
 			ctx.fill();	
+
+			ctx.restore();
+			
+			ctx.save();
+
+			ctx.globalAlpha = opacity;
 			
 			ctx.textAlign = "center";
 			
@@ -1054,9 +1095,13 @@ draw.notifications = function(ctx, offset, opacity) {
 			ctx.font = "32px Arial";
 			ctx.fillStyle = "#000000";
 			ctx.fillText("Okay", 0, 115);
+
+			ctx.restore();
 		}
 		else if (notification.type == "contact_accept") {
-			ctx.globalAlpha = opacity;
+			ctx.save();
+			
+			ctx.globalAlpha = opacity * tap[0];
 			
 			ctx.beginPath();
 			ctx.moveTo(-60, 85);
@@ -1066,6 +1111,12 @@ draw.notifications = function(ctx, offset, opacity) {
 			ctx.fillStyle = "#ffffff";
 			ctx.closePath();
 			ctx.fill();	
+
+			ctx.restore();
+			
+			ctx.save();
+
+			ctx.globalAlpha = opacity;
 			
 			ctx.textAlign = "center";
 			
@@ -1081,13 +1132,13 @@ draw.notifications = function(ctx, offset, opacity) {
 			ctx.font = "32px Arial";
 			ctx.fillStyle = "#000000";
 			ctx.fillText("Okay", 0, 115);
+
+			ctx.restore();
 		}
 		else if (notification.type == "push_message") {
+			ctx.save();
 			
-			draw.plate(ctx, true, "#" + notification.color, notification.plateType, null, null, 0, -5, 64, false, null, opacity);
-						
-			ctx.globalAlpha = opacity;
-
+			ctx.globalAlpha = opacity * tap[0];
 			ctx.beginPath();
 			ctx.moveTo(-70, 100);
 			ctx.lineTo(-5, 100);
@@ -1097,6 +1148,11 @@ draw.notifications = function(ctx, offset, opacity) {
 			ctx.closePath();
 			ctx.fill();	
 
+			ctx.restore();
+			
+			ctx.save();
+
+			ctx.globalAlpha = opacity * tap[1];
 			ctx.beginPath();
 			ctx.moveTo(70, 100);
 			ctx.lineTo(5, 100);
@@ -1105,6 +1161,14 @@ draw.notifications = function(ctx, offset, opacity) {
 			ctx.fillStyle = "#00ff00";
 			ctx.closePath();
 			ctx.fill();	
+
+			ctx.restore();
+			
+			ctx.save();
+			
+			draw.plate(ctx, true, "#" + notification.color, notification.plateType, null, null, 0, -5, 64, false, null, opacity);
+			
+			ctx.globalAlpha = opacity;
 			
 			ctx.textAlign = "center";
 			
@@ -1144,9 +1208,13 @@ draw.notifications = function(ctx, offset, opacity) {
 			ctx.fillStyle = "#000000";
 			ctx.closePath();
 			ctx.fill();
+
+			ctx.restore();
 		}
-		else if (notification.type == "event_decline") {			
-			ctx.globalAlpha = opacity;
+		else if (notification.type == "event_decline") {		
+			ctx.save();
+			
+			ctx.globalAlpha = opacity * tap[0];
 			
 			ctx.beginPath();
 			ctx.moveTo(-60, 85);
@@ -1156,6 +1224,12 @@ draw.notifications = function(ctx, offset, opacity) {
 			ctx.fillStyle = "#ffffff";
 			ctx.closePath();
 			ctx.fill();	
+
+			ctx.restore();
+			
+			ctx.save();
+
+			ctx.globalAlpha = opacity;
 			
 			ctx.textAlign = "center";
 			
@@ -1172,9 +1246,13 @@ draw.notifications = function(ctx, offset, opacity) {
 			ctx.font = "32px Arial";
 			ctx.fillStyle = "#000000";
 			ctx.fillText("Okay", 0, 115);
+
+			ctx.restore();
 		}
-		else if (notification.type == "event_accept") {			
-			ctx.globalAlpha = opacity;
+		else if (notification.type == "event_accept") {				
+			ctx.save();
+			
+			ctx.globalAlpha = opacity * tap[0];
 			
 			ctx.beginPath();
 			ctx.moveTo(-60, 85);
@@ -1184,6 +1262,12 @@ draw.notifications = function(ctx, offset, opacity) {
 			ctx.fillStyle = "#ffffff";
 			ctx.closePath();
 			ctx.fill();	
+
+			ctx.restore();
+			
+			ctx.save();
+
+			ctx.globalAlpha = opacity;
 			
 			ctx.textAlign = "center";
 			
@@ -1200,10 +1284,11 @@ draw.notifications = function(ctx, offset, opacity) {
 			ctx.font = "32px Arial";
 			ctx.fillStyle = "#000000";
 			ctx.fillText("Okay", 0, 115);
+
+			ctx.restore();
 		}
 	}
 	
-	ctx.restore();
 };
 
 /*

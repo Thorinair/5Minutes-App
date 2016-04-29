@@ -1,4 +1,4 @@
-/*global window, document, tizen, console, setTimeout, tau, addPlate, colors, flowers, contacts, types, drawUI, user, code, pass, loggingIn, sending, animationSlow, slowAnimated, currentFlower, contact, web, animate_screens, animate_startup, animations, screens, showMessage, notifications */
+/*global window, document, tizen, console, setTimeout, tau, addPlate, colors, tap, tapFade, flowers, contacts, types, drawUI, user, code, pass, loggingIn, sending, animationSlow, slowAnimated, currentFlower, contact, web, animate_screens, animate_startup, animations, screens, showMessage, notifications */
 
 var util = function(){
     'use strict';
@@ -1032,4 +1032,271 @@ util.webEventAccept = function(accept, message, plateid) {
 	};
 	
 	xhr.send(param);
+};
+
+util.processTaps = function(touchX, touchY, ctx) {
+
+	// Screen: login
+	if (animations.screens.multiplier[screens.login].toFixed(3) == 1) {	
+			
+		if (touchX >= 248 && touchX < 332 && touchY >= 116 && touchY < 160 && code.length == 8) {
+    		tap = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, tapFade];
+		}
+		
+		else if (touchX >= 50 && touchX < 102 && touchY >= 170 && touchY < 230 && code.length < 8) {
+    		tap = [1, 1, 1, 1, 1, 1, 1, tapFade, 1, 1, 1, 1];
+		}
+		else if (touchX >= 50 && touchX < 102 && touchY >= 230 && touchY < 290 && code.length < 8) {
+    		tap = [tapFade, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+		}
+		
+		else if (touchX >= 102 && touchX < 154 && touchY >= 200 && touchY < 260 && code.length < 8) {
+    		tap = [1, 1, 1, 1, tapFade, 1, 1, 1, 1, 1, 1, 1];
+		}
+		else if (touchX >= 102 && touchX < 154 && touchY >= 260 && touchY < 320 && code.length < 8) {
+    		tap = [1, tapFade, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+		}
+		
+		else if (touchX >= 154 && touchX < 206 && touchY >= 170 && touchY < 230 && code.length < 8) {
+    		tap = [1, 1, 1, 1, 1, 1, 1, 1, tapFade, 1, 1, 1];
+		}
+		else if (touchX >= 154 && touchX < 206 && touchY >= 230 && touchY < 290 && code.length < 8) {
+    		tap = [1, 1, 1, 1, 1, tapFade, 1, 1, 1, 1, 1, 1];
+		}
+		else if (touchX >= 154 && touchX < 206 && touchY >= 290 && touchY < 350 && code.length < 8) {
+    		tap = [1, 1, tapFade, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+		}
+		
+		else if (touchX >= 206 && touchX < 258 && touchY >= 200 && touchY < 260 && code.length < 8) {
+    		tap = [1, 1, 1, 1, 1, 1, tapFade, 1, 1, 1, 1, 1];
+		}
+		else if (touchX >= 206 && touchX < 258 && touchY >= 260 && touchY < 320 && code.length < 8) {
+    		tap = [1, 1, 1, tapFade, 1, 1, 1, 1, 1, 1, 1, 1];
+		}
+		
+		else if (touchX >= 258 && touchX < 310 && touchY >= 170 && touchY < 230 && code.length < 8) {
+    		tap = [1, 1, 1, 1, 1, 1, 1, 1, 1, tapFade, 1, 1];
+		}
+	
+		else if (touchX >= 258 && touchX < 310 && touchY >= 230 && touchY < 290 && code.length) {
+    		tap = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, tapFade, 1];
+		}
+		
+		else {
+    		tap = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+		}
+		
+		drawUI(ctx);
+	}
+	
+	// Screen: addColor
+	if (animations.screens.multiplier[screens.addColor].toFixed(3) == 1) {	
+		if (touchX >= 130 && touchX < 230 && touchY >= 300 && touchY < 340) {
+			if (addPlate.color != null) {
+	    		tap[0] = tapFade;
+			}
+		}
+		else {
+    		tap[0] = 1;
+		}
+		
+		drawUI(ctx);
+	}
+
+    // Screen: addType
+	if (animations.screens.multiplier[screens.addType].toFixed(3) == 1) {	
+		if (touchX >= 130 && touchX < 230 && touchY >= 300 && touchY < 340) {
+			if (addPlate.type != null) {
+	    		tap[0] = tapFade;
+			}
+		}
+		else {
+    		tap[0] = 1;
+		}
+		
+		drawUI(ctx);
+	}
+
+    // Screen: addDuration
+	if (animations.screens.multiplier[screens.addDuration].toFixed(3) == 1) {	
+		if (touchX >= 130 && touchX < 230 && touchY >= 300 && touchY < 340 && !wasDragged) {
+    		tap[0] = tapFade;
+		}
+		else {
+    		tap[0] = 1;
+		}
+		
+		drawUI(ctx);
+	}
+
+    // Screen: addContacts
+	if (animations.screens.multiplier[screens.addContacts].toFixed(3) == 1) {	
+		
+		if (!wasDragged) {
+			var i;
+			if (touchX >= 130 && touchX < 230 && touchY >= 300 && touchY < 340) {
+				var contactExists = false;
+				for (i = 0; i < contacts.length; i += 1) {
+					contactExists = contactExists || contacts[i].sel;
+				}
+				if (contactExists) {
+		    		tap[0] = tapFade;
+				}
+			}
+			else {
+	    		tap[0] = 1;
+			}
+		}
+		
+		drawUI(ctx);		
+	}	
+
+    // Screen: edit
+	if (animations.screens.multiplier[screens.edit].toFixed(3) == 1) {	
+		if (touchX >= 100 && touchX < 260 && touchY >= 127 && touchY < 185) {
+    		tap[0] = tapFade;
+		} 		
+
+		else if (touchX >= 100 && touchX < 260 && touchY >= 195 && touchY < 253) {
+    		tap[1] = tapFade;
+		} 	
+		
+		else {
+    		tap[0] = 1;
+    		tap[1] = 1;
+		}
+		
+		drawUI(ctx);
+	}
+
+    // Screen: contacts
+	if (animations.screens.multiplier[screens.contacts].toFixed(3) == 1) {	
+		if (!wasDragged && touchX >= 140 && touchX < 220 && touchY >= 300 && touchY < 340) {
+    		tap[0] = tapFade;
+		}   
+		else {
+    		tap[0] = 1;
+		}
+		
+		drawUI(ctx);
+	}
+	
+    // Screen: contactsAdd
+	if (animations.screens.multiplier[screens.contactsAdd].toFixed(3) == 1) {	
+		
+		if (touchX >= 130 && touchX < 230 && touchY >= 119 && touchY < 163 && contact.length == 8) {
+    		tap = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, tapFade];
+		}
+		
+		else if (touchX >= 50 && touchX < 102 && touchY >= 170 && touchY < 230 && contact.length < 8) {
+    		tap = [1, 1, 1, 1, 1, 1, 1, tapFade, 1, 1, 1, 1];
+		}
+		else if (touchX >= 50 && touchX < 102 && touchY >= 230 && touchY < 290 && contact.length < 8) {
+    		tap = [tapFade, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+		}
+		
+		else if (touchX >= 102 && touchX < 154 && touchY >= 200 && touchY < 260 && contact.length < 8) {
+    		tap = [1, 1, 1, 1, tapFade, 1, 1, 1, 1, 1, 1, 1];
+		}
+		else if (touchX >= 102 && touchX < 154 && touchY >= 260 && touchY < 320 && contact.length < 8) {
+    		tap = [1, tapFade, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+		}
+		
+		else if (touchX >= 154 && touchX < 206 && touchY >= 170 && touchY < 230 && contact.length < 8) {
+    		tap = [1, 1, 1, 1, 1, 1, 1, 1, tapFade, 1, 1, 1];
+		}
+		else if (touchX >= 154 && touchX < 206 && touchY >= 230 && touchY < 290 && contact.length < 8) {
+    		tap = [1, 1, 1, 1, 1, tapFade, 1, 1, 1, 1, 1, 1];
+		}
+		else if (touchX >= 154 && touchX < 206 && touchY >= 290 && touchY < 350 && contact.length < 8) {
+    		tap = [1, 1, tapFade, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+		}
+		
+		else if (touchX >= 206 && touchX < 258 && touchY >= 200 && touchY < 260 && contact.length < 8) {
+    		tap = [1, 1, 1, 1, 1, 1, tapFade, 1, 1, 1, 1, 1];
+		}
+		else if (touchX >= 206 && touchX < 258 && touchY >= 260 && touchY < 320 && contact.length < 8) {
+    		tap = [1, 1, 1, tapFade, 1, 1, 1, 1, 1, 1, 1, 1];
+		}
+		
+		else if (touchX >= 258 && touchX < 310 && touchY >= 170 && touchY < 230 && contact.length < 8) {
+    		tap = [1, 1, 1, 1, 1, 1, 1, 1, 1, tapFade, 1, 1];
+		}
+	
+		else if (touchX >= 258 && touchX < 310 && touchY >= 230 && touchY < 290 && contact.length > 0) {
+    		tap = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, tapFade, 1];
+		}
+		
+		else {
+    		tap = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+		}
+		
+		drawUI(ctx);
+	}
+
+    // Screen: notifications
+	if (animations.screens.multiplier[screens.notifications].toFixed(3) == 1) {	
+		if (notifications.length > 0) {
+			var notification = notifications[notifications.length - 1];
+			if (notification.type == "contact_request") {
+    			if (touchX >= 120 && touchX < 240 && touchY >= 240 && touchY < 280) {
+    	    		tap[0] = tapFade;
+    			}
+    			else if (touchX >= 120 && touchX < 240 && touchY >= 290 && touchY < 330) {
+    	    		tap[1] = tapFade;
+    			}  
+    			else {
+    	    		tap[0] = 1;
+    	    		tap[1] = 1;
+    			}
+			}
+			else if (notification.type == "contact_reject") {
+    			if (touchX >= 120 && touchX < 240 && touchY >= 265 && touchY < 305) {
+    	    		tap[0] = tapFade;
+    			}
+    			else {
+    	    		tap[0] = 1;
+    			}
+			}
+			else if (notification.type == "contact_accept") {
+    			if (touchX >= 120 && touchX < 240 && touchY >= 265 && touchY < 305) {
+    	    		tap[0] = tapFade;
+    			}
+    			else {
+    	    		tap[0] = 1;
+    			}
+			}
+			else if (notification.type == "push_message") {
+    			if (touchX >= 110 && touchX < 175 && touchY >= 280 && touchY < 330) {
+    	    		tap[0] = tapFade;
+    			}
+    			else if (touchX >= 185 && touchX < 250 && touchY >= 280 && touchY < 330) {
+    	    		tap[1] = tapFade;
+    			} 
+    			else {
+    	    		tap[0] = 1;
+    	    		tap[1] = 1;
+    			} 
+			}
+			else if (notification.type == "event_decline") {
+    			if (touchX >= 120 && touchX < 240 && touchY >= 265 && touchY < 305) {
+    	    		tap[0] = tapFade;
+    			}
+    			else {
+    	    		tap[0] = 1;
+    			} 
+			}
+			else if (notification.type == "event_accept") {
+    			if (touchX >= 120 && touchX < 240 && touchY >= 265 && touchY < 305) {
+    	    		tap[0] = tapFade;
+    			}
+    			else {
+    	    		tap[0] = 1;
+    			} 
+			}
+		}
+		
+		drawUI(ctx);
+	}
+	
 };

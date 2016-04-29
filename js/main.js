@@ -181,6 +181,9 @@ var sending = false;
 
 var notifications = [];
 
+var tap = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+var tapFade = 0.75;
+
 window.requestAnimationFrame = window.requestAnimationFrame ||
 	window.webkitRequestAnimationFrame ||
 	window.mozRequestAnimationFrame ||
@@ -639,6 +642,8 @@ function processTapHold(x, y) {
 
     	document.addEventListener("touchstart", function(e) {
     		
+    		util.processTaps(e.changedTouches.item(0).screenX, e.changedTouches.item(0).screenY, context);
+    		
     	    // Screen: flowers
     		if (animations.screens.multiplier[screens.flowers].toFixed(3) == 1) {	
 	    		isScreenTouched = true;
@@ -668,6 +673,11 @@ function processTapHold(x, y) {
     		if (animations.screens.multiplier[screens.contacts].toFixed(3) == 1 && contacts.length * 48 > 200) {	
     			listOffsetLast = listOffset;
     		}
+    	});
+
+    	document.addEventListener("touchmove", function(e) {
+
+    		util.processTaps(e.changedTouches.item(0).screenX, e.changedTouches.item(0).screenY, context);
     	});
 
     	document.addEventListener("drag", function(e) {
@@ -740,6 +750,8 @@ function processTapHold(x, y) {
     	document.addEventListener("touchend", function(e) {
     		var touchX = e.changedTouches.item(0).screenX;
     		var touchY = e.changedTouches.item(0).screenY;
+    		
+    		tap = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
 
     	    // Screen: login
     		if (animations.screens.multiplier[screens.login].toFixed(3) == 1) {	
@@ -785,7 +797,7 @@ function processTapHold(x, y) {
 	    			}
     			}
     			
-    			if (code.length) {
+    			if (code.length > 0) {
     				if (touchX >= 258 && touchX < 310 && touchY >= 230 && touchY < 290) {
     					code = code.slice(0, -1);
     					drawUI(context);
@@ -919,18 +931,15 @@ function processTapHold(x, y) {
 
     	    // Screen: edit
     		if (animations.screens.multiplier[screens.edit].toFixed(3) == 1) {	
-    			if (!wasHeld) {
-	    			if (touchX >= 100 && touchX < 260 && touchY >= 127 && touchY < 185) {
-	            		animate_screens(screens.addColor, util.copy(animations.screens.multiplier));
-	    			} 		
-	
-	    			else if (touchX >= 100 && touchX < 260 && touchY >= 195 && touchY < 253) {
-	    				flowers[addPlate.flower][addPlate.plate] = null;
-	    				localStorage.setItem("flowers", JSON.stringify(flowers));
-	            		animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
-	    			} 	
-    			}
-    			wasHeld = false;
+    			if (touchX >= 100 && touchX < 260 && touchY >= 127 && touchY < 185) {
+            		animate_screens(screens.addColor, util.copy(animations.screens.multiplier));
+    			} 		
+
+    			else if (touchX >= 100 && touchX < 260 && touchY >= 195 && touchY < 253) {
+    				flowers[addPlate.flower][addPlate.plate] = null;
+    				localStorage.setItem("flowers", JSON.stringify(flowers));
+            		animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
+    			} 	
     		}
 
     	    // Screen: contacts
