@@ -527,7 +527,7 @@ util.webOnetime = function() {
 	xhr.open("POST", web, true);
 	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	xhr.setRequestHeader("Header-Custom-TizenCORS", "OK");
-	xhr.timeout = 5000;
+	xhr.timeout = 10000;
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {  
 			if (xhr.status === 200) {  
@@ -576,7 +576,7 @@ util.webUpdatePush = function(regID) {
 	xhr.open("POST", web, true);
 	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	xhr.setRequestHeader("Header-Custom-TizenCORS", "OK");
-	xhr.timeout = 5000;
+	xhr.timeout = 10000;
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {  
 			if (xhr.status === 200) {  
@@ -621,7 +621,7 @@ util.webContactGetList = function() {
 	xhr.open("POST", web, true);
 	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	xhr.setRequestHeader("Header-Custom-TizenCORS", "OK");
-	xhr.timeout = 5000;
+	xhr.timeout = 10000;
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {  
 			if (xhr.status === 200) {  
@@ -696,7 +696,7 @@ util.webContactGetListUpdate = function(type) {
 	xhr.open("POST", web, true);
 	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	xhr.setRequestHeader("Header-Custom-TizenCORS", "OK");
-	xhr.timeout = 5000;
+	xhr.timeout = 10000;
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {  
 			if (xhr.status === 200) {  
@@ -772,7 +772,7 @@ util.webContactRequest = function() {
 	xhr.open("POST", web, true);
 	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	xhr.setRequestHeader("Header-Custom-TizenCORS", "OK");
-	xhr.timeout = 5000;
+	xhr.timeout = 10000;
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {  
 			if (xhr.status === 200) {  
@@ -821,7 +821,7 @@ util.webContactReject = function(reject) {
 	xhr.open("POST", web, true);
 	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	xhr.setRequestHeader("Header-Custom-TizenCORS", "OK");
-	xhr.timeout = 5000;
+	xhr.timeout = 10000;
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {  
 			if (xhr.status === 200) {  
@@ -860,7 +860,7 @@ util.webContactAccept = function(accept) {
 	xhr.open("POST", web, true);
 	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	xhr.setRequestHeader("Header-Custom-TizenCORS", "OK");
-	xhr.timeout = 5000;
+	xhr.timeout = 10000;
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {  
 			if (xhr.status === 200) {  
@@ -909,7 +909,7 @@ util.webPushMessage = function(message, plate) {
 	xhr.open("POST", web, true);
 	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	xhr.setRequestHeader("Header-Custom-TizenCORS", "OK");
-	xhr.timeout = 5000;
+	xhr.timeout = 10000;
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {  
 			if (xhr.status === 200) {  
@@ -964,7 +964,7 @@ util.webEventDecline = function(decline, message, plateid) {
 	xhr.open("POST", web, true);
 	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	xhr.setRequestHeader("Header-Custom-TizenCORS", "OK");
-	xhr.timeout = 5000;
+	xhr.timeout = 10000;
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {  
 			if (xhr.status === 200) {  
@@ -1008,7 +1008,7 @@ util.webEventAccept = function(accept, message, plateid) {
 	xhr.open("POST", web, true);
 	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	xhr.setRequestHeader("Header-Custom-TizenCORS", "OK");
-	xhr.timeout = 5000;
+	xhr.timeout = 10000;
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {  
 			if (xhr.status === 200) {  

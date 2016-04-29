@@ -352,7 +352,10 @@ draw.login = function(ctx, opacity) {
 
 	ctx.save();
 	
-	if (code.length == 8) {
+	if (code.length == 8 && loggingIn) {
+		ctx.globalAlpha = opacity * 0.5;
+	}
+	else if (code.length == 8) {
 		ctx.globalAlpha = opacity * tap[11];
 	}
 	else {

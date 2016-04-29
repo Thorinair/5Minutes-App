@@ -754,7 +754,7 @@ function processTapHold(x, y) {
     		tap = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
 
     	    // Screen: login
-    		if (animations.screens.multiplier[screens.login].toFixed(3) == 1) {	
+    		if (animations.screens.multiplier[screens.login].toFixed(3) == 1 && !loggingIn) {	
 	    			
     			if (touchX >= 248 && touchX < 332 && touchY >= 116 && touchY < 160 && code.length == 8) {
     				util.webOnetime();
