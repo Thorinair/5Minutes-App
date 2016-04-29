@@ -2,7 +2,7 @@
 
 var canvas, context;
 
-var web = "https://5minutes.link/watch/index.php";
+var web = "https://www.5minutes.link/watch/index.php";
 
 var currentFlower = 0;
 var flowers = [
