@@ -127,18 +127,20 @@ draw.plateText = function(ctx, color, fire, x, y, rot, count, accepted, opacity)
     'use strict';
     
     if (fire != null) {
-		ctx.save();
-		
-		ctx.translate(x,y);
-		ctx.globalAlpha = opacity;
-		ctx.rotate(util.rad(rot));
-		
-		ctx.textAlign = "center";
-		ctx.font = "bold 16px Arial";
-		ctx.fillStyle = color;
-		ctx.fillText(accepted + "/" + count, 0, 5);
-		
-		ctx.restore();
+		if (util.processFireTime(fire) > 0) {
+			ctx.save();
+			
+			ctx.translate(x,y);
+			ctx.globalAlpha = opacity;
+			ctx.rotate(util.rad(rot));
+			
+			ctx.textAlign = "center";
+			ctx.font = "bold 16px Arial";
+			ctx.fillStyle = color;
+			ctx.fillText(accepted + "/" + count, 0, 5);
+			
+			ctx.restore();
+		}
     }
 };
 
