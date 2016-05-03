@@ -85,7 +85,6 @@ var animations = {
 		},
 		"messageFade": {
 			"duration": 200,
-			"onScreen": 2000,
 			"activeIn": false,
 			"activeOut": false,
 			"multiplier": 0,
@@ -122,24 +121,6 @@ var colors = [
 	   {"val": "#808080", "name": "Gray"},
 	   {"val": "#904b00", "name": "Brown"}
    ];
-
-/*
-var colors = [
-	   {"val": "#ff0000", "name": "Red"},
-	   {"val": "#ff8000", "name": "Orange"},
-	   {"val": "#ffff00", "name": "Yellow"},
-	   {"val": "#80ff00", "name": "Lime"},
-	   {"val": "#00ff00", "name": "Green"},
-	   {"val": "#00ff80", "name": "Torquoise"},
-	   {"val": "#00ffff", "name": "Cyan"},
-	   {"val": "#0080ff", "name": "Sky Blue"},
-	   {"val": "#0000ff", "name": "Blue"},
-	   {"val": "#8000ff", "name": "Purple"},
-	   {"val": "#ff00ff", "name": "Magenta"},
-	   {"val": "#ff0080", "name": "Pink"},
-	   {"val": "#ffffff", "name": "White"}
-   ];
-   */
 
 var types = [
   	   {"val": "meeting", 	"name": "Meeting"},
@@ -392,8 +373,9 @@ function animate_messageFadeOut(multiOld) {
 /*
  * Shows a message on the screen.
  * @param text Text to show.
+ * @param duration Duration of the message.
  */
-function showMessage(text) {
+function showMessage(text, duration) {
 	animations.messageFade.activeOut = false;
 	window.clearTimeout(animations.messageFade.reference);
 	animations.messageFade.text = text;	
@@ -404,7 +386,7 @@ function showMessage(text) {
 	animations.messageFade.reference = window.setTimeout(function() {
 		animations.messageFade.activeOut = true;
     	animate_messageFadeOut(animations.messageFade.multiplier);
-	}, animations.messageFade.onScreen + animations.messageFade.duration);
+	}, duration*1000 + animations.messageFade.duration);
 }
 
 /*

@@ -456,7 +456,7 @@ function pushCallbackNotification(notification) {
 function pushCallbackError(response) {
     'use strict';
     //console.log('The following error occurred: ' +  response.name);
-	showMessage("Push server error.");
+	showMessage("Push server error.", 1);
 	loggingIn = false;
 }
 
@@ -477,7 +477,7 @@ function pushCallbackSuccess(regID) {
  */
 util.logout = function(message) {
     'use strict';
-	showMessage(message);
+	showMessage(message, 1);
 	loggingIn = false;
 	code = "";
 	user = "";
@@ -492,7 +492,7 @@ util.logout = function(message) {
  */
 util.close = function(message) {
     'use strict';
-	showMessage(message);
+	showMessage(message, 1);
 	loggingIn = false;
 	window.setTimeout(function() {
 		try {
@@ -518,7 +518,7 @@ util.getPushID = function() {
 util.webOnetime = function() {	
     'use strict';
 	
-	showMessage("Logging in...");
+	showMessage("Logging in...", 60);
 	loggingIn = true;
     
 	var param = "request=onetime&code=" + code;
@@ -527,7 +527,7 @@ util.webOnetime = function() {
 	xhr.open("POST", web, true);
 	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	xhr.setRequestHeader("Header-Custom-TizenCORS", "OK");
-	xhr.timeout = 10000;
+	xhr.timeout = 60000;
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {  
 			if (xhr.status === 200) {  
@@ -567,7 +567,7 @@ util.webOnetime = function() {
 util.webUpdatePush = function(regID) {
     'use strict';
 
-	showMessage("Logging in...");
+	showMessage("Logging in...", 60);
 	loggingIn = true;
 	
 	var param = "request=update_push&user=" + user + "&pass=" + pass + "&push=" + regID;
@@ -576,7 +576,7 @@ util.webUpdatePush = function(regID) {
 	xhr.open("POST", web, true);
 	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	xhr.setRequestHeader("Header-Custom-TizenCORS", "OK");
-	xhr.timeout = 10000;
+	xhr.timeout = 60000;
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {  
 			if (xhr.status === 200) {  
@@ -612,7 +612,7 @@ util.webUpdatePush = function(regID) {
 util.webContactGetList = function() {
     'use strict';
 
-	showMessage("Logging in...");
+	showMessage("Logging in...", 60);
 	loggingIn = true;
 	
 	var param = "request=contact_get_list&user=" + user + "&pass=" + pass;
@@ -621,7 +621,7 @@ util.webContactGetList = function() {
 	xhr.open("POST", web, true);
 	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	xhr.setRequestHeader("Header-Custom-TizenCORS", "OK");
-	xhr.timeout = 10000;
+	xhr.timeout = 60000;
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {  
 			if (xhr.status === 200) {  
@@ -644,7 +644,7 @@ util.webContactGetList = function() {
 					
 					contacts = newContacts;
 					
-					showMessage("Success!");
+					showMessage("Success!", 1);
 					loggingIn = false;
 					animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
 		    		window.setTimeout(function() {
@@ -656,7 +656,7 @@ util.webContactGetList = function() {
 					util.logout("Login expired.");
 				}
 				else {
-					showMessage("Error fetching contacts.");
+					showMessage("Error fetching contacts.", 1);
 					loggingIn = false;
 					animations.screens.reference = animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
 		    		window.setTimeout(function() {
@@ -667,7 +667,7 @@ util.webContactGetList = function() {
 			    
 			} 
 			else {  
-				showMessage("Error fetching contacts.");
+				showMessage("Error fetching contacts.", 1);
 				loggingIn = false;
 				animate_screens(screens.flowers, util.copy(animations.screens.multiplier));
 	    		window.setTimeout(function() {
@@ -688,7 +688,7 @@ util.webContactGetList = function() {
 util.webContactGetListUpdate = function(type) {
     'use strict';
 
-	showMessage("Loading contacts...");
+	showMessage("Loading contacts...", 60);
 	
 	var param = "request=contact_get_list&user=" + user + "&pass=" + pass;
 	
@@ -696,7 +696,7 @@ util.webContactGetListUpdate = function(type) {
 	xhr.open("POST", web, true);
 	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	xhr.setRequestHeader("Header-Custom-TizenCORS", "OK");
-	xhr.timeout = 10000;
+	xhr.timeout = 60000;
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {  
 			if (xhr.status === 200) {  
@@ -726,12 +726,13 @@ util.webContactGetListUpdate = function(type) {
     				else if (type == "plate") {
     					animate_screens(screens.addContacts, util.copy(animations.screens.multiplier));
     				}
+    				showMessage("Loading contacts...", 0);
 				}
 				else if (response.response == "contact_get_list_expired") {
 					util.logout("Login expired.");
 				}
 				else {
-					showMessage("Error updating contacts.");
+					showMessage("Error updating contacts.", 1);
 					
     				listOffset = 0;
     				if (type == "main") {
@@ -744,7 +745,7 @@ util.webContactGetListUpdate = function(type) {
 			    
 			} 
 			else {  
-				showMessage("Error updating contacts.");
+				showMessage("Error updating contacts.", 1);
 				
 				listOffset = 0;
 				if (type == "main") {
@@ -772,7 +773,7 @@ util.webContactRequest = function() {
 	xhr.open("POST", web, true);
 	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	xhr.setRequestHeader("Header-Custom-TizenCORS", "OK");
-	xhr.timeout = 10000;
+	xhr.timeout = 60000;
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {  
 			if (xhr.status === 200) {  
@@ -780,27 +781,27 @@ util.webContactRequest = function() {
 				//console.log("webContactRequest:" + xhr.responseText);
 				var response = JSON.parse(xhr.responseText);
 				if (response.response == "contact_request_okay") {
-					showMessage("Contact request sent.");
+					showMessage("Contact request sent.", 1);
 				}
 				else if (response.response == "contact_request_self") {
-					showMessage("Cannot invite yourself.");
+					showMessage("Cannot invite yourself.", 1);
 				}
 				else if (response.response == "contact_request_miss") {
-					showMessage("User doesn't exist.");
+					showMessage("User doesn't exist.", 1);
 				}
 				else if (response.response == "contact_request_already") {
-					showMessage("Contact already added.");
+					showMessage("Contact already added.", 1);
 				}
 				else if (response.response == "contact_request_expired") {
-					util.logout("Login expired.");
+					util.logout("Login expired.", 1);
 				}
 				else {
-					showMessage("Error sending contact request.");
+					showMessage("Error sending contact request.", 1);
 				}
 			    
 			} 
 			else {  
-				showMessage("Error sending contact request.");
+				showMessage("Error sending contact request.", 1);
 			}  
 		}  
 	};
@@ -821,7 +822,7 @@ util.webContactReject = function(reject) {
 	xhr.open("POST", web, true);
 	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	xhr.setRequestHeader("Header-Custom-TizenCORS", "OK");
-	xhr.timeout = 10000;
+	xhr.timeout = 60000;
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {  
 			if (xhr.status === 200) {  
@@ -831,15 +832,15 @@ util.webContactReject = function(reject) {
 				if (response.response == "contact_reject_okay") {
 				}
 				else if (response.response == "contact_reject_expired") {
-					util.logout("Login expired.");
+					util.logout("Login expired.", 1);
 				}
 				else {
-					showMessage("Error rejecting.");
+					showMessage("Error rejecting.", 1);
 				}
 			    
 			} 
 			else {  
-				showMessage("Error rejecting.");
+				showMessage("Error rejecting.", 1);
 			}  
 		}  
 	};
@@ -860,7 +861,7 @@ util.webContactAccept = function(accept) {
 	xhr.open("POST", web, true);
 	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	xhr.setRequestHeader("Header-Custom-TizenCORS", "OK");
-	xhr.timeout = 10000;
+	xhr.timeout = 60000;
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {  
 			if (xhr.status === 200) {  
@@ -868,18 +869,18 @@ util.webContactAccept = function(accept) {
 				//console.log("webContactAccept:" + xhr.responseText);
 				var response = JSON.parse(xhr.responseText);
 				if (response.response == "contact_accept_okay") {
-					showMessage("Request accepted.");
+					showMessage("Request accepted.", 1);
 				}
 				else if (response.response == "contact_accept_expired") {
-					util.logout("Login expired.");
+					util.logout("Login expired.", 1);
 				}
 				else {
-					showMessage("Error accepting.");
+					showMessage("Error accepting.", 1);
 				}
 			    
 			} 
 			else {  
-				showMessage("Error accepting.");
+				showMessage("Error accepting.", 1);
 			}  
 		}  
 	};
@@ -895,7 +896,7 @@ util.webContactAccept = function(accept) {
 util.webPushMessage = function(message, plate) {
     'use strict';	
     sending = true;
-	showMessage("Sending...");
+	showMessage("Sending...", 60);
     
 	var param = "request=push_message&user=" + user + "&pass=" + pass +
 		"&type=" + message.type + 
@@ -909,14 +910,14 @@ util.webPushMessage = function(message, plate) {
 	xhr.open("POST", web, true);
 	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	xhr.setRequestHeader("Header-Custom-TizenCORS", "OK");
-	xhr.timeout = 10000;
+	xhr.timeout = 60000;
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {  
 			if (xhr.status === 200) {  
 				//console.log("webPushMessage:" + xhr.responseText);
 				var response = JSON.parse(xhr.responseText);
 				if (response.response == "push_message_okay") {
-					showMessage("Message sent!");
+					showMessage("Message sent!", 1);
 					flowers[currentFlower][plate].accepted = 0;
 					flowers[currentFlower][plate].fire = util.processDurationTime(flowers[currentFlower][plate].duration);
 					localStorage.setItem("flowers", JSON.stringify(flowers));
@@ -927,17 +928,17 @@ util.webPushMessage = function(message, plate) {
 				    sending = false;
 				}
 				else if (response.response == "push_message_expired") {
-					util.logout("Login expired.");
+					util.logout("Login expired.", 1);
 				    sending = false;
 				}
 				else {
-					showMessage("Error sending.");
+					showMessage("Error sending.", 1);
 				    sending = false;
 				}
 			    
 			} 
 			else {  
-				showMessage("Error sending.");
+				showMessage("Error sending.", 1);
 			    sending = false;
 			}  
 		}  
@@ -964,7 +965,7 @@ util.webEventDecline = function(decline, message, plateid) {
 	xhr.open("POST", web, true);
 	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	xhr.setRequestHeader("Header-Custom-TizenCORS", "OK");
-	xhr.timeout = 10000;
+	xhr.timeout = 60000;
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {  
 			if (xhr.status === 200) {  
@@ -974,15 +975,15 @@ util.webEventDecline = function(decline, message, plateid) {
 				if (response.response == "event_decline_okay") {
 				}
 				else if (response.response == "event_decline_expired") {
-					util.logout("Login expired.");
+					util.logout("Login expired.", 1);
 				}
 				else {
-					showMessage("Error declining.");
+					showMessage("Error declining.", 1);
 				}
 			    
 			} 
 			else {  
-				showMessage("Error declining.");
+				showMessage("Error declining.", 1);
 			}  
 		}  
 	};
@@ -1008,7 +1009,7 @@ util.webEventAccept = function(accept, message, plateid) {
 	xhr.open("POST", web, true);
 	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	xhr.setRequestHeader("Header-Custom-TizenCORS", "OK");
-	xhr.timeout = 10000;
+	xhr.timeout = 60000;
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {  
 			if (xhr.status === 200) {  
@@ -1018,15 +1019,15 @@ util.webEventAccept = function(accept, message, plateid) {
 				if (response.response == "event_accept_okay") {
 				}
 				else if (response.response == "event_accept_expired") {
-					util.logout("Login expired.");
+					util.logout("Login expired.", 1);
 				}
 				else {
-					showMessage("Error accepting.");
+					showMessage("Error accepting.", 1);
 				}
 			    
 			} 
 			else {  
-				showMessage("Error accepting.");
+				showMessage("Error accepting.", 1);
 			}  
 		}  
 	};
