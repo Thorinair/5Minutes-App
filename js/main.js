@@ -1073,6 +1073,7 @@ function processTapHold(x, y) {
 		    						if (flowers[i][j] != null) {
 			    						if (flowers[i][j].plateid == notification.plateid) {
 			    							flowers[i][j].accepted += 1;
+			    		    				localStorage.setItem("flowers", JSON.stringify(flowers));
 			    							break;
 			    						}
 		    						}
